@@ -11,7 +11,7 @@ import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentHotFeedBinding
-import com.tiparo.tripway.utils.InjectorUtils
+import com.tiparo.tripway.di.InjectorUtils
 import com.tiparo.tripway.viewmodels.SignInViewModel
 import com.tiparo.tripway.viewmodels.SignInViewModel.SignInState
 import kotlinx.android.synthetic.main.fragment_hot_feed.view.*

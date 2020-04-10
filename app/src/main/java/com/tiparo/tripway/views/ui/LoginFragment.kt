@@ -15,9 +15,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentLoginBinding
-import com.tiparo.tripway.utils.InjectorUtils
+import com.tiparo.tripway.di.InjectorUtils
 import com.tiparo.tripway.viewmodels.SignInViewModel
 import com.tiparo.tripway.viewmodels.SignInViewModel.SignInState
+import kotlinx.android.synthetic.main.fragment_hot_feed.view.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
 
 private val RC_GET_TOKEN = 1;
@@ -66,7 +67,7 @@ class LoginFragment : Fragment() {
 
         val navController = findNavController()
 
-        signInViewModel.authenticationState.value=SignInState.UNAUTHENTICATED
+        signInViewModel.authenticationState.value = SignInState.UNAUTHENTICATED
         signInViewModel.authenticationState.observe(viewLifecycleOwner) {
             when (it) {
                 SignInState.AUTHENTICATED -> {
@@ -107,11 +108,11 @@ class LoginFragment : Fragment() {
     }
 
     private fun showProgress() {
-//        binding.root.signInProgressBar.visibility = View.VISIBLE
+        binding.root.signInProgressBar.visibility = View.VISIBLE
 
     }
 
     private fun hideProgress() {
-//        binding.root.signInProgressBar.visibility = View.GONE
+        binding.root.signInProgressBar.visibility = View.GONE
     }
 }

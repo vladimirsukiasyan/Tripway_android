@@ -3,8 +3,8 @@ package com.tiparo.tripway.utils
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.tiparo.tripway.models.entities.Error
-import com.tiparo.tripway.models.repository.ResourceError
-import com.tiparo.tripway.models.repository.ResourceErrorDAO
+import com.tiparo.tripway.models.repository.services.response.ResourceError
+import com.tiparo.tripway.models.repository.services.response.ResourceErrorDAO
 import okhttp3.ResponseBody
 
 class ErrorUtils {
@@ -16,7 +16,9 @@ class ErrorUtils {
         val error = try {
             Gson().fromJson(responseString, ResourceError::class.java)
         } catch (exception: JsonSyntaxException) {
-            ResourceError(responseString)
+            ResourceError(
+                responseString
+            )
         }
 
         return checkErrorCode(error, code)
@@ -32,6 +34,9 @@ class ErrorUtils {
 //            API_KEY_NOT_VALID -> { error.error!!.message }
 //          else -> error
 //        }
-        return ResourceErrorDAO(Error(error.error, code), error.params)
+        return ResourceErrorDAO(
+            Error(error.error, code),
+            error.params
+        )
     }
 }

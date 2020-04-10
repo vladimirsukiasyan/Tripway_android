@@ -12,7 +12,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tiparo.tripway.R
 import com.tiparo.tripway.models.repository.AuthRepository
-import com.tiparo.tripway.models.repository.Resource
+import com.tiparo.tripway.models.repository.services.response.Resource
 import com.tiparo.tripway.views.ui.TAG
 
 class SignInViewModel(
@@ -39,12 +39,16 @@ class SignInViewModel(
             when (response.status) {
                 Resource.Status.SUCCESS -> {
                     authenticationState.value = SignInState.AUTHENTICATED
+
+
+                    authenticationState.removeSource(progressAuthLiveData)
                 }
                 Resource.Status.LOADING -> {
                     authenticationState.value = SignInState.LOADING
                 }
                 Resource.Status.ERROR -> {
                     authenticationState.value = SignInState.FAILED_AUTHENTICATION
+                    authenticationState.removeSource(progressAuthLiveData)
 
                     Log.e(
                         TAG,

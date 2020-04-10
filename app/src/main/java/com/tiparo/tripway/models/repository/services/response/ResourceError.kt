@@ -1,4 +1,4 @@
-package com.tiparo.tripway.models.repository
+package com.tiparo.tripway.models.repository.services.response
 
 import com.tiparo.tripway.models.entities.Error
 
