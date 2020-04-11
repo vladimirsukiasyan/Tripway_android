@@ -6,6 +6,9 @@ import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.models.repository.services.response.Resource
 import com.tiparo.tripway.models.repository.services.response.ResourceErrorDAO
 import com.tiparo.tripway.utils.ErrorUtils
+import com.tiparo.tripway.utils.HTTP_AUTH_BACKEND
+import okhttp3.Cookie
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import retrofit2.Call
 import retrofit2.Callback
@@ -58,15 +61,18 @@ class NetworkCall<T> {
                     .addHeader(HEADER_AUTHORIZATION, sessionID)
                     .build()
             }
-            if (!request.url.encodedPath.contains("api/auth")) {
+            if (!request.url.encodedPath.contains("/auth")) {
                 throw IllegalAccessException()
             }
 
             val response = chain.proceed(request)
-            val sessionId = response.header(HEADER_AUTHORIZATION)
 
-            sessionId?.let{
-                preferences.edit().putString(HEADER_AUTHORIZATION, it).commit()
+            val setCookie = response.header("Set-Cookie");
+            setCookie?.let {
+                val httpCookie = Cookie.parse(HTTP_AUTH_BACKEND.toHttpUrlOrNull()!!, it)
+                if(httpCookie?.name== HEADER_AUTHORIZATION){
+                    preferences.edit().putString(HEADER_AUTHORIZATION, httpCookie.value).apply()
+                }
             }
             return response
         }

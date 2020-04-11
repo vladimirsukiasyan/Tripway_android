@@ -5,10 +5,11 @@ import com.tiparo.tripway.models.repository.services.response.AuthResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 
 interface GoogleAuthBackendService {
 
-    @GET("api/auth")
+    @POST("tripway/auth")
     fun authBackend(@Header("Token-ID") idToken: String): Call<AuthResponse>
 
 

@@ -14,9 +14,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <include-->
-<!--        android:id="@+id/signInProgressBar"-->
-<!--        android:visibility="gone"-->
-<!--        layout="@layout/layout_progress_bar"/>-->
+    <include
+        android:id="@+id/signInProgressBar"
+        android:visibility="gone"
+        layout="@layout/layout_progress_bar"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,7 +18,6 @@ import com.tiparo.tripway.databinding.FragmentLoginBinding
 import com.tiparo.tripway.di.InjectorUtils
 import com.tiparo.tripway.viewmodels.SignInViewModel
 import com.tiparo.tripway.viewmodels.SignInViewModel.SignInState
-import kotlinx.android.synthetic.main.fragment_hot_feed.view.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
 
 private val RC_GET_TOKEN = 1;

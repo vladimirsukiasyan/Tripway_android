@@ -92,15 +92,17 @@ class SignInViewModel(
         try {
             val idToken = task?.result?.idToken
             if (idToken != null) {
+                Log.d(TAG, "[TOKEN_ID]${idToken}")
+
                 authGoogleBackend(idToken)
             } else {
                 authenticationState.value = SignInState.FAILED_AUTHENTICATION
 
-                Log.w(TAG, "[ERROR] CANT_GET_GOOGLE_AUTH_TOKEN")
+                Log.e(TAG, "[ERROR] CANT_GET_GOOGLE_AUTH_TOKEN")
             }
         } catch (e: ApiException) {
             authenticationState.value = SignInState.FAILED_AUTHENTICATION
-            Log.w(TAG, "[ERROR] GoogleSignIn: error = $e", e)
+            Log.e(TAG, "[ERROR] GoogleSignIn: error = $e", e)
         }
     }
 
