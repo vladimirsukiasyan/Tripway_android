@@ -21,10 +21,8 @@ class HotFeedFragment : Fragment() {
         InjectorUtils.provideSignInViewModelFactory(requireActivity().application)
     }
 
-    private var _binding: FragmentHotFeedBinding? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    // TODO можо вот так упростить
+    private lateinit var binding: FragmentHotFeedBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +33,7 @@ class HotFeedFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentHotFeedBinding.inflate(inflater)
+        binding = FragmentHotFeedBinding.inflate(inflater)
         val view = binding.root
 
         val navController = findNavController()

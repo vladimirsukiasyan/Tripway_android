@@ -14,6 +14,18 @@ android {
         versionCode 1
         versionName "1.0"
 
+        /* TODO а в своем проекте я вообще вынес это в чтение файлика local.properties который в гитигнори хранится и каждый разраб может подменять по желанию поле у себя и не аффектить других
+            def properties = new Properties()
+            properties.load(project.rootProject.file("local.properties").newDataInputStream())
+            def localServerIp = properties.getProperty("serverIp")
+            def serverIp = "89.208.211.219"
+            if (localServerIp != null)
+                serverIp = localServerIp
+         */
+        buildConfigField "String", "host", "\"89.208.211.219\""
+        buildConfigField "int", "port", "8080"
+        buildConfigField "String", "scheme", "\"http\""
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

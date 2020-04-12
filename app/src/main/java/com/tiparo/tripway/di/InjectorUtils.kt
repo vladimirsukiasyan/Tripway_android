@@ -31,7 +31,7 @@ object InjectorUtils {
 
     fun createRetrofit(url: HttpUrl): Retrofit = Retrofit.Builder()
         .baseUrl(url)
-        .addConverterFactory(NullOnEmptyConverterFactory())
+        .addConverterFactory(NullOnEmptyConverterFactory()) // TODO просто интересно, а какую задачу решаете?
         .addConverterFactory(GsonConverterFactory.create())
         .client(okHttpClient)
         .build()

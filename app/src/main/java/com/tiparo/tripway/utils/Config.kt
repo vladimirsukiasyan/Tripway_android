@@ -1,3 +1,9 @@
 package com.tiparo.tripway.utils
 
-val HTTP_AUTH_BACKEND = "http://89.208.211.219:8080/"
+import com.tiparo.tripway.BuildConfig
+
+val HTTP_AUTH_BACKEND = if (BuildConfig.port != 80) {
+    "${BuildConfig.scheme}://${BuildConfig.host}:${BuildConfig.port}/"
+} else {
+    "${BuildConfig.scheme}://${BuildConfig.host}/"
+}

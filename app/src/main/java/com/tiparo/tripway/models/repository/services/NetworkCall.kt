@@ -67,6 +67,7 @@ class NetworkCall<T> {
 
             val response = chain.proceed(request)
 
+            // TODO для обработки кук в okhttp есть такая штука как CookieJar
             val setCookie = response.header("Set-Cookie");
             setCookie?.let {
                 val httpCookie = Cookie.parse(HTTP_AUTH_BACKEND.toHttpUrlOrNull()!!, it)
