@@ -17,19 +17,30 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/hotFeedFragment">
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/hot_feed_fragment_dest">
+
     <fragment
-        android:id="@+id/hotFeedFragment"
+        android:id="@+id/hot_feed_fragment_dest"
         android:name="com.tiparo.tripway.views.ui.HotFeedFragment"
-        android:label="fragment_hot_feed"
+        android:label="@string/fragment_hot_feed_label"
         tools:layout="@layout/fragment_hot_feed">
         <action
             android:id="@+id/action_hotFeedFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/login_fragment_dest" />
+        <action
+            android:id="@+id/action_hot_feed_fragment_dest_to_post_point_list_fragment_dest"
+            app:destination="@id/post_point_list_fragment_dest" />
     </fragment>
     <fragment
-        android:id="@+id/loginFragment"
+        android:id="@+id/login_fragment_dest"
         android:name="com.tiparo.tripway.views.ui.LoginFragment"
-        android:label="LoginFragment"
+        android:label="@string/fragment_login_label"
         tools:layout="@layout/fragment_login" />
+
+    <fragment
+        android:id="@+id/post_point_list_fragment_dest"
+        android:name="com.tiparo.tripway.views.ui.PostPointListFragment"
+        android:label="@string/fragment_post_point_list_label"
+        tools:layout="@layout/fragment_post_point_list" />
 </navigation>

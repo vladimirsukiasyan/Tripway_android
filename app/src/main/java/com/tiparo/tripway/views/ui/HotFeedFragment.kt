@@ -7,18 +7,23 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentHotFeedBinding
-import com.tiparo.tripway.di.InjectorUtils
 import com.tiparo.tripway.viewmodels.SignInViewModel
 import com.tiparo.tripway.viewmodels.SignInViewModel.SignInState
 import kotlinx.android.synthetic.main.fragment_hot_feed.view.*
+import javax.inject.Inject
 
 class HotFeedFragment : Fragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val signInViewModel: SignInViewModel by activityViewModels {
-        InjectorUtils.provideSignInViewModelFactory(requireActivity().application)
+        viewModelFactory
     }
 
     private var _binding: FragmentHotFeedBinding? = null

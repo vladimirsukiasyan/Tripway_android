@@ -3,20 +3,15 @@ package com.tiparo.tripway
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tiparo.tripway.di.InjectorUtils
-import com.tiparo.tripway.models.entities.Error
-import com.tiparo.tripway.models.repository.services.GoogleAuthBackendService
-import com.tiparo.tripway.models.repository.services.HEADER_AUTHORIZATION
-import com.tiparo.tripway.models.repository.services.NullOnEmptyConverterFactory
-import com.tiparo.tripway.models.repository.services.response.ResourceErrorDAO
-import com.tiparo.tripway.utils.ErrorUtils
+import com.tiparo.tripway.repository.network.api.services.GoogleAuthBackendService
+import com.tiparo.tripway.repository.network.api.HEADER_AUTHORIZATION
+import com.tiparo.tripway.repository.network.dto.ResourceErrorDAO
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.net.HttpURLConnection
 
 

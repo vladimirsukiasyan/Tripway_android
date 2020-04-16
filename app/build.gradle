@@ -21,6 +21,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_URL", "\"https://tripway.ru.com/tripway\""
+        }
+        debug {
+            buildConfigField "String", "BASE_URL", "\"https://tripway.ru.com/tripway\""
         }
     }
 
@@ -87,4 +91,13 @@ dependencies {
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.squareup.okhttp3:okhttp:4.5.0'
+}
+
+dependencies {
+    def dagger_version = "2.27"
+    implementation "com.google.dagger:dagger:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    // if you use the support libraries
+    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
 }

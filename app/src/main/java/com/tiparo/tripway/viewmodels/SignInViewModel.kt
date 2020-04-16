@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -11,14 +12,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tiparo.tripway.R
-import com.tiparo.tripway.models.repository.AuthRepository
-import com.tiparo.tripway.models.repository.services.response.Resource
+import com.tiparo.tripway.models.Resource
+import com.tiparo.tripway.repository.AuthRepository
 import com.tiparo.tripway.views.ui.TAG
+import javax.inject.Inject
 
-class SignInViewModel(
+class SignInViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    applicationContext: Application
-) : AndroidViewModel(applicationContext) {
+    private val applicationContext: Application
+) : ViewModel() {
 
     val authenticationState = MediatorLiveData<SignInState>()
 
@@ -39,8 +41,6 @@ class SignInViewModel(
             when (response.status) {
                 Resource.Status.SUCCESS -> {
                     authenticationState.value = SignInState.AUTHENTICATED
-
-
                     authenticationState.removeSource(progressAuthLiveData)
                 }
                 Resource.Status.LOADING -> {
@@ -50,11 +50,7 @@ class SignInViewModel(
                     authenticationState.value = SignInState.FAILED_AUTHENTICATION
                     authenticationState.removeSource(progressAuthLiveData)
 
-                    Log.e(
-                        TAG,
-                        "[ERROR] AuthBackend: error = ${response.resourceError?.error
-                            ?: "Unknown error"}"
-                    )
+                    Log.e(TAG, "[ERROR] AuthBackend: error = ${response.message?: "Unknown error"}")
                 }
             }
         }
@@ -74,13 +70,13 @@ class SignInViewModel(
                     processSilentAuthResult(it.getResult(ApiException::class.java)?.idToken)
                 } catch (exception: ApiException) {
                     //TODO format error output
-                    processSilentAuthResult(null, exception.statusCode.toString())
+                    processSilentAuthResult(null)
                 }
             }
         }
     }
 
-    private fun processSilentAuthResult(idToken: String?, error: String = "") {
+    private fun processSilentAuthResult(idToken: String?) {
         if (idToken != null) {
             authGoogleBackend(idToken)
         } else {

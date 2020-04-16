@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -15,15 +16,22 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentLoginBinding
-import com.tiparo.tripway.di.InjectorUtils
 import com.tiparo.tripway.viewmodels.SignInViewModel
 import com.tiparo.tripway.viewmodels.SignInViewModel.SignInState
 import kotlinx.android.synthetic.main.fragment_login.view.*
+import javax.inject.Inject
 
 private val RC_GET_TOKEN = 1;
 val TAG = "Tripway"
 
 class LoginFragment : Fragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val signInViewModel: SignInViewModel by activityViewModels {
+        viewModelFactory
+    }
 
     private var _binding: FragmentLoginBinding? = null
     // This property is only valid between onCreateView and
@@ -31,10 +39,6 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-
-    private val signInViewModel: SignInViewModel by activityViewModels {
-        InjectorUtils.provideSignInViewModelFactory(requireActivity().application)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
