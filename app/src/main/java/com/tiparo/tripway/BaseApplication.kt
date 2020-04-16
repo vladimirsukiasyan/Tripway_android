@@ -1,22 +1,18 @@
 package com.tiparo.tripway
 
 import android.app.Application
+import com.tiparo.tripway.di.AppComponent
+import com.tiparo.tripway.di.DaggerAppComponent
 
-class BaseApplication : Application() {
+open class BaseApplication : Application() {
+
+    val APP_NAME = "com.tiparo.tripway"
+
     override fun onCreate() {
         super.onCreate()
-        singleton = this
+
+        DaggerAppComponent.builder().application(this)
+            .builder()
+            .inject(this)
     }
-
-    companion object {
-        // Singleton Instance
-        private lateinit var singleton: BaseApplication
-
-        const val APP_NAME = "com.tiparo.tripway"
-
-        fun getInstance(): BaseApplication {
-            return singleton
-        }
-    }
-
 }
