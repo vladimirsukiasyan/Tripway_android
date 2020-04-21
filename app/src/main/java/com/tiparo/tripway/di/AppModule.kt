@@ -17,51 +17,59 @@
 package com.tiparo.tripway.di
 
 import android.app.Application
-import android.content.Context
-import com.tiparo.tripway.BaseApplication
-import com.tiparo.tripway.repository.network.api.services.GoogleAuthBackendService
+import com.tiparo.tripway.BuildConfig
+import com.tiparo.tripway.repository.network.api.services.AuthService
+import com.tiparo.tripway.repository.network.api.services.GoogleMapsServices
 import com.tiparo.tripway.repository.network.api.services.TripsService
-import com.tiparo.tripway.repository.network.environment.BaseEnvironment
-import com.tiparo.tripway.repository.network.environment.Environment
 import com.tiparo.tripway.repository.network.http.BaseHttpClient
 import com.tiparo.tripway.repository.network.http.HttpClient
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import retrofit2.Retrofit
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class GoogleMapsHTTPClient
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class TripwayHTTPClient
 
 @Module(includes = [ViewModelModule::class])
 class AppModule {
     @Singleton
     @Provides
-    fun provideGoogleAuthService(httpClient: HttpClient): GoogleAuthBackendService {
-        return httpClient.getApiService(GoogleAuthBackendService::class.java)
+    fun provideAuthService(@TripwayHTTPClient httpClient: HttpClient): AuthService {
+        return httpClient.getApiService(AuthService::class.java)
     }
 
     @Singleton
     @Provides
-    fun provideTripsService(httpClient: HttpClient): TripsService {
+    fun provideGoogleService(@GoogleMapsHTTPClient httpClient: HttpClient): GoogleMapsServices {
+        return httpClient.getApiService(GoogleMapsServices::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideTripsService(@TripwayHTTPClient httpClient: HttpClient): TripsService {
         return httpClient.getApiService(TripsService::class.java)
     }
 
+    @TripwayHTTPClient
     @Singleton
     @Provides
-    fun provideRetrofit(httpClient: HttpClient): Retrofit {
-        return httpClient.getRetrofit()
+    fun provideTripwayHttpClient(application: Application): HttpClient {
+        return BaseHttpClient(BuildConfig.BASE_URL, application)
     }
 
+    @GoogleMapsHTTPClient
     @Singleton
     @Provides
-    fun provideHttpClient(application: Application, environment: Environment): HttpClient {
-        return BaseHttpClient(environment, application)
+    fun provideGoogleMapsHttpClient(application: Application): HttpClient {
+        return BaseHttpClient(BuildConfig.GOOGLE_MAPS_URL, application)
     }
 
-    @Singleton
-    @Provides
-    fun provideEnvironment(): Environment {
-        return BaseEnvironment()
-    }
 //
 //    @Singleton
 //    @Provides

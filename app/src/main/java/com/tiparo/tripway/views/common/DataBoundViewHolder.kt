@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Android Open Source Project
+ * Copyright (C) 2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.tiparo.tripway.di
+package com.android.example.github.ui.common
 
-import dagger.Module
+import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.RecyclerView
 
-// This module tells a Component which are its subcomponents
-@Module(
-    subcomponents = [
-//        LoginComponent::class
-    ]
-)
-class AppSubcomponents
+/**
+ * A generic ViewHolder that works with a [ViewDataBinding].
+ * @param <T> The type of the ViewDataBinding.
+</T> */
+class DataBoundViewHolder<out T : ViewDataBinding> constructor(val binding: T) :
+    RecyclerView.ViewHolder(binding.root)

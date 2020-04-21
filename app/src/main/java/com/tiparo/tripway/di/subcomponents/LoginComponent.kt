@@ -1,6 +1,5 @@
 package com.tiparo.tripway.di.subcomponents
 
-import com.tiparo.tripway.views.ui.LoginFragment
 import dagger.Subcomponent
 
 @Subcomponent

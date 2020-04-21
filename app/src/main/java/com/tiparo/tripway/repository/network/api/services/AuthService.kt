@@ -6,9 +6,9 @@ import com.tiparo.tripway.repository.network.api.ApiResponse
 import retrofit2.http.Header
 import retrofit2.http.POST
 
-interface GoogleAuthBackendService {
+interface AuthService {
 
-    @POST("tripway/auth")
+    @POST("auth")
     fun authBackend(@Header("Token-ID") idToken: String): LiveData<ApiResponse<AuthResponse>>
 
 }

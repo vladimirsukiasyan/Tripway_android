@@ -7,6 +7,7 @@ import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.BuildConfig
 import com.tiparo.tripway.repository.network.api.HEADER_AUTHORIZATION
 import com.tiparo.tripway.repository.network.environment.Environment
+import com.tiparo.tripway.utils.NullOnEmptyConverterFactory
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
@@ -15,7 +16,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class BaseHttpClient constructor(
-    private val environment: Environment,
+    private val baseURL: String,
     private val application: Application
 ) : HttpClient {
 
@@ -42,7 +43,8 @@ class BaseHttpClient constructor(
 
     private fun createRetrofit() =
         Retrofit.Builder()
-            .baseUrl(environment.getAPITripwayBaseUrl())
+            .baseUrl(baseURL)
+            .addConverterFactory(NullOnEmptyConverterFactory)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .client(okHttpClient)
