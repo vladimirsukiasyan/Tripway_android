@@ -16,10 +16,14 @@
 
 package com.tiparo.tripway.models
 
+import com.tiparo.tripway.repository.network.api.ErrorDescription
+
 data class Resource<out T>(
     val status: Status,
     val data: T?,
-    val message: String?
+    val message: String? = null,
+    val code: Int? = null,
+    val params: Map<String, String?>? = null
 ) {
     enum class Status {
         SUCCESS, ERROR, LOADING
@@ -29,24 +33,24 @@ data class Resource<out T>(
         fun <T> success(data: T?): Resource<T> {
             return Resource(
                 Status.SUCCESS,
-                data,
-                null
+                data
             )
         }
 
-        fun <T> error(msg: String, data: T?): Resource<T> {
+        fun <T> error(data: T?, errorDescription: ErrorDescription): Resource<T> {
             return Resource(
                 Status.ERROR,
                 data,
-                msg
+                errorDescription.message,
+                errorDescription.code,
+                errorDescription.params
             )
         }
 
         fun <T> loading(data: T?): Resource<T> {
             return Resource(
                 Status.LOADING,
-                data,
-                null
+                data
             )
         }
     }

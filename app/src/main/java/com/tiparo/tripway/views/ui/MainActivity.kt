@@ -34,12 +34,17 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when(destination.id){
+                //TODO решить проблему с bottomBar в добавлении
                 R.id.hot_feed_fragment_dest ->{
                     toolbar.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.VISIBLE
                 }
                 R.id.login_fragment_dest ->{
                     toolbar.visibility = View.GONE
+                    bottomNavigationView.visibility = View.GONE
+                }
+                R.id.postPointGraph ->{
+                    toolbar.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.GONE
                 }
             }

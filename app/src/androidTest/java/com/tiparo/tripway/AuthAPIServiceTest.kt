@@ -3,8 +3,8 @@ package com.tiparo.tripway
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tiparo.tripway.di.InjectorUtils
-import com.tiparo.tripway.repository.network.api.services.GoogleAuthBackendService
 import com.tiparo.tripway.repository.network.api.HEADER_AUTHORIZATION
+import com.tiparo.tripway.repository.network.api.services.AuthService
 import com.tiparo.tripway.repository.network.dto.ResourceErrorDAO
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -24,14 +24,14 @@ class AuthAPIServiceTest {
 
     private var mockWebServer = MockWebServer()
 
-    private lateinit var googleAuthBackendService: GoogleAuthBackendService
+    private lateinit var authService: AuthService
 
     @Before
     fun setup() {
         mockWebServer.start()
 
-        googleAuthBackendService = InjectorUtils.createRetrofit(mockWebServer.url("/"))
-            .create(GoogleAuthBackendService::class.java)
+        authService = InjectorUtils.createRetrofit(mockWebServer.url("/"))
+            .create(AuthService::class.java)
     }
 
     @Test
@@ -44,7 +44,7 @@ class AuthAPIServiceTest {
         mockWebServer.enqueue(responseServer)
 
         // Act
-        val response = googleAuthBackendService.authBackend("INVALID_TOKEN_STRING").execute()
+        val response = authService.authBackend("INVALID_TOKEN_STRING").execute()
         val resourceErrorDAO = ErrorUtils().parseError(response.errorBody(), response.code())
 
         // Assert
@@ -68,7 +68,7 @@ class AuthAPIServiceTest {
         mockWebServer.enqueue(responseServer)
 
         // Act
-        val response = googleAuthBackendService.authBackend("RANDOM_TOKEN").execute()
+        val response = authService.authBackend("RANDOM_TOKEN").execute()
 
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 

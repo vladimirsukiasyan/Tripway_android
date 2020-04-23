@@ -30,7 +30,7 @@
             app:destination="@id/login_fragment_dest" />
         <action
             android:id="@+id/action_hot_feed_fragment_dest_to_post_point_list_fragment_dest"
-            app:destination="@id/post_point_list_fragment_dest" />
+            app:destination="@id/postPointGraph" />
     </fragment>
     <fragment
         android:id="@+id/login_fragment_dest"
@@ -38,9 +38,23 @@
         android:label="@string/fragment_login_label"
         tools:layout="@layout/fragment_login" />
 
-    <fragment
-        android:id="@+id/post_point_list_fragment_dest"
-        android:name="com.tiparo.tripway.views.ui.PostPointListFragment"
-        android:label="@string/fragment_post_point_list_label"
-        tools:layout="@layout/fragment_post_point_list" />
+    <navigation
+        android:id="@+id/postPointGraph"
+        app:startDestination="@id/post_point_list_fragment_dest">
+        <fragment
+            android:id="@+id/post_point_list_fragment_dest"
+            android:name="com.tiparo.tripway.views.ui.PostPointListFragment"
+            android:label="@string/fragment_post_point_list_label"
+            tools:layout="@layout/fragment_post_point_list"
+            app:startDestination="@id/action_post_point_list_fragment_dest_to_post_point_map_fragment_dest">
+            <action
+                android:id="@+id/action_post_point_list_fragment_dest_to_post_point_map_fragment_dest"
+                app:destination="@id/post_point_map_fragment_dest" />
+        </fragment>
+        <fragment
+            android:id="@+id/post_point_map_fragment_dest"
+            android:name="com.tiparo.tripway.views.ui.PostPointMapFragment"
+            android:label="@string/fragment_post_point_map_label"
+            tools:layout="@layout/fragment_post_point_map" />
+    </navigation>
 </navigation>

@@ -12,6 +12,6 @@ interface GoogleMapsServices {
     fun reverseGeocoding(@Query("latlng") location: String, @Query("key") apiKey: String): LiveData<ApiResponse<ReverseGeocodingResponse>>
 }
 
-data class ReverseGeocodingResponse(val results: List<GeocodingResult>){
+data class ReverseGeocodingResponse(@SerializedName("results") val results: List<GeocodingResult>){
     class GeocodingResult(@SerializedName("formatted_address") val address: String)
 }

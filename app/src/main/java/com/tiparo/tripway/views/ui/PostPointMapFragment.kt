@@ -2,7 +2,6 @@ package com.tiparo.tripway.views.ui
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +11,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.navGraphViewModels
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -20,8 +21,8 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -42,7 +43,6 @@ class PostPointMapFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var appExecutors: AppExecutors
-    private lateinit var adapter: TripsListAdapter
 
     private val tripsViewModel: TripsViewModel by navGraphViewModels(R.id.postPointGraph) {
         viewModelFactory
@@ -55,7 +55,7 @@ class PostPointMapFragment : Fragment() {
 
 
     private var mMap: GoogleMap? = null
-    private var mCameraPosition: CameraPosition? = null
+    private var mMarker: Marker? = null
 
     private lateinit var mPlacesClient: PlacesClient
     private lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
@@ -65,14 +65,13 @@ class PostPointMapFragment : Fragment() {
 
     // A default location (Sydney, Australia) and default zoom to use when location permission is not granted.
     private val mDefaultLocation = LatLng(-33.8523341, 151.2106085)
-    private val DEFAULT_ZOOM: Float = 15F
+    private val DEFAULT_ZOOM: Float = 17F
 
-    // The geographical location where the device is currently located. That is, the last-known
-    // location retrieved by the Fused Location Provider.
-
+//    // The geographical location where the device is currently located. That is, the last-known
+//    // location retrieved by the Fused Location Provider.
+//    private var location: LatLng = mDefaultLocation
 
     // Keys for storing activity state.
-    private val KEY_CAMERA_POSITION = "camera_position"
     private val KEY_LOCATION = "location"
 
 
@@ -80,18 +79,17 @@ class PostPointMapFragment : Fragment() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "${this.javaClass.name} :onCreate()")
 
-        // Retrieve location and camera position from saved instance state.
-        savedInstanceState?.let {
-            mLastKnownLocation = it.getParcelable(KEY_LOCATION)
-            mCameraPosition = it.getParcelable(KEY_CAMERA_POSITION)
-        }
+//        // Retrieve location and camera position from saved instance state.
+//        savedInstanceState?.let {
+//            location = it.getParcelable(KEY_LOCATION) ?: mDefaultLocation
+//        }
 
         Places.initialize(requireActivity().applicationContext, getString(R.string.google_maps_key))
         mPlacesClient = Places.createClient(requireActivity())
 
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(requireActivity());
+            LocationServices.getFusedLocationProviderClient(requireActivity())
     }
 
     override fun onCreateView(
@@ -109,6 +107,11 @@ class PostPointMapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        tripsViewModel.locationName.observe(viewLifecycleOwner) {
+            binding.locationName = it
+        }
+
         initAutocompleteMapView()
         initMapView()
     }
@@ -116,15 +119,12 @@ class PostPointMapFragment : Fragment() {
     /**
      * Saves the state of the map when the activity is paused.
      */
-    override fun onSaveInstanceState(outState: Bundle) {
-        if (mMap != null) {
-            outState.putParcelable(
-                KEY_CAMERA_POSITION, mMap!!.cameraPosition
-            )
-            outState.putParcelable(KEY_LOCATION, mLastKnownLocation)
-        }
-        super.onSaveInstanceState(outState)
-    }
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        if (mMap != null) {
+//            outState.putParcelable(KEY_LOCATION, location)
+//        }
+//        super.onSaveInstanceState(outState)
+//    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -134,7 +134,7 @@ class PostPointMapFragment : Fragment() {
 
     private fun initMapView() {
         val mapFragment =
-            requireActivity().supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+            childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync { map ->
             mMap = map
 
@@ -146,18 +146,21 @@ class PostPointMapFragment : Fragment() {
             // Get the current location of the device and set the position of the map.
             getDeviceLocation()
 
-            mMap?.addMarker(MarkerOptions().position(lastPosition))
+            //TODO If we dragged our marker, then we need to update our location and show address
+            mMap?.setOnMarkerDragListener(object : GoogleMap.OnMarkerDragListener {
+                override fun onMarkerDragEnd(marker: Marker?) {
+                    moveMarkerOnMap(marker?.position ?: mDefaultLocation)
+                    tripsViewModel.pickedLocation.value = marker?.position ?: mDefaultLocation
+                }
+
+                override fun onMarkerDragStart(marker: Marker?) {}
+
+                override fun onMarkerDrag(marker: Marker?) {}
+            })
+            //For onMyLocationButton placing under search bar
+            mMap?.setPadding(0, 250, 12, 0)
         }
     }
-
-    var lastPosition: LatLng
-        get() = mLastKnownLocation?.let {
-            return LatLng(it.latitude, it.latitude)
-        } ?: mDefaultLocation
-        set(value) {
-
-        }
-
 
     private fun initAutocompleteMapView() {
         val autocompletFragment =
@@ -167,6 +170,7 @@ class PostPointMapFragment : Fragment() {
                 Place.Field.ADDRESS,
                 Place.Field.ADDRESS_COMPONENTS,
                 Place.Field.ID,
+                Place.Field.LAT_LNG,
                 Place.Field.NAME
             )
         )
@@ -179,10 +183,13 @@ class PostPointMapFragment : Fragment() {
                     |${place.address},
                     |${place.addressComponents}"""
                 )
+
+                tripsViewModel.pickedPlace.value = place
+                moveMarkerOnMap(place.latLng ?: mDefaultLocation)
             }
 
             override fun onError(status: Status) {
-                Log.i(TAG, "An error occurred: $status");
+                Log.i(TAG, "An error occurred: $status")
             }
         })
         //TODO тут надо сделать restrict области поиска!!!
@@ -203,13 +210,13 @@ class PostPointMapFragment : Fragment() {
             )
             == PackageManager.PERMISSION_GRANTED
         ) {
-            mLocationPermissionGranted = true;
+            mLocationPermissionGranted = true
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(),
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-            );
+            )
         }
     }
 
@@ -232,7 +239,6 @@ class PostPointMapFragment : Fragment() {
                 }
             }
         }
-        updateLocationUI()
     }
 
     private fun updateLocationUI() {
@@ -240,11 +246,10 @@ class PostPointMapFragment : Fragment() {
             try {
                 if (mLocationPermissionGranted) {
                     map.isMyLocationEnabled = true
-                    map.uiSettings.setMyLocationButtonEnabled(true)
+                    map.uiSettings.isMyLocationButtonEnabled = true
                 } else {
                     map.isMyLocationEnabled = false
                     map.uiSettings.isMyLocationButtonEnabled = false
-                    lastPosition = mDefaultLocation
                     getLocationPermission()
                 }
             } catch (e: SecurityException) {
@@ -260,29 +265,55 @@ class PostPointMapFragment : Fragment() {
          */
         try {
             if (mLocationPermissionGranted) {
-                val locationResult = mFusedLocationProviderClient.lastLocation;
+                val locationResult = mFusedLocationProviderClient.lastLocation
                 locationResult.addOnCompleteListener { task ->
+
+                    var location = mDefaultLocation
 
                     if (task.isSuccessful) {
                         // Set the map's camera position to the current location of the device.
-                        lastPosition = task.result?.let { LatLng(it.latitude, it.longitude) }
+                        location = task.result?.let { LatLng(it.latitude, it.longitude) }
                             ?: mDefaultLocation
                     } else {
-                        Log.d(TAG, "Current location is null. Using defaults.");
-                        Log.e(TAG, "Exception: %s", task.exception);
-                        mMap?.uiSettings?.isMyLocationButtonEnabled = false;
+                        Log.d(TAG, "Current location is null. Using defaults.")
+                        Log.e(TAG, "Exception: %s", task.exception)
+                        mMap?.uiSettings?.isMyLocationButtonEnabled = false
                     }
 
-                    mMap?.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            lastPosition , DEFAULT_ZOOM
-                        )
-                    )
+                    tripsViewModel.pickedLocation.value =
+                        task.result?.let {
+                            LatLng(it.latitude, it.longitude)
+                        } ?: mDefaultLocation
+
+                    mMarker = addMarkerOnMap(location)
                 }
 
             }
         } catch (e: SecurityException) {
-            Log.e("Exception: %s", e.message ?: "Error while getting device location");
+            Log.e("Exception: %s", e.message ?: "Error while getting device location")
         }
+    }
+
+    private fun addMarkerOnMap(newPosition: LatLng): Marker? {
+        val marker = mMap?.addMarker(
+            MarkerOptions()
+                .position(newPosition)
+                .draggable(true)
+        )
+        moveCamera(newPosition)
+        return marker
+    }
+
+    private fun moveMarkerOnMap(newPosition: LatLng) {
+        mMarker?.position = newPosition
+        moveCamera(newPosition)
+    }
+
+    private fun moveCamera(newPosition: LatLng) {
+        mMap?.animateCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                newPosition, DEFAULT_ZOOM
+            )
+        )
     }
 }

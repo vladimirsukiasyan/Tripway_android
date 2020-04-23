@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.tiparo.tripway.views.common
+package com.tiparo.tripway.util
 
-import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.RecyclerView
+import com.tiparo.tripway.AppExecutors
+import java.util.concurrent.Executor
 
-/**
- * A generic ViewHolder that works with a [ViewDataBinding].
- * @param <T> The type of the ViewDataBinding.
-</T> */
-class DataBoundViewHolder<out T : ViewDataBinding> constructor(val binding: T) :
-    RecyclerView.ViewHolder(binding.root)
+class InstantAppExecutors : AppExecutors(instant, instant, instant) {
+    companion object {
+        private val instant = Executor { it.run() }
+    }
+}

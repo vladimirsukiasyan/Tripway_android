@@ -3,6 +3,8 @@
     <color name="colorPrimary">#4285F4</color>
     <color name="colorIconColor">#4F4F4F</color>
 
+    <color name="colorBars">#fff</color>
+
     <color name="colorText">#000</color>
     <color name="colorTextHint">#BF000000</color>
     <color name="colorTextHintLight">#80000000</color>

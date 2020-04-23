@@ -1,5 +1,6 @@
 package com.tiparo.tripway.views.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentLoginBinding
 import com.tiparo.tripway.viewmodels.SignInViewModel
@@ -99,6 +101,12 @@ class LoginFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        (requireActivity().applicationContext as BaseApplication).appComponent.inject(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

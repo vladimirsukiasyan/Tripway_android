@@ -36,9 +36,7 @@ import com.tiparo.tripway.repository.network.api.ApiSuccessResponse
  * @param <ResultType>
  * @param <RequestType>
 </RequestType></ResultType> */
-@Suppress("UNCHECKED_CAST")
-abstract class NetworkBoundResource<ResultType, RequestType>
-//TODO понять как использовать appExecutors правильно
+abstract class NetworkDBBoundResource<ResultType, RequestType>
 @MainThread constructor(private val appExecutors: AppExecutors) {
 
     private val result = MediatorLiveData<Resource<ResultType>>()
@@ -46,7 +44,17 @@ abstract class NetworkBoundResource<ResultType, RequestType>
     init {
         result.value = Resource.loading(null)
         @Suppress("LeakingThis")
-        fetchFromNetwork()
+        val dbSource = loadFromDb()
+        result.addSource(dbSource) { data ->
+            result.removeSource(dbSource)
+            if (shouldFetch(data)) {
+                fetchFromNetwork(dbSource)
+            } else {
+                result.addSource(dbSource) { newData ->
+                    setValue(Resource.success(newData))
+                }
+            }
+        }
     }
 
     @MainThread
@@ -56,22 +64,42 @@ abstract class NetworkBoundResource<ResultType, RequestType>
         }
     }
 
-    private fun fetchFromNetwork() {
+    private fun fetchFromNetwork(dbSource: LiveData<ResultType>) {
         val apiResponse = createCall()
         // we re-attach dbSource as a new source, it will dispatch its latest value quickly
+        result.addSource(dbSource) { newData ->
+            setValue(Resource.loading(newData))
+        }
         result.addSource(apiResponse) { response ->
             result.removeSource(apiResponse)
+            result.removeSource(dbSource)
             when (response) {
-                is ApiSuccessResponse -> {
-                    val responseDTO = mapDTO(response)
-                    setValue(Resource.success(responseDTO.body))
+                is ApiSuccessResponse<*> -> {
+                    appExecutors.diskIO().execute {
+                        saveCallResult(processResponse(response as ApiSuccessResponse<RequestType>))
+                        appExecutors.mainThread().execute {
+                            // we specially request a new live data,
+                            // otherwise we will get immediately last cached value,
+                            // which may not be updated with latest results received from network.
+                            result.addSource(loadFromDb()) { newData ->
+                                setValue(Resource.success(newData))
+                            }
+                        }
+                    }
                 }
-                is ApiEmptyResponse -> {
-                    setValue(Resource.success(null))
+                is ApiEmptyResponse<*> -> {
+                    appExecutors.mainThread().execute {
+                        // reload from disk whatever we had
+                        result.addSource(loadFromDb()) { newData ->
+                            setValue(Resource.success(newData))
+                        }
+                    }
                 }
-                is ApiErrorResponse -> {
+                is ApiErrorResponse<*> -> {
                     onFetchFailed()
-                    setValue(Resource.error(null, response.errorDescription))
+                    result.addSource(dbSource) { newData ->
+                        setValue(Resource.error(newData, response.errorDescription))
+                    }
                 }
             }
         }
@@ -85,8 +113,13 @@ abstract class NetworkBoundResource<ResultType, RequestType>
     protected open fun processResponse(response: ApiSuccessResponse<RequestType>) = response.body
 
     @WorkerThread
-    protected open fun mapDTO(response: ApiSuccessResponse<RequestType>): ApiSuccessResponse<ResultType> =
-        response as ApiSuccessResponse<ResultType>
+    protected abstract fun saveCallResult(item: RequestType)
+
+    @MainThread
+    protected abstract fun shouldFetch(data: ResultType?): Boolean
+
+    @MainThread
+    protected abstract fun loadFromDb(): LiveData<ResultType>
 
     @MainThread
     protected abstract fun createCall(): LiveData<ApiResponse<RequestType>>

@@ -16,57 +16,57 @@
 
 package com.tiparo.tripway.views.adapters
 
-import androidx.databinding.DataBindingComponent
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.DiffUtil
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.android.example.github.AppExecutors
-import com.android.example.github.R
-import com.android.example.github.databinding.RepoItemBinding
-import com.android.example.github.vo.Repo
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import com.tiparo.tripway.AppExecutors
+import com.tiparo.tripway.R
+import com.tiparo.tripway.databinding.TripOwnItemBinding
+import com.tiparo.tripway.repository.network.api.services.TripsService
+import com.tiparo.tripway.views.common.DataBoundListAdapter
 
 /**
  * A RecyclerView adapter for [Repo] class.
  */
-class RepoListAdapter(
-    private val dataBindingComponent: DataBindingComponent,
+class TripsListAdapter(
     appExecutors: AppExecutors,
-    private val showFullName: Boolean,
-    private val repoClickCallback: ((Repo) -> Unit)?
-) : DataBoundListAdapter<Repo, RepoItemBinding>(
+    private val tripClickCallback: ((TripsService.Trip) -> Unit)?
+) : DataBoundListAdapter<TripsService.Trip, TripOwnItemBinding>(
     appExecutors = appExecutors,
-    diffCallback = object : DiffUtil.ItemCallback<Repo>() {
-        override fun areItemsTheSame(oldItem: Repo, newItem: Repo): Boolean {
-            return oldItem.owner == newItem.owner
-                    && oldItem.name == newItem.name
+    diffCallback = object : DiffUtil.ItemCallback<TripsService.Trip>() {
+        override fun areItemsTheSame(
+            oldItem: TripsService.Trip,
+            newItem: TripsService.Trip
+        ): Boolean {
+            return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Repo, newItem: Repo): Boolean {
-            return oldItem.description == newItem.description
-                    && oldItem.stars == newItem.stars
+        override fun areContentsTheSame(
+            oldItem: TripsService.Trip,
+            newItem: TripsService.Trip
+        ): Boolean {
+            return oldItem == newItem
         }
     }
 ) {
 
-    override fun createBinding(parent: ViewGroup): RepoItemBinding {
-        val binding = DataBindingUtil.inflate<RepoItemBinding>(
+    override fun createBinding(parent: ViewGroup): TripOwnItemBinding {
+        val binding = DataBindingUtil.inflate<TripOwnItemBinding>(
             LayoutInflater.from(parent.context),
-            R.layout.repo_item,
+            R.layout.trip_own_item,
             parent,
-            false,
-            dataBindingComponent
+            false
         )
-        binding.showFullName = showFullName
         binding.root.setOnClickListener {
-            binding.repo?.let {
-                repoClickCallback?.invoke(it)
+            binding.trip?.let {
+                tripClickCallback?.invoke(it)
             }
         }
         return binding
     }
 
-    override fun bind(binding: RepoItemBinding, item: Repo) {
-        binding.repo = item
+    override fun bind(binding: TripOwnItemBinding, item: TripsService.Trip) {
+        binding.trip = item
     }
 }

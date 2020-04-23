@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.android.example.github.ui.common
+package com.tiparo.tripway.views.common
 
+import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.AsyncDifferConfig
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import android.view.ViewGroup
-import com.android.example.github.AppExecutors
+import androidx.recyclerview.widget.ListAdapter
+import com.tiparo.tripway.AppExecutors
 
 /**
  * A generic RecyclerView adapter that uses Data Binding & DiffUtil.

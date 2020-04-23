@@ -21,10 +21,20 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", "\"https://tripway.ru.com/tripway\""
+            buildConfigField "String", "BASE_URL", "\"https://tripway.ru.com/tripway/\""
+            buildConfigField "String", "GOOGLE_MAPS_URL", "\"https://maps.googleapis.com/\""
+            buildConfigField "String", "GOOGLE_MAPS_KEY",
+                    (project.findProperty("GOOGLE_MAPS_API_KEY").toString() ?: "")
+            resValue "string", "google_maps_key",
+                    (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
         }
         debug {
-            buildConfigField "String", "BASE_URL", "\"https://tripway.ru.com/tripway\""
+            buildConfigField "String", "BASE_URL", "\"https://tripway.ru.com/tripway/\""
+            buildConfigField "String", "GOOGLE_MAPS_URL", "\"https://maps.googleapis.com/\""
+            buildConfigField "String", "GOOGLE_MAPS_KEY",
+                    "\"${project.findProperty("GOOGLE_MAPS_API_KEY")}\""
+            resValue "string", "google_maps_key",
+                    (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
         }
     }
 
@@ -33,7 +43,7 @@ android {
         sourceCompatibility = "8"
     }
 
-    viewBinding {
+    dataBinding {
         enabled = true
     }
 
@@ -55,9 +65,15 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.8.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'junit:junit:4.12'
     testImplementation("com.squareup.okhttp3:mockwebserver:4.4.0")
 
+
+    androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
     androidTestImplementation 'com.squareup.okhttp3:mockwebserver:4.4.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
@@ -100,4 +116,9 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
     // if you use the support libraries
     annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+}
+
+dependencies{
+    implementation 'com.google.android.libraries.places:places:2.2.0'
 }

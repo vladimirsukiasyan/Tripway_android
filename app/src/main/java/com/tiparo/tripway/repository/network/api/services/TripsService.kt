@@ -9,6 +9,7 @@ interface TripsService {
     @GET("tripway/trips/own")
     fun getOwnTrips(): LiveData<ApiResponse<List<Trip>>>
 
+    //TODO Решить вопрос с размещение модели в пакетах
     data class Trip(
         val id: String,
         val trip_name: String,

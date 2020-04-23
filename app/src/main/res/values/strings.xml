@@ -21,10 +21,12 @@
     <string name="fragment_hot_feed_label">Популярное</string>
     <string name="fragment_login_label">Авторизация</string>
     <string name="fragment_post_point_list_label">Добавление поинта</string>
+    <string name="fragment_post_point_map_label">Введите адрес</string>
 
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_hot_feed">Популярная лента</string>
+    <string name="title_home">Лента подписок</string>
+    <string name="title_add_new_trip">Добавление</string>
+    <string name="title_profile">Профиль</string>
+
     <string name="label_add_new_trip">Создать новый трип</string>
-
 </resources>

@@ -1,18 +1,22 @@
 package com.tiparo.tripway
 
 import android.app.Application
-import com.tiparo.tripway.di.AppComponent
 import com.tiparo.tripway.di.DaggerAppComponent
+import timber.log.Timber
 
 open class BaseApplication : Application() {
 
     val APP_NAME = "com.tiparo.tripway"
 
-    override fun onCreate() {
-        super.onCreate()
-
+    val appComponent by lazy {
         DaggerAppComponent.builder().application(this)
             .builder()
-            .inject(this)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        if(BuildConfig.DEBUG){
+            Timber.plant(Timber.DebugTree())
+        }
     }
 }

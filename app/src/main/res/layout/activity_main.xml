@@ -11,15 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="top"
-        android:theme="@style/Toolbar" />
+        android:elevation="@dimen/bars_elevation"
+        android:theme="@style/Toolbar"
+        android:background="@color/colorBars"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
         android:id="@+id/nav_host"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:layout_marginBottom="?attr/actionBarSize"
-        android:layout_height="match_parent"
+
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
@@ -27,6 +31,9 @@
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:labelVisibilityMode="unlabeled"
+        android:background="@color/colorBars"
+        android:elevation="@dimen/bars_elevation"
         android:layout_gravity="bottom"
         app:menu="@menu/menu_bottom_nav" />
 

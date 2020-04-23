@@ -2,7 +2,6 @@ package com.tiparo.tripway.viewmodels
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -50,13 +49,16 @@ class SignInViewModel @Inject constructor(
                     authenticationState.value = SignInState.FAILED_AUTHENTICATION
                     authenticationState.removeSource(progressAuthLiveData)
 
-                    Log.e(TAG, "[ERROR] AuthBackend: error = ${response.message?: "Unknown error"}")
+                    Log.e(
+                        TAG,
+                        "[ERROR] AuthBackend: error = ${response.message ?: "Unknown error"}"
+                    )
                 }
             }
         }
     }
 
-    fun checkAuth() {
+    private fun silentGoogleAuth() {
         val task = mGoogleSignInClient.silentSignIn()
         if (task.isSuccessful) {
             // There's immediate result available.
