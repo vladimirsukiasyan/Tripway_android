@@ -28,17 +28,13 @@ class HotFeedFragment : Fragment() {
         viewModelFactory
     }
 
-    //TODO глянуть ревью Кирилла
-    private var _binding: FragmentHotFeedBinding? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentHotFeedBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentHotFeedBinding.inflate(inflater)
+        binding = FragmentHotFeedBinding.inflate(inflater)
         val view = binding.root
 
         return view
