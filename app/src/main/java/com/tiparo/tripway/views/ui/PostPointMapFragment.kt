@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -35,6 +36,7 @@ import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentPostPointMapBinding
 import com.tiparo.tripway.viewmodels.TripsViewModel
 import com.tiparo.tripway.views.adapters.TripsListAdapter
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -114,6 +116,10 @@ class PostPointMapFragment : Fragment() {
 
         initAutocompleteMapView()
         initMapView()
+
+        binding.saveLocationBtn.setOnClickListener {
+            findNavController().navigate()
+        }
     }
 
     /**
@@ -177,8 +183,8 @@ class PostPointMapFragment : Fragment() {
 
         autocompletFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                Log.i(
-                    TAG, """Place: ${place.name}, 
+                Timber.d(
+                    """Place: ${place.name}, 
                     |${place.id},
                     |${place.address},
                     |${place.addressComponents}"""
@@ -253,7 +259,7 @@ class PostPointMapFragment : Fragment() {
                     getLocationPermission()
                 }
             } catch (e: SecurityException) {
-                Log.e("Exception: %s", e.message ?: "Error while updating location UI")
+                Timber.e("Exception: %s", e.message ?: "Error while updating location UI")
             }
         }
     }
@@ -275,8 +281,8 @@ class PostPointMapFragment : Fragment() {
                         location = task.result?.let { LatLng(it.latitude, it.longitude) }
                             ?: mDefaultLocation
                     } else {
-                        Log.d(TAG, "Current location is null. Using defaults.")
-                        Log.e(TAG, "Exception: %s", task.exception)
+                        Timber.d("Current location is null. Using defaults.")
+                        Timber.e("Exception: %s", task.exception)
                         mMap?.uiSettings?.isMyLocationButtonEnabled = false
                     }
 

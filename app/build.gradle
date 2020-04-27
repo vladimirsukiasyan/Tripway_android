@@ -116,9 +116,9 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
     // if you use the support libraries
     annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 }
 
 dependencies{
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.libraries.places:places:2.2.0'
 }

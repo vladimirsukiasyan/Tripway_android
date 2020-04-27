@@ -52,14 +52,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:background="@color/colorBars"
+            android:padding="@dimen/vertical_margin"
             android:elevation="@dimen/bars_elevation"
-            android:paddingHorizontal="@dimen/horizontal_margin">
+            >
 
             <TextView
                 android:id="@+id/address"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingVertical="16dp"
                 android:text='@{locationName.data, default = "No location was picked"}'
                 android:textColor="@color/colorText"
                 android:textSize="18sp"
@@ -70,15 +70,15 @@
 
             <ImageView
                 android:id="@+id/saveLocationBtn"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="16dp"
-                android:background="@android:color/transparent"
                 android:src="@drawable/ic_done"
                 android:tint="@color/colorPrimary"
+                android:background="@android:color/transparent"
+                android:layout_width="32dp"
+                android:layout_marginStart="12dp"
+                android:layout_height="32dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
