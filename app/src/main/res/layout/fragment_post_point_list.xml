@@ -2,6 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.tiparo.tripway.viewmodels.PostPointViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
@@ -19,8 +26,8 @@
             <Button
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:background="@drawable/ic_add_trip" />
+                android:background="@drawable/ic_add_trip"
+                android:backgroundTint="@color/colorPrimary" />
 
             <TextView
                 android:layout_width="match_parent"

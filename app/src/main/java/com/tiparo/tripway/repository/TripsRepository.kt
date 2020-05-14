@@ -1,26 +1,37 @@
 package com.tiparo.tripway.repository
 
-import android.util.Log
+import android.app.Application
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.google.android.gms.maps.model.LatLng
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BuildConfig
+import com.tiparo.tripway.models.Point
 import com.tiparo.tripway.models.Resource
-import com.tiparo.tripway.repository.network.api.*
+import com.tiparo.tripway.models.Trip
+import com.tiparo.tripway.repository.database.PointDao
+import com.tiparo.tripway.repository.database.TripDao
+import com.tiparo.tripway.repository.network.api.ApiResponse
+import com.tiparo.tripway.repository.network.api.ApiSuccessResponse
 import com.tiparo.tripway.repository.network.api.services.GoogleMapsServices
 import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingResponse
+import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingResponse.GeocodingResult
 import com.tiparo.tripway.repository.network.api.services.TripsService
+import com.tiparo.tripway.utils.FileUtils
+import kotlinx.coroutines.*
 import timber.log.Timber
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 class TripsRepository @Inject constructor(
+    private val application: Application,
     private val appExecutors: AppExecutors,
-//    private val tripDao: TripDao,
+    private val tripDao: TripDao,
+    private val pointDao: PointDao,
     private val tripsService: TripsService,
     private val googleMapsService: GoogleMapsServices
-//    private val db: TripwayDb
 ) {
 
     private val tripsMock = MutableList(10) { id ->
@@ -34,36 +45,12 @@ class TripsRepository @Inject constructor(
         )
     }
 
-    fun loadMyTrips(): LiveData<Resource<List<TripsService.Trip>>> {
-        return object :
-            NetworkBoundResource<List<TripsService.Trip>, List<TripsService.Trip>>(appExecutors) {
-            override fun createCall(): LiveData<ApiResponse<List<TripsService.Trip>>> {
-                return tripsService.getOwnTrips()
-            }
-        }.asLiveData()
+    suspend fun loadTrips(): Resource<List<Trip>> = withContext(Dispatchers.IO){
+        val trips = tripDao.getTrips()
+        return@withContext Resource.success(trips)
     }
 
-    fun reverseGeocode(location: LatLng): LiveData<Resource<String>> {
-        return object : NetworkBoundResource<String, ReverseGeocodingResponse>(appExecutors) {
-            override fun createCall(): LiveData<ApiResponse<ReverseGeocodingResponse>> {
-                return googleMapsService.reverseGeocoding(
-                    convertLatLng(location),
-                    BuildConfig.GOOGLE_MAPS_KEY
-                )
-            }
-
-            override fun mapDTO(response: ApiSuccessResponse<ReverseGeocodingResponse>): ApiSuccessResponse<String> {
-                return ApiSuccessResponse(
-                    response.body.results.firstOrNull()?.address
-                        ?: "No information from Google. Try another"
-                )
-            }
-        }.asLiveData()
-    }
-
-    fun convertLatLng(location: LatLng) = "${location.latitude},${location.longitude}"
-
-    fun loadMyTripsMock(): LiveData<Resource<List<TripsService.Trip>>> {
-        return MutableLiveData(Resource.success(tripsMock))
+    fun loadTripsMock(): Resource<List<TripsService.Trip>> {
+        return Resource.success(tripsMock)
     }
 }

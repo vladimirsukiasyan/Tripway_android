@@ -10,4 +10,7 @@
     <dimen name="bars_elevation">2dp</dimen>
     <dimen name="icon_size">24dp</dimen>
     <dimen name="trips_own_card_margin">4dp</dimen>
+
+    <dimen name="grid_expected_size">120dp</dimen>
+    <dimen name="margin_icon_text">16dp</dimen>
 </resources>

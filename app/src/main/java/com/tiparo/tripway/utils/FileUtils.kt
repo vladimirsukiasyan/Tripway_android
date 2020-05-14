@@ -6,11 +6,44 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
+import timber.log.Timber
 import java.io.File
-import java.lang.Exception
+import java.io.FileOutputStream
 
 object FileUtils {
+    fun copyPhotoFromOuterStorageToApp(photoUri: Uri, application: Application): Uri? {
+        //TODO обработать возможные ошибки и кейсы с файлами
+        //TODO понять какой размер для сжатия выбрать
+        try {
+            val bitmapPhoto = FileUtils.decodeSampledBitmapFromUriMedia(
+                application,
+                photoUri,
+                480,
+                640
+            )
+
+            //TODO гененрировать уникальные имена
+            val file = FileUtils.getAppSpecificPhotoStorageFile(
+                application,
+                photoUri.lastPathSegment ?: ""
+            )
+            //TODO определить оптимальный формат файла
+            val outF = FileOutputStream(file)
+
+            val compressSuccess =
+                bitmapPhoto.compress(Bitmap.CompressFormat.JPEG, 100, outF)
+
+            if (!compressSuccess) {
+                throw Exception("Fail when trying to compress bitmap. Uri = $photoUri")
+            }
+            return Uri.fromFile(file)
+
+        } catch (exception: Throwable) {
+            Timber.e(exception)
+            return null
+        }
+    }
+
     fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
         // Raw height and width of image
         val (height: Int, width: Int) = options.run { outHeight to outWidth }
@@ -39,15 +72,28 @@ object FileUtils {
     ): Bitmap =
         // First decode with inJustDecodeBounds=true to check dimensions
         BitmapFactory.Options().run {
-            var input = application.contentResolver.openInputStream(uri)
-                ?: throw Exception("Cant't do openInputStream() (before RESIZING). Uri = $uri")
+            var input = try {
+                application.contentResolver.openInputStream(uri)
+            } catch (exception: Throwable) {
+                throw Exception(
+                    "Cant't do openInputStream() (before RESIZING). Uri = $uri",
+                    exception
+                )
+            }
 
             inJustDecodeBounds = true
             inPreferredConfig = Bitmap.Config.ARGB_8888
-            BitmapFactory.decodeStream(input, null, this)
-                ?: throw Exception("The image data could not be decoded (before RESIZING). Uri = $uri")
 
-            input.close()
+            try {
+                BitmapFactory.decodeStream(input, null, this)
+            } catch (exception: Throwable) {
+                throw Exception(
+                    "The image data could not be decoded (before RESIZING). Uri = $uri",
+                    exception
+                )
+            }
+
+            input?.close()
 
             // Calculate inSampleSize
             inSampleSize = calculateInSampleSize(this, reqWidth, reqHeight)
@@ -55,20 +101,32 @@ object FileUtils {
             // Decode bitmap with inSampleSize set
             inJustDecodeBounds = false
 
-            input = application.contentResolver.openInputStream(uri)
-                ?: throw Exception("Cant't do openInputStream() (after RESIZING). Uri = $uri")
+            input = try {
+                application.contentResolver.openInputStream(uri)
+            } catch (exception: Throwable) {
+                throw Exception(
+                    "Cant't do openInputStream() (after RESIZING). Uri = $uri",
+                    exception
+                )
+            }
 
-            val bitmap = BitmapFactory.decodeStream(input, null, this)
-                ?: throw Exception("The image data could not be decoded (after RESIZING). Uri = $uri")
+            val bitmap = try {
+                BitmapFactory.decodeStream(input, null, this)
+            } catch (exception: Throwable) {
+                throw Exception(
+                    "The image data could not be decoded (after RESIZING). Uri = $uri",
+                    exception
+                )
+            }
 
-            input.close()
+            input?.close()
 
-            bitmap
+            bitmap!!
         }
 
     fun getAppSpecificPhotoStorageFile(context: Context, photoName: String): File =
     // Get the picture directory that's inside the app-specific directory on
-        // external storage.
+    // external storage.
         //TODO тут могут возникнуть ошибки
         File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), photoName)
 }

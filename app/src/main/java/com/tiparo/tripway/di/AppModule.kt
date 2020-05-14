@@ -17,7 +17,12 @@
 package com.tiparo.tripway.di
 
 import android.app.Application
+import androidx.room.Room
 import com.tiparo.tripway.BuildConfig
+import com.tiparo.tripway.models.Point
+import com.tiparo.tripway.repository.database.PointDao
+import com.tiparo.tripway.repository.database.TripDao
+import com.tiparo.tripway.repository.database.TripwayDB
 import com.tiparo.tripway.repository.network.api.services.AuthService
 import com.tiparo.tripway.repository.network.api.services.GoogleMapsServices
 import com.tiparo.tripway.repository.network.api.services.TripsService
@@ -70,25 +75,25 @@ class AppModule {
         return BaseHttpClient(BuildConfig.GOOGLE_MAPS_URL, application)
     }
 
-//
-//    @Singleton
-//    @Provides
-//    fun provideDb(app: Application): GithubDb {
-//        return Room
-//            .databaseBuilder(app, GithubDb::class.java, "github.db")
-//            .fallbackToDestructiveMigration()
-//            .build()
-//    }
-//
-//    @Singleton
-//    @Provides
-//    fun provideUserDao(db: GithubDb): UserDao {
-//        return db.userDao()
-//    }
-//
-//    @Singleton
-//    @Provides
-//    fun provideRepoDao(db: GithubDb): RepoDao {
-//        return db.repoDao()
-//    }
+
+    @Singleton
+    @Provides
+    fun provideDb(app: Application): TripwayDB {
+        return Room
+            .databaseBuilder(app, TripwayDB::class.java, "tripway.db")
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun providePointDao(db: TripwayDB): PointDao {
+        return db.pointDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideTripDao(db: TripwayDB): TripDao {
+        return db.tripDao()
+    }
 }

@@ -43,12 +43,29 @@ class MainActivity : AppCompatActivity() {
                     toolbar.visibility = View.GONE
                     bottomNavigationView.visibility = View.GONE
                 }
-                R.id.postPointGraph ->{
+                //TODO убрать
+                R.id.post_point_list_fragment_dest ->{
+                    toolbar.visibility = View.VISIBLE
+                    bottomNavigationView.visibility = View.GONE
+                }
+                R.id.post_point_map_fragment_dest ->{
+                    toolbar.visibility = View.VISIBLE
+                    bottomNavigationView.visibility = View.GONE
+                }
+                R.id.post_point_photos_fragment_dest ->{
                     toolbar.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.GONE
                 }
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onSupportNavigateUp(): Boolean {

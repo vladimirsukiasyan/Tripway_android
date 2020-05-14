@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.TripOwnItemBinding
+import com.tiparo.tripway.models.Trip
 import com.tiparo.tripway.repository.network.api.services.TripsService
 import com.tiparo.tripway.views.common.DataBoundListAdapter
 
@@ -31,20 +32,20 @@ import com.tiparo.tripway.views.common.DataBoundListAdapter
  */
 class TripsListAdapter(
     appExecutors: AppExecutors,
-    private val tripClickCallback: ((TripsService.Trip) -> Unit)?
-) : DataBoundListAdapter<TripsService.Trip, TripOwnItemBinding>(
+    private val tripClickCallback: ((Trip) -> Unit)?
+) : DataBoundListAdapter<Trip, TripOwnItemBinding>(
     appExecutors = appExecutors,
-    diffCallback = object : DiffUtil.ItemCallback<TripsService.Trip>() {
+    diffCallback = object : DiffUtil.ItemCallback<Trip>() {
         override fun areItemsTheSame(
-            oldItem: TripsService.Trip,
-            newItem: TripsService.Trip
+            oldItem: Trip,
+            newItem: Trip
         ): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: TripsService.Trip,
-            newItem: TripsService.Trip
+            oldItem: Trip,
+            newItem: Trip
         ): Boolean {
             return oldItem == newItem
         }
@@ -66,7 +67,7 @@ class TripsListAdapter(
         return binding
     }
 
-    override fun bind(binding: TripOwnItemBinding, item: TripsService.Trip) {
+    override fun bind(binding: TripOwnItemBinding, item: Trip) {
         binding.trip = item
     }
 }

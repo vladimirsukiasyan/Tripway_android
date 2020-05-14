@@ -22,11 +22,21 @@
     <string name="fragment_login_label">Авторизация</string>
     <string name="fragment_post_point_list_label">Добавление поинта</string>
     <string name="fragment_post_point_map_label">Введите адрес</string>
+    <string name="fragment_post_point_photos_label">Выберите фотки</string>
+    <string name="fragment_post_point_description_label">Описание</string>
 
     <string name="title_hot_feed">Популярная лента</string>
     <string name="title_home">Лента подписок</string>
     <string name="title_add_new_trip">Добавление</string>
     <string name="title_profile">Профиль</string>
 
+    <!-- POST NEW POINT -->
     <string name="label_add_new_trip">Создать новый трип</string>
+    <string name="post_point_add_description_hint">Опишите это место</string>
+    <string name="post_point_add_trip_name_hint">Придумайте название трипу</string>
+    <string name="publishPoint">Сохранить</string>
+    <string name="empty_description_post_message">Описание не может быть пустым</string>
+    <string name="empty_trip_name_post_message">Название трипа не может быть пустым</string>
+    <string name="loading_trips_error">Не удалось загрузить трипы</string>
+    <!--............... -->
 </resources>

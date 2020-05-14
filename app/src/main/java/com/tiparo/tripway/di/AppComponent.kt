@@ -2,10 +2,7 @@ package com.tiparo.tripway.di
 
 import android.app.Application
 import com.tiparo.tripway.BaseApplication
-import com.tiparo.tripway.views.ui.HotFeedFragment
-import com.tiparo.tripway.views.ui.LoginFragment
-import com.tiparo.tripway.views.ui.PostPointListFragment
-import com.tiparo.tripway.views.ui.PostPointMapFragment
+import com.tiparo.tripway.views.ui.*
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -13,7 +10,6 @@ import javax.inject.Singleton
 @Singleton
 @Component(
     modules = [
-        AppSubcomponents::class,
         AppModule::class
     ]
 )
@@ -33,4 +29,6 @@ interface AppComponent {
     fun inject(fragment: HotFeedFragment)
     fun inject(fragment: PostPointListFragment)
     fun inject(fragment: PostPointMapFragment)
+    fun inject(fragment: PostPointPhotosFragment)
+    fun inject(fragment: PostPointDescriptionFragment)
 }

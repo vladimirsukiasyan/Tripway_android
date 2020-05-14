@@ -3,15 +3,12 @@ package com.tiparo.tripway.views.ui
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
@@ -34,8 +31,7 @@ import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentPostPointMapBinding
-import com.tiparo.tripway.viewmodels.TripsViewModel
-import com.tiparo.tripway.views.adapters.TripsListAdapter
+import com.tiparo.tripway.viewmodels.PostPointViewModel
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -46,17 +42,15 @@ class PostPointMapFragment : Fragment() {
     @Inject
     lateinit var appExecutors: AppExecutors
 
-    private val tripsViewModel: TripsViewModel by navGraphViewModels(R.id.postPointGraph) {
+    private val tripsViewModel: PostPointViewModel by navGraphViewModels(R.id.postPointGraph) {
         viewModelFactory
     }
 
-    private var _binding: FragmentPostPointMapBinding? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
+    private lateinit var binding: FragmentPostPointMapBinding
 
     private var mMap: GoogleMap? = null
+    // The geographical location where the device is currently located. That is, the last-known
+    // location retrieved by the Fused Location Provider.
     private var mMarker: Marker? = null
 
     private lateinit var mPlacesClient: PlacesClient
@@ -69,17 +63,13 @@ class PostPointMapFragment : Fragment() {
     private val mDefaultLocation = LatLng(-33.8523341, 151.2106085)
     private val DEFAULT_ZOOM: Float = 17F
 
-//    // The geographical location where the device is currently located. That is, the last-known
-//    // location retrieved by the Fused Location Provider.
-//    private var location: LatLng = mDefaultLocation
-
     // Keys for storing activity state.
     private val KEY_LOCATION = "location"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "${this.javaClass.name} :onCreate()")
+        Timber.d("${this.javaClass.name} :onCreate()")
 
 //        // Retrieve location and camera position from saved instance state.
 //        savedInstanceState?.let {
@@ -98,7 +88,7 @@ class PostPointMapFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = DataBindingUtil.inflate(
+        binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_post_point_map,
             container,
@@ -118,7 +108,7 @@ class PostPointMapFragment : Fragment() {
         initMapView()
 
         binding.saveLocationBtn.setOnClickListener {
-            findNavController().navigate()
+            findNavController().navigate(R.id.action_post_point_map_fragment_dest_to_post_point_photos_fragment_dest)
         }
     }
 
@@ -163,6 +153,12 @@ class PostPointMapFragment : Fragment() {
 
                 override fun onMarkerDrag(marker: Marker?) {}
             })
+
+            mMap?.setOnMapClickListener {
+                moveMarkerOnMap(it)
+                tripsViewModel.pickedLocation.value = it
+            }
+
             //For onMyLocationButton placing under search bar
             mMap?.setPadding(0, 250, 12, 0)
         }
@@ -195,7 +191,7 @@ class PostPointMapFragment : Fragment() {
             }
 
             override fun onError(status: Status) {
-                Log.i(TAG, "An error occurred: $status")
+                Timber.i("An error occurred: $status")
             }
         })
         //TODO тут надо сделать restrict области поиска!!!
@@ -218,8 +214,7 @@ class PostPointMapFragment : Fragment() {
         ) {
             mLocationPermissionGranted = true
         } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
+            requestPermissions(
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
             )
@@ -242,6 +237,11 @@ class PostPointMapFragment : Fragment() {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
                     mLocationPermissionGranted = true
+
+                    updateLocationUI()
+
+                    // Get the current location of the device and set the position of the map.
+                    getDeviceLocation()
                 }
             }
         }
@@ -282,7 +282,7 @@ class PostPointMapFragment : Fragment() {
                             ?: mDefaultLocation
                     } else {
                         Timber.d("Current location is null. Using defaults.")
-                        Timber.e("Exception: %s", task.exception)
+                        Timber.e("Exception: %s", task.exception?.message)
                         mMap?.uiSettings?.isMyLocationButtonEnabled = false
                     }
 
@@ -293,10 +293,9 @@ class PostPointMapFragment : Fragment() {
 
                     mMarker = addMarkerOnMap(location)
                 }
-
             }
         } catch (e: SecurityException) {
-            Log.e("Exception: %s", e.message ?: "Error while getting device location")
+            Timber.e("Exception: %s", e.message ?: "Error while getting device location")
         }
     }
 

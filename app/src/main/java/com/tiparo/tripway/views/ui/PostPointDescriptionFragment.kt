@@ -8,40 +8,36 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.snackbar.Snackbar
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.R
-import com.tiparo.tripway.databinding.FragmentPostPointListBinding
+import com.tiparo.tripway.databinding.FragmentPostPointDescriptionBinding
 import com.tiparo.tripway.utils.setupSnackbar
 import com.tiparo.tripway.viewmodels.PostPointViewModel
-import com.tiparo.tripway.views.adapters.TripsListAdapter
-import timber.log.Timber
 import javax.inject.Inject
 
-class PostPointListFragment : Fragment() {
+
+class PostPointDescriptionFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var appExecutors: AppExecutors
 
-    private lateinit var adapter: TripsListAdapter
-
     private val viewModel: PostPointViewModel by navGraphViewModels(R.id.postPointGraph) {
         viewModelFactory
     }
 
-    private lateinit var binding: FragmentPostPointListBinding
+    private lateinit var binding: FragmentPostPointDescriptionBinding
     // This property is only valid between onCreateView and
     // onDestroyView.
 
+    val KEY_DESCRIPTION = "describePointEditText"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.d("${this.javaClass.name} :onCreate()")
     }
 
     override fun onCreateView(
@@ -50,21 +46,29 @@ class PostPointListFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_post_point_list,
+            R.layout.fragment_post_point_description,
             container,
             false
         )
+        binding.viewmodel = viewModel
+
+        // Set the lifecycle owner to the lifecycle of the view
+        binding.lifecycleOwner = this.viewLifecycleOwner
+
+        savedInstanceState?.let{
+            binding.describePointEditText.setText(it.getString(KEY_DESCRIPTION,""))
+        }
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.lifecycleOwner = viewLifecycleOwner
-
-        setupNavigation()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         setupSnackbar()
-        initRecycleView()
+    }
 
-        viewModel.loadTrips()
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(KEY_DESCRIPTION, binding.describePointEditText.text.toString())
+        super.onSaveInstanceState(outState)
     }
 
     override fun onAttach(context: Context) {
@@ -73,28 +77,7 @@ class PostPointListFragment : Fragment() {
         (requireActivity().applicationContext as BaseApplication).appComponent.inject(this)
     }
 
-    private fun setupNavigation() {
-        binding.addNewTrip.setOnClickListener {
-            viewModel.selectTripToPost(null)
-            findNavController().navigate(R.id.action_post_point_list_fragment_dest_to_post_point_map_fragment_dest)
-        }
-    }
-
     private fun setupSnackbar() {
-        view?.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_LONG)
-    }
-
-    private fun initRecycleView() {
-        adapter = TripsListAdapter(
-            appExecutors = appExecutors,
-            tripClickCallback = { trip ->
-                viewModel.selectTripToPost(trip)
-                findNavController().navigate(R.id.action_post_point_list_fragment_dest_to_post_point_map_fragment_dest)
-            })
-        binding.postTripsList.adapter = adapter
-
-        viewModel.items.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
+        view?.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_SHORT)
     }
 }

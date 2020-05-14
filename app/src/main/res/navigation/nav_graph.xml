@@ -55,6 +55,24 @@
             android:id="@+id/post_point_map_fragment_dest"
             android:name="com.tiparo.tripway.views.ui.PostPointMapFragment"
             android:label="@string/fragment_post_point_map_label"
-            tools:layout="@layout/fragment_post_point_map" />
+            tools:layout="@layout/fragment_post_point_map" >
+            <action
+                android:id="@+id/action_post_point_map_fragment_dest_to_post_point_photos_fragment_dest"
+                app:destination="@id/post_point_photos_fragment_dest" />
+        </fragment>
+        <fragment
+            android:id="@+id/post_point_photos_fragment_dest"
+            android:name="com.tiparo.tripway.views.ui.PostPointPhotosFragment"
+            tools:layout="@layout/fragment_post_point_photos"
+            android:label="@string/fragment_post_point_photos_label" >
+            <action
+                android:id="@+id/action_post_point_photos_fragment_dest_to_post_point_description_fragment_dest"
+                app:destination="@id/post_point_description_fragment_dest" />
+        </fragment>
+        <fragment
+            android:id="@+id/post_point_description_fragment_dest"
+            android:name="com.tiparo.tripway.views.ui.PostPointDescriptionFragment"
+            tools:layout="@layout/fragment_post_point_description"
+            android:label="@string/fragment_post_point_description_label" />
     </navigation>
 </navigation>
