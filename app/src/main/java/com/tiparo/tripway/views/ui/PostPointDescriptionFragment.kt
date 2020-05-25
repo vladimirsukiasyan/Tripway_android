@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.snackbar.Snackbar
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentPostPointDescriptionBinding
+import com.tiparo.tripway.utils.EventObserver
 import com.tiparo.tripway.utils.setupSnackbar
 import com.tiparo.tripway.viewmodels.PostPointViewModel
 import javax.inject.Inject
@@ -36,10 +38,6 @@ class PostPointDescriptionFragment : Fragment() {
 
     val KEY_DESCRIPTION = "describePointEditText"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,9 +59,11 @@ class PostPointDescriptionFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         setupSnackbar()
+        setupNavigation()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -79,5 +79,12 @@ class PostPointDescriptionFragment : Fragment() {
 
     private fun setupSnackbar() {
         view?.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_SHORT)
+    }
+
+    private fun setupNavigation() {
+        viewModel.pointSaved.observe(this, EventObserver {
+            //TODO показывать юзеру в посылаемом фрагмент snackbar, что поинт сохраняется в фоновом режиме
+            findNavController().navigate(R.id.action_post_point_description_fragment_dest_to_hot_feed_fragment_dest)
+        })
     }
 }

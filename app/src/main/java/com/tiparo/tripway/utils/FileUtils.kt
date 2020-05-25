@@ -15,7 +15,7 @@ object FileUtils {
         //TODO обработать возможные ошибки и кейсы с файлами
         //TODO понять какой размер для сжатия выбрать
         try {
-            val bitmapPhoto = FileUtils.decodeSampledBitmapFromUriMedia(
+            val bitmapPhoto = decodeSampledBitmapFromUriMedia(
                 application,
                 photoUri,
                 480,
@@ -23,7 +23,7 @@ object FileUtils {
             )
 
             //TODO гененрировать уникальные имена
-            val file = FileUtils.getAppSpecificPhotoStorageFile(
+            val file = getAppSpecificPhotoStorageFile(
                 application,
                 photoUri.lastPathSegment ?: ""
             )

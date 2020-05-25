@@ -2,7 +2,7 @@ package com.tiparo.tripway.utils
 
 import android.os.Build
 import android.os.LocaleList
-import java.util.Locale
+import java.util.*
 
 object LocaleUtil {
     fun getLanguage(): String {

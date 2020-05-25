@@ -30,16 +30,25 @@ class Converter {
     }
 
     @TypeConverter
-    fun photosUriToString(photos: List<Uri>): String {
-        val jsonPhotos = Gson().toJson(photos)
-        return if (jsonPhotos == "[]") ""
-        else jsonPhotos
+    fun listUriToString(list: List<Uri>): String {
+        val convertedList = list.joinToString(separator = ",") { it.toString() }
+        return if (convertedList == "[]") ""
+        else convertedList
     }
 
     @TypeConverter
-    fun stringToPhotosUri(photosUri: String): List<Uri> {
-        val listType = object : TypeToken<ArrayList<Uri>>() {}.type
-        //if photosUri is empty, fromGson() will return null and we need to replace it with emptyList
-        return Gson().fromJson(photosUri, listType) ?: emptyList()
+    fun stringToListUri(uriString: String): List<Uri> {
+        return if (uriString.isEmpty()) arrayListOf()
+        else uriString.split(",").map { Uri.parse(it) }
+    }
+
+    @TypeConverter
+    fun stringToUri(uriString: String): Uri {
+        return Uri.parse(uriString)
+    }
+
+    @TypeConverter
+    fun uriToString(uri: Uri): String {
+        return uri.toString()
     }
 }

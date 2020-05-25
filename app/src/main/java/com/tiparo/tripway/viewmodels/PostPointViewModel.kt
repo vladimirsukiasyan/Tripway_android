@@ -1,7 +1,10 @@
 package com.tiparo.tripway.viewmodels
 
 import android.net.Uri
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AddressComponents
 import com.google.android.libraries.places.api.model.Place
@@ -12,8 +15,8 @@ import com.tiparo.tripway.models.Trip
 import com.tiparo.tripway.repository.PostRepository
 import com.tiparo.tripway.repository.TripsRepository
 import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingResponse.GeocodingResult
-import com.tiparo.tripway.repository.network.api.services.TripsService
 import com.tiparo.tripway.utils.Event
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,8 +25,8 @@ class PostPointViewModel @Inject constructor(
     private val tripsRepository: TripsRepository
 ) : ViewModel() {
 
-    private val _items = MutableLiveData<List<Trip>>().apply { value = listOf() }
-    val items: LiveData<List<Trip>> = _items
+    private val _items = MediatorLiveData<List<Trip>>().apply { value = listOf() }
+    val items: MediatorLiveData<List<Trip>> = _items
 
     private val pointOnAdding = Point()
     private var pickedPhotosOnAdding: List<Uri> = arrayListOf()
@@ -35,6 +38,9 @@ class PostPointViewModel @Inject constructor(
 
     private val _snackbarText = MutableLiveData<Event<Int>>()
     val snackbarText: LiveData<Event<Int>> = _snackbarText
+
+    private val _pointSaved = MutableLiveData<Event<Int>>()
+    val pointSaved: LiveData<Event<Int>> = _pointSaved
 
     val pickedLocation = MutableLiveData<LatLng>()
     val pickedPlace = MutableLiveData<Place>()
@@ -92,39 +98,43 @@ class PostPointViewModel @Inject constructor(
     fun savePoint() {
         val description = description.value
         if (description.isNullOrBlank()) {
-            _snackbarText.value = Event(R.string.empty_description_post_message)
+            _snackbarText.value = Event(R.string.snackbar_empty_description_post_message)
             return
         }
         val tripName = tripName.value
-        if (tripName.isNullOrBlank()) {
-            _snackbarText.value = Event(R.string.empty_trip_name_post_message)
+        if (tripName.isNullOrBlank() && isNewPoint) {
+            _snackbarText.value = Event(R.string.snackbar_empty_trip_name_post_message)
             return
         }
         pointOnAdding.description = description
         pointOnAdding.photos = pickedPhotosOnAdding
 
-        createPoint(pointOnAdding, tripName)
+        createPoint(pointOnAdding, if(isNewPoint) tripName!! else "")
+        // TODO отправить message на showSnackbar в следующий фрагмент
+        _pointSaved.value = Event(R.string.snackbar_post_point_saving)
     }
 
     private fun createPoint(pointOnAdding: Point, tripName: String) =
-        viewModelScope.launch {
+        //this job will be executive until application is destroyed
+        GlobalScope.launch {
             postRepository.savePoint(pointOnAdding, tripName)
         }
 
     fun loadTrips() {
         //TODO добавить позже прогресс бар ожидания в виде
         // _dataLoading.value = true в начале и _dataLoading.value = false в конце
-        viewModelScope.launch {
-            val tripsResult = tripsRepository.loadTrips()
-            when (tripsResult.status) {
+
+        val tripsResult = tripsRepository.loadTrips()
+        _items.addSource(tripsResult){
+            when (it.status) {
                 Resource.Status.SUCCESS -> {
-                    _items.value = tripsResult.data
+                    _items.value = it.data
                 }
                 Resource.Status.ERROR -> {
                     _items.value = emptyList()
                     showSnackbarMessage(R.string.loading_trips_error)
                 }
-                else -> {
+                Resource.Status.LOADING -> {
                 }
             }
         }

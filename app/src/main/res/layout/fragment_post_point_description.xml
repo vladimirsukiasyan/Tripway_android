@@ -76,7 +76,7 @@
                 android:hint="@string/post_point_add_description_hint"
                 android:inputType="textMultiLine|textAutoCorrect"
                 android:maxLength="2000"
-                android:maxLines="4"
+                android:maxLines="20"
                 android:paddingVertical="8dp"
                 android:textColor="@color/colorText" />
         </LinearLayout>

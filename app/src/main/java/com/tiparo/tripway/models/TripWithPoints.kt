@@ -1,9 +1,8 @@
 package com.tiparo.tripway.models
 
-import android.net.Uri
-import androidx.room.*
-import com.google.android.gms.maps.model.LatLng
-import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingResponse.GeocodingResult.AddressComponent
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Relation
 
 @Entity
 data class TripWithPoints(

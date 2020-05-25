@@ -1,5 +1,7 @@
 package com.tiparo.tripway.repository.database
 
+import android.net.Uri
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -11,14 +13,17 @@ import com.tiparo.tripway.models.TripWithPoints
 abstract class TripDao {
     @Transaction
     @Query("SELECT * FROM Trip WHERE id = :tripId")
-    abstract fun getTripWithPoints(tripId: Long): TripWithPoints
+    abstract suspend fun getTripWithPoints(tripId: Long): TripWithPoints
 
     @Query("SELECT * FROM Trip WHERE id = :tripId")
-    abstract fun getTripById(tripId: Long): Trip
+    abstract suspend fun getTripById(tripId: Long): Trip
 
     @Insert
-    abstract fun insertTrip(trip: Trip): Long
+    abstract suspend fun insertTrip(trip: Trip): Long
 
     @Query("SELECT * FROM Trip")
-    abstract suspend fun getTrips(): List<Trip>
+    abstract fun getTrips(): LiveData<List<Trip>>
+
+    @Query("UPDATE Trip SET last_point_name = :name, photo_uri = :photoUri WHERE id = :tripId")
+    abstract suspend fun updateTripByPoint(tripId: Long, name: String, photoUri: Uri)
 }

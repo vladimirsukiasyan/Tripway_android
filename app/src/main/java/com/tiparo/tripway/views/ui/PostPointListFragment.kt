@@ -16,9 +16,11 @@ import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentPostPointListBinding
+import com.tiparo.tripway.databinding.TripOwnItemBinding
 import com.tiparo.tripway.utils.setupSnackbar
 import com.tiparo.tripway.viewmodels.PostPointViewModel
 import com.tiparo.tripway.views.adapters.TripsListAdapter
+import com.tiparo.tripway.views.adapters.TripsOwnListAdapter
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -29,7 +31,7 @@ class PostPointListFragment : Fragment() {
     @Inject
     lateinit var appExecutors: AppExecutors
 
-    private lateinit var adapter: TripsListAdapter
+    private lateinit var adapter: TripsOwnListAdapter
 
     private val viewModel: PostPointViewModel by navGraphViewModels(R.id.postPointGraph) {
         viewModelFactory
@@ -58,6 +60,8 @@ class PostPointListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         binding.lifecycleOwner = viewLifecycleOwner
 
         setupNavigation()
@@ -85,12 +89,13 @@ class PostPointListFragment : Fragment() {
     }
 
     private fun initRecycleView() {
-        adapter = TripsListAdapter(
+        adapter = TripsOwnListAdapter(
             appExecutors = appExecutors,
             tripClickCallback = { trip ->
                 viewModel.selectTripToPost(trip)
                 findNavController().navigate(R.id.action_post_point_list_fragment_dest_to_post_point_map_fragment_dest)
             })
+
         binding.postTripsList.adapter = adapter
 
         viewModel.items.observe(viewLifecycleOwner) {

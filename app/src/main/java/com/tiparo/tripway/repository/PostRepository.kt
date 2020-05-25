@@ -1,7 +1,6 @@
 package com.tiparo.tripway.repository
 
 import android.app.Application
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,7 +12,6 @@ import com.tiparo.tripway.models.Resource
 import com.tiparo.tripway.models.Trip
 import com.tiparo.tripway.repository.database.PointDao
 import com.tiparo.tripway.repository.database.TripDao
-import com.tiparo.tripway.repository.database.TripwayDB
 import com.tiparo.tripway.repository.network.api.ApiResponse
 import com.tiparo.tripway.repository.network.api.ApiSuccessResponse
 import com.tiparo.tripway.repository.network.api.services.GoogleMapsServices
@@ -22,8 +20,6 @@ import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingRespon
 import com.tiparo.tripway.repository.network.api.services.TripsService
 import com.tiparo.tripway.utils.FileUtils
 import kotlinx.coroutines.*
-import timber.log.Timber
-import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -91,14 +87,20 @@ class PostRepository @Inject constructor(
                 val savedPhotosUriList = savePickedPhotos(pointOnAdding.photos).filterNotNull()
 
                 pointOnAdding.photos = savedPhotosUriList
+                pointOnAdding.name = getPointName(pointOnAdding.location.addressComponents)
 
                 if (pointOnAdding.tripId == null) {
                     val newTrip =
-                        Trip(tripName = tripName, firstPointName = getPointName(pointOnAdding.location.addressComponents))
+                        Trip(tripName = tripName, firstPointName = pointOnAdding.name, photoUri = pointOnAdding.photos.last())
                     val tripId = tripDao.insertTrip(newTrip)
                     pointOnAdding.tripId = tripId
                 }
                 pointDao.insertPoint(pointOnAdding)
+                tripDao.updateTripByPoint(
+                    tripId = pointOnAdding.tripId!!,
+                    name = pointOnAdding.name,
+                    photoUri = pointOnAdding.photos.last()
+                )
 
             }
         }
@@ -108,26 +110,26 @@ class PostRepository @Inject constructor(
      */
 
     suspend fun getPointName(addressComponents: List<GeocodingResult.AddressComponent>) = withContext(Dispatchers.Default) {
-        val locationTypes = listOf(
-            "sublocality_level_2",
-            "locality",
-            "administrative_area_level_2",
-            "administrative_area_level_1",
-            "country"
-        )
+            val locationTypes = listOf(
+                "sublocality_level_2",
+                "locality",
+                "administrative_area_level_2",
+                "administrative_area_level_1",
+                "country"
+            )
 
-        var result = "?"
+            var result = "?"
 
-        locationTypes.forEach { requiredType ->
-            addressComponents.forEach { component ->
-                if (requiredType in component.types) {
-                    result = component.short_name
-                    return@withContext result
+            locationTypes.forEach { requiredType ->
+                addressComponents.forEach { component ->
+                    if (requiredType in component.types) {
+                        result = component.short_name
+                        return@withContext result
+                    }
                 }
             }
+            result
         }
-        result
-    }
 
     //TODO понять как можно избегать инкапсулирования private для тестов
     suspend fun savePickedPhotos(pickedPhotosOnAdding: List<Uri>) =
