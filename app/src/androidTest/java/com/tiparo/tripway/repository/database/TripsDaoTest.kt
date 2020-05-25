@@ -16,9 +16,9 @@
 
 package com.tiparo.tripway.repository.database
 
+import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.SmallTest
 import com.tiparo.tripway.MainCoroutineRule
 import com.tiparo.tripway.models.Trip
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,7 +45,7 @@ class TripsDaoTest: DbTest() {
     @Test
     fun createTripAndGetById() = runBlockingTest {
         // GIVEN - insert a trip
-        val trip = Trip(tripName = "Путешествие")
+        val trip = Trip(tripName = "Путешествие", firstPointName = "Бангок", photoUri = Uri.EMPTY)
 
         val id = db.tripDao().insertTrip(trip)
         // WHEN - Get the trip by id from the database

@@ -87,13 +87,18 @@ class PointDaoTest : DbTest() {
     fun getTripWithPoints() = runBlockingTest {
         // ARRANGE
         val trip =
-            Trip(tripName = "Best ever trip!", isCompleted = false, firstPointName = "Salsburg")
+            Trip(tripName = "Best ever trip!", isCompleted = false, firstPointName = "Salsburg", photoUri = Uri.EMPTY)
         val tripIdInserted = db.tripDao().insertTrip(trip)
         trip.id = tripIdInserted
 
+        val pickedPhotosOnAdding = listOf(
+            Uri.parse("file:///storage/emulated/0/Android/data/com.tiparo.tripway/files/Pictures/1"),
+            Uri.parse("file:///storage/emulated/0/Android/data/com.tiparo.tripway/files/Pictures/2"),
+            Uri.parse("file:///storage/emulated/0/Android/data/com.tiparo.tripway/files/Pictures/3")
+        )
         val pointsOnAdding = arrayListOf(
-            Point(tripId = tripIdInserted),
-            Point(tripId = tripIdInserted)
+            Point(tripId = tripIdInserted, photos = pickedPhotosOnAdding),
+            Point(tripId = tripIdInserted, photos = pickedPhotosOnAdding)
         )
         pointsOnAdding.forEach {
             it.id = db.pointDao().insertPoint(it)
@@ -103,7 +108,7 @@ class PointDaoTest : DbTest() {
         val tripWithPointsResult = db.tripDao().getTripWithPoints(tripIdInserted)
 
         //ASSERT
-        val tripWithPoints  = TripWithPoints(trip, pointsOnAdding)
+        val tripWithPoints = TripWithPoints(trip, pointsOnAdding)
         assertThat(tripWithPointsResult, `is`(tripWithPoints))
     }
 }
