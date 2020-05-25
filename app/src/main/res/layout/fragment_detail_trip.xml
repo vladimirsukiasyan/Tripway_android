@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".views.ui.HotFeedFragment">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/mapViewToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_scrollFlags="enterAlwaysd|exitUntilCollapsed|scroll">
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/map"
+                    app:layout_collapseMode="parallax"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <include
+            android:id="@+id/signInProgressBar"
+            layout="@layout/layout_progress_bar"
+            android:visibility="gone" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/pointPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

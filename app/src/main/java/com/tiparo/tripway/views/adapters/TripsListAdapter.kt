@@ -20,20 +20,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.Glide
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.R
-import com.tiparo.tripway.databinding.TripOwnItemBinding
+import com.tiparo.tripway.databinding.TripItemBinding
 import com.tiparo.tripway.models.Trip
-import com.tiparo.tripway.repository.network.api.services.TripsService
 import com.tiparo.tripway.views.common.DataBoundListAdapter
 
-/**
- * A RecyclerView adapter for [Repo] class.
- */
 class TripsListAdapter(
     appExecutors: AppExecutors,
     private val tripClickCallback: ((Trip) -> Unit)?
-) : DataBoundListAdapter<Trip, TripOwnItemBinding>(
+) : DataBoundListAdapter<Trip, TripItemBinding>(
     appExecutors = appExecutors,
     diffCallback = object : DiffUtil.ItemCallback<Trip>() {
         override fun areItemsTheSame(
@@ -52,10 +49,10 @@ class TripsListAdapter(
     }
 ) {
 
-    override fun createBinding(parent: ViewGroup): TripOwnItemBinding {
-        val binding = DataBindingUtil.inflate<TripOwnItemBinding>(
+    override fun createBinding(parent: ViewGroup): TripItemBinding {
+        val binding = DataBindingUtil.inflate<TripItemBinding>(
             LayoutInflater.from(parent.context),
-            R.layout.trip_own_item,
+            R.layout.trip_item,
             parent,
             false
         )
@@ -67,7 +64,11 @@ class TripsListAdapter(
         return binding
     }
 
-    override fun bind(binding: TripOwnItemBinding, item: Trip) {
+    override fun bind(binding: TripItemBinding, item: Trip) {
         binding.trip = item
+        Glide.with(binding.root.context)
+            .load(item.photoUri)
+            .placeholder(R.drawable.trip_card_own_placeholder)
+            .into(binding.tripImage)
     }
 }
