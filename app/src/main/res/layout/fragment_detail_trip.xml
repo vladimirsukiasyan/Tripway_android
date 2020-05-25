@@ -16,7 +16,7 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_scrollFlags="enterAlwaysd|exitUntilCollapsed|scroll">
+                app:layout_scrollFlags="enterAlways|exitUntilCollapsed|scroll">
 
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/map"
