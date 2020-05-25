@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tiparo.tripway.viewmodels.PostPointViewModel
 import com.tiparo.tripway.viewmodels.SignInViewModel
+import com.tiparo.tripway.viewmodels.TripDetailViewModel
 import com.tiparo.tripway.viewmodels.TripsViewModel
 import dagger.Binds
 import dagger.Module
@@ -16,6 +17,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SignInViewModel::class)
     abstract fun bindSignInViewModel(signInViewModel: SignInViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TripDetailViewModel::class)
+    abstract fun bindTripDetailViewModel(tripDetailViewModel: TripDetailViewModel): ViewModel
 
     @Binds
     @IntoMap
