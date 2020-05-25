@@ -1,7 +1,6 @@
 package com.tiparo.tripway.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.models.AuthResponse
 import com.tiparo.tripway.models.Resource

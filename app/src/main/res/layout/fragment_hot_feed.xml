@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -10,6 +12,16 @@
             android:id="@+id/signInProgressBar"
             layout="@layout/layout_progress_bar"
             android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:id="@+id/trips_list"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            tools:listitem="@layout/trip_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

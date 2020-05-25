@@ -19,7 +19,6 @@ package com.tiparo.tripway.di
 import android.app.Application
 import androidx.room.Room
 import com.tiparo.tripway.BuildConfig
-import com.tiparo.tripway.models.Point
 import com.tiparo.tripway.repository.database.PointDao
 import com.tiparo.tripway.repository.database.TripDao
 import com.tiparo.tripway.repository.database.TripwayDB
