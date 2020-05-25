@@ -11,7 +11,7 @@ import com.tiparo.tripway.repository.network.api.services.GoogleMapsServices
 import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingResponse
 import com.tiparo.tripway.repository.network.api.services.TripsService
 import com.tiparo.tripway.util.InstantAppExecutors
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
