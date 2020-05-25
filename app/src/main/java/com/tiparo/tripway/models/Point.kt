@@ -1,13 +1,17 @@
 package com.tiparo.tripway.models
 
 import android.net.Uri
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.android.gms.maps.model.LatLng
 import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingResponse.GeocodingResult.AddressComponent
 
 @Entity
 data class Point(
     @PrimaryKey(autoGenerate = true) var id: Long = 0,
+    @ColumnInfo(name = "name") var name: String = "",
     @Embedded var location: Location = Location(),
     @ColumnInfo(name = "description") var description: String = "",
     @ColumnInfo(name = "photos") var photos: List<Uri> = arrayListOf(),
