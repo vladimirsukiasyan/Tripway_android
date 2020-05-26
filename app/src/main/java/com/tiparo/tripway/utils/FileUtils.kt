@@ -4,7 +4,9 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
+import androidx.exifinterface.media.ExifInterface
 import android.os.Environment
 import timber.log.Timber
 import java.io.File
@@ -72,14 +74,7 @@ object FileUtils {
     ): Bitmap =
         // First decode with inJustDecodeBounds=true to check dimensions
         BitmapFactory.Options().run {
-            var input = try {
-                application.contentResolver.openInputStream(uri)
-            } catch (exception: Throwable) {
-                throw Exception(
-                    "Cant't do openInputStream() (before RESIZING). Uri = $uri",
-                    exception
-                )
-            }
+            var input = getInputStreamFromUri(application, uri)
 
             inJustDecodeBounds = true
             inPreferredConfig = Bitmap.Config.ARGB_8888
@@ -88,12 +83,12 @@ object FileUtils {
                 BitmapFactory.decodeStream(input, null, this)
             } catch (exception: Throwable) {
                 throw Exception(
-                    "The image data could not be decoded (before RESIZING). Uri = $uri",
+                    "The image data could not be decoded. Uri = $uri",
                     exception
                 )
             }
 
-            input?.close()
+            input.close()
 
             // Calculate inSampleSize
             inSampleSize = calculateInSampleSize(this, reqWidth, reqHeight)
@@ -101,28 +96,54 @@ object FileUtils {
             // Decode bitmap with inSampleSize set
             inJustDecodeBounds = false
 
-            input = try {
-                application.contentResolver.openInputStream(uri)
-            } catch (exception: Throwable) {
-                throw Exception(
-                    "Cant't do openInputStream() (after RESIZING). Uri = $uri",
-                    exception
-                )
-            }
+            input = getInputStreamFromUri(application, uri)
 
             val bitmap = try {
                 BitmapFactory.decodeStream(input, null, this)
             } catch (exception: Throwable) {
                 throw Exception(
-                    "The image data could not be decoded (after RESIZING). Uri = $uri",
+                    "The image data could not be decoded. Uri = $uri",
                     exception
                 )
-            }
+            } ?: throw Exception("Bitmap of uri = $uri is null!")
 
-            input?.close()
+            val rotatedBitmap = rotateImageIfRequired(application, bitmap, uri)
 
-            bitmap!!
+            input.close()
+
+            rotatedBitmap
         }
+
+    private fun getInputStreamFromUri(application: Application, uri: Uri) = try {
+        application.contentResolver.openInputStream(uri)
+    } catch (exception: Throwable) {
+        throw Exception(
+            "Cant't do openInputStream(). Uri = $uri",
+            exception
+        )
+    } ?: throw Exception("InputStream of uri = $uri is null!")
+
+    private fun rotateImageIfRequired(application: Application, bitmap: Bitmap, uri: Uri) : Bitmap {
+        val input = getInputStreamFromUri(application, uri)
+        val ei = ExifInterface(input)
+
+        val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+
+        input.close()
+
+        return when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(bitmap, 90)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(bitmap, 180)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(bitmap, 270)
+            else -> bitmap
+        }
+    }
+
+    private fun rotateImage(img: Bitmap, degree: Int): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degree.toFloat())
+        return Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
+    }
 
     fun getAppSpecificPhotoStorageFile(context: Context, photoName: String): File =
     // Get the picture directory that's inside the app-specific directory on
