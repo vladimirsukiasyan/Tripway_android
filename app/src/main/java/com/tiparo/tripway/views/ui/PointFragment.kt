@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -75,8 +76,9 @@ class PointFragment : Fragment() {
 
     private fun initRecycleView() {
         //TODO грузить в начале placeholder, создавая при этом нужно количество item в recycleView
-        photosAdapter = PointPhotosAdapter {
-            //TODO click
+        photosAdapter = PointPhotosAdapter { uri ->
+            val imageDialog = ImageViewerDialogFragment.newInstance(uri)
+            imageDialog.show(childFragmentManager, null)
         }
         with(binding.photosGrid) {
             adapter = photosAdapter

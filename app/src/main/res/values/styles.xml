@@ -9,6 +9,11 @@
     </style>
 
     <style name="Toolbar" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="DialogFullScreen" parent="android:Theme.Black.NoTitleBar.Fullscreen">
+        <item name="android:padding">0dp</item>
+        <item name="backgroundColor">@android:color/black</item>
+    </style>
     
     <style name="TextMedium">
         <item name="android:textStyle">bold</item>
