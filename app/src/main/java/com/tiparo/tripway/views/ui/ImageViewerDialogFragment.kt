@@ -24,6 +24,7 @@ class ImageViewerDialogFragment : DialogFragment() {
 
         Glide.with(requireContext())
             .load(Uri.parse(requireArguments().getString(ARG_IMAGE_URI)))
+            .error(R.drawable.trip_card_own_placeholder)
             .into(view.imageView)
     }
 
