@@ -48,7 +48,6 @@
             android:id="@+id/post_point_list_fragment_dest"
             android:name="com.tiparo.tripway.views.ui.PostPointListFragment"
             android:label="@string/fragment_post_point_list_label"
-            app:startDestination="@id/action_post_point_list_fragment_dest_to_post_point_map_fragment_dest"
             tools:layout="@layout/fragment_post_point_list">
             <action
                 android:id="@+id/action_post_point_list_fragment_dest_to_post_point_map_fragment_dest"
@@ -76,7 +75,6 @@
             android:id="@+id/post_point_description_fragment_dest"
             android:name="com.tiparo.tripway.views.ui.PostPointDescriptionFragment"
             android:label="@string/fragment_post_point_description_label"
-            app:startDestination="@id/action_post_point_description_fragment_dest_to_hot_feed_fragment_dest"
             tools:layout="@layout/fragment_post_point_description">
             <action
                 android:id="@+id/action_post_point_description_fragment_dest_to_hot_feed_fragment_dest"
@@ -93,5 +91,17 @@
         <argument
             android:name="tripId"
             app:argType="long" />
+        <action
+            android:id="@+id/action_trip_detail_fragment_to_image_viewer_dialog_fragment"
+            app:destination="@id/image_viewer_dialog_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/image_viewer_dialog_fragment"
+        android:name="com.tiparo.tripway.views.ui.ImageViewerDialogFragment"
+        android:label="ImageViewerDialogFragment"
+        tools:layout="@layout/dialog_fragment_image_viewer">
+        <argument
+            android:name="photoUri"
+            app:argType="string" />
     </fragment>
 </navigation>
