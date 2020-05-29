@@ -26,7 +26,7 @@ interface AppComponent {
     fun inject(baseApplication: BaseApplication)
 
     fun inject(fragment: LoginFragment)
-    fun inject(fragment: HotFeedFragment)
+    fun inject(fragment: HomeFragment)
     fun inject(fragment: TripDetailFragment)
     fun inject(fragment: PointFragment)
     fun inject(fragment: PostPointListFragment)

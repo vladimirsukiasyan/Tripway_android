@@ -18,15 +18,14 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="fragment_hot_feed_label">Популярное</string>
+    <string name="fragment_home_label">Tripway</string>
     <string name="fragment_login_label">Авторизация</string>
     <string name="fragment_post_point_list_label">Добавление поинта</string>
     <string name="fragment_post_point_map_label">Введите адрес</string>
     <string name="fragment_post_point_photos_label">Выберите фотки</string>
     <string name="fragment_post_point_description_label">Описание</string>
 
-    <string name="title_hot_feed">Популярная лента</string>
-    <string name="title_home">Лента подписок</string>
+    <string name="title_home">Популярная лента</string>
     <string name="title_add_new_trip">Добавление</string>
     <string name="title_profile">Профиль</string>
 

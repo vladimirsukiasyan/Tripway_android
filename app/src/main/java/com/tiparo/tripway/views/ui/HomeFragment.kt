@@ -11,18 +11,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.R
-import com.tiparo.tripway.databinding.FragmentHotFeedBinding
-import com.tiparo.tripway.databinding.TripItemBinding
+import com.tiparo.tripway.databinding.FragmentHomeBinding
 import com.tiparo.tripway.utils.setupSnackbar
 import com.tiparo.tripway.viewmodels.TripsViewModel
 import com.tiparo.tripway.views.adapters.TripsListAdapter
 import javax.inject.Inject
 
-class HotFeedFragment : Fragment() {
+class HomeFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -36,7 +36,7 @@ class HotFeedFragment : Fragment() {
 
     private lateinit var adapter: TripsListAdapter
 
-    private lateinit var binding: FragmentHotFeedBinding
+    private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +44,7 @@ class HotFeedFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_hot_feed,
+            R.layout.fragment_home,
             container,
             false
         )
@@ -63,14 +63,15 @@ class HotFeedFragment : Fragment() {
     private fun initRecycleView() {
         adapter = TripsListAdapter(
             appExecutors = appExecutors,
-            tripClickCallback = {trip ->
+            tripClickCallback = { trip ->
                 val direction =
-                    HotFeedFragmentDirections.actionHotFeedFragmentDestToTripDetailFragment(trip.id)
+                    HomeFragmentDirections.actionHomeFragmentDestToTripDetailFragment(trip.id)
                 findNavController().navigate(direction)
             }
         )
+        binding.tripsList.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.tripsList.adapter = adapter
-        viewModel.items.observe(viewLifecycleOwner){
+        viewModel.items.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
     }

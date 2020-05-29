@@ -21,6 +21,9 @@ class TripDetailViewModel @Inject constructor(private val tripsRepository: Trips
     private val _pointsList = MutableLiveData<List<Point>>()
     val pointsList: LiveData<List<Point>> = _pointsList
 
+    private val _tripRoute = MutableLiveData<String>()
+    val tripRoute: LiveData<String> = _tripRoute
+
     private val _snackbarText = MutableLiveData<Event<Int>>()
     val snackbarText: LiveData<Event<Int>> = _snackbarText
 
@@ -31,6 +34,7 @@ class TripDetailViewModel @Inject constructor(private val tripsRepository: Trips
                 Resource.Status.SUCCESS -> {
                     tripWithPointsResource.data?.let {
                         _pointsList.value = it.points
+                        setTripRoute(it.trip)
                         setLocations(it.points)
                         //TODO set description method
                     }
@@ -42,6 +46,10 @@ class TripDetailViewModel @Inject constructor(private val tripsRepository: Trips
                 }
             }
         }
+    }
+
+    private fun setTripRoute(trip: Trip) {
+        _tripRoute.value = "${trip.firstPointName} > ${trip.lastPointName}"
     }
 
     private fun setLocations(points: List<Point>) {

@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".views.ui.HotFeedFragment">
+        tools:context=".views.ui.HomeFragment">
 
         <include
             android:id="@+id/signInProgressBar"
@@ -17,10 +17,8 @@
             android:layout_width="match_parent"
             android:id="@+id/trips_list"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="2"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp"
             tools:listitem="@layout/trip_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

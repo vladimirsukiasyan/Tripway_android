@@ -29,7 +29,6 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/card_trip_corner"
         app:cardElevation="@dimen/card_trip_elevation"
-        app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true">
 
         <LinearLayout

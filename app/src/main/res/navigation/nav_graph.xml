@@ -18,21 +18,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/hot_feed_fragment_dest">
+    app:startDestination="@id/home_fragment_dest">
 
     <fragment
-        android:id="@+id/hot_feed_fragment_dest"
-        android:name="com.tiparo.tripway.views.ui.HotFeedFragment"
-        android:label="@string/fragment_hot_feed_label"
-        tools:layout="@layout/fragment_hot_feed">
+        android:id="@+id/home_fragment_dest"
+        android:name="com.tiparo.tripway.views.ui.HomeFragment"
+        android:label="@string/fragment_home_label"
+        tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_hotFeedFragment_to_loginFragment"
+            android:id="@+id/action_home_fragment_to_loginFragment"
             app:destination="@id/login_fragment_dest" />
         <action
-            android:id="@+id/action_hot_feed_fragment_dest_to_post_point_list_fragment_dest"
+            android:id="@+id/action_home_fragment_dest_to_post_point_list_fragment_dest"
             app:destination="@id/postPointGraph" />
         <action
-            android:id="@+id/action_hot_feed_fragment_dest_to_trip_detail_fragment"
+            android:id="@+id/action_home_fragment_dest_to_trip_detail_fragment"
             app:destination="@id/trip_detail_fragment" />
     </fragment>
     <fragment
@@ -78,16 +78,15 @@
             android:label="@string/fragment_post_point_description_label"
             tools:layout="@layout/fragment_post_point_description">
             <action
-                android:id="@+id/action_post_point_description_fragment_dest_to_hot_feed_fragment_dest"
-                app:destination="@id/hot_feed_fragment_dest"
-                app:popUpTo="@id/hot_feed_fragment_dest"
+                android:id="@+id/action_post_point_description_fragment_dest_to_home_fragment_dest"
+                app:destination="@id/home_fragment_dest"
+                app:popUpTo="@id/home_fragment_dest"
                 app:popUpToInclusive="true" />
         </fragment>
     </navigation>
     <fragment
         android:id="@+id/trip_detail_fragment"
         android:name="com.tiparo.tripway.views.ui.TripDetailFragment"
-        android:label="TripDetailFragment"
         tools:layout="@layout/fragment_detail_trip">
         <argument
             android:name="tripId"

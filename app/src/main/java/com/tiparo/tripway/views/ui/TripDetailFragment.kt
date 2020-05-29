@@ -26,6 +26,7 @@ import com.tiparo.tripway.databinding.FragmentDetailTripBinding
 import com.tiparo.tripway.utils.setupSnackbar
 import com.tiparo.tripway.viewmodels.TripDetailViewModel
 import com.tiparo.tripway.views.adapters.TripDetailPointPagerAdapter
+import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -70,9 +71,16 @@ class TripDetailFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
+        setupTitle()
         setupViewPager()
         setupMapView()
         setupSnackbar()
+    }
+
+    private fun setupTitle() {
+        viewModel.tripRoute.observe(viewLifecycleOwner){
+            requireActivity().toolbar.title = it
+        }
     }
 
     override fun onAttach(context: Context) {

@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host)
         appBarConfiguration =
-            AppBarConfiguration.Builder(R.id.hot_feed_fragment_dest)
+            AppBarConfiguration.Builder(R.id.home_fragment_dest)
                 .build()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -34,8 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when(destination.id){
-                //TODO решить проблему с bottomBar в добавлении
-                R.id.hot_feed_fragment_dest ->{
+                R.id.home_fragment_dest ->{
                     toolbar.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.VISIBLE
                 }
@@ -43,7 +42,6 @@ class MainActivity : AppCompatActivity() {
                     toolbar.visibility = View.GONE
                     bottomNavigationView.visibility = View.GONE
                 }
-                //TODO убрать
                 R.id.post_point_list_fragment_dest ->{
                     toolbar.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.GONE

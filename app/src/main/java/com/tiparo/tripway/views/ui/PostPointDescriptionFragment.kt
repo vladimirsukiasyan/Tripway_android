@@ -84,7 +84,7 @@ class PostPointDescriptionFragment : Fragment() {
     private fun setupNavigation() {
         viewModel.pointSaved.observe(this, EventObserver {
             //TODO показывать юзеру в посылаемом фрагмент snackbar, что поинт сохраняется в фоновом режиме
-            findNavController().navigate(R.id.action_post_point_description_fragment_dest_to_hot_feed_fragment_dest)
+            findNavController().navigate(R.id.action_post_point_description_fragment_dest_to_home_fragment_dest)
         })
     }
 }
