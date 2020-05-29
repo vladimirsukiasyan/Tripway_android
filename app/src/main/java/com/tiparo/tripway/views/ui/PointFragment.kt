@@ -19,6 +19,7 @@ import com.tiparo.tripway.databinding.FragmentPointBinding
 import com.tiparo.tripway.viewmodels.TripDetailViewModel
 import com.tiparo.tripway.views.adapters.PointPhotosAdapter
 import com.tiparo.tripway.views.common.ImagesGridItemDecorator
+import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -78,8 +79,13 @@ class PointFragment : Fragment() {
     private fun initRecycleView() {
         //TODO грузить в начале placeholder, создавая при этом нужно количество item в recycleView
         photosAdapter = PointPhotosAdapter { uri ->
-            val direction = TripDetailFragmentDirections.actionTripDetailFragmentToImageViewerDialogFragment(uri.toString())
-            findNavController().navigate(direction)
+            val imageDialog = ImageViewerDialogFragment.newInstance(uri)
+            imageDialog.show(parentFragmentManager, ImageViewerDialogFragment.TAG_FRAGMENT)
+//            requireActivity().supportFragmentManager
+//                .beginTransaction()
+//                .replace(R.id.nav_host_fragment_container,imageDialog)
+//                .addToBackStack(ImageViewerDialogFragment.TAG_FRAGMENT)
+//                .commit()
         }
         with(binding.photosGrid) {
             adapter = photosAdapter
