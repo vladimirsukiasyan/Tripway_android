@@ -2,9 +2,8 @@ package com.tiparo.tripway.views.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -37,6 +36,12 @@ class HomeFragment : Fragment() {
     private lateinit var adapter: TripsListAdapter
 
     private lateinit var binding: FragmentHomeBinding
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,7 +76,7 @@ class HomeFragment : Fragment() {
         )
         binding.tripsList.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.tripsList.adapter = adapter
-        viewModel.items.observe(viewLifecycleOwner) {
+        viewModel.filteredItems.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
     }
@@ -82,7 +87,44 @@ class HomeFragment : Fragment() {
         (requireActivity().applicationContext as BaseApplication).appComponent.inject(this)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.options_menu, menu)
+
+        val searchItem = menu.findItem(R.id.search)
+        setupSearchView(searchItem)
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
     private fun setupSnackbar() {
         view?.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_LONG)
+    }
+
+    private fun setupSearchView(searchItem: MenuItem) {
+        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                (item?.actionView as SearchView).requestFocus()
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                viewModel.clearSearchingInfo()
+                return true
+            }
+        })
+
+        val searchView = searchItem.actionView as SearchView
+        searchView.isIconified = false
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.query.value = newText
+                return false
+            }
+        })
+
     }
 }

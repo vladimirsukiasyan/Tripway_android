@@ -1,6 +1,5 @@
 package com.tiparo.tripway.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.models.Resource
@@ -9,7 +8,6 @@ import com.tiparo.tripway.models.TripWithPoints
 import com.tiparo.tripway.repository.database.PointDao
 import com.tiparo.tripway.repository.database.TripDao
 import com.tiparo.tripway.repository.network.api.ErrorDescription
-import com.tiparo.tripway.repository.network.api.services.TripsService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -42,4 +40,15 @@ class TripsRepository @Inject constructor(
                 Resource.error(null, ErrorDescription("Error when trying to load from database"))
             }
         }
+
+    suspend fun loadPointsByTripId(tripId: Long) =
+        withContext(Dispatchers.IO){
+            try {
+                val points = pointDao.getPointsByTripId(tripId)
+                Resource.success(points)
+            }
+            catch (exception: Exception){
+                Resource.error(null, ErrorDescription("Error when trying to load from database"))
+            }
+    }
 }

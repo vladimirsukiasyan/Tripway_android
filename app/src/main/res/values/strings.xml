@@ -40,5 +40,7 @@
     <string name="loading_trip_error">Не удалось загрузить трип</string>
     <string name="tripcardimage">tripCardImage</string>
     <string name="snackbar_post_point_saving">Новый поинт сохраняется, скоро вы его увидите</string>
+    <string name="title_search">Поиск</string>
+    <string name="search_trip">Поиск по трипам</string>
     <!--............... -->
 </resources>
