@@ -83,7 +83,7 @@ class TripsViewModel @Inject constructor(private val tripsRepository: TripsRepos
         trip.tripName.contains(queryString, true)
 
 
-    private fun showSnackbarMessage(messageResource: Int) {
+    fun showSnackbarMessage(messageResource: Int) {
         _snackbarText.value = Event(messageResource)
     }
 

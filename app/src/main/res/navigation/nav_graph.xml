@@ -25,6 +25,10 @@
         android:name="com.tiparo.tripway.views.ui.HomeFragment"
         android:label="@string/fragment_home_label"
         tools:layout="@layout/fragment_home">
+        <argument
+            android:name="user_message"
+            app:argType="integer"
+            android:defaultValue="0"/>
         <action
             android:id="@+id/action_home_fragment_to_loginFragment"
             app:destination="@id/login_fragment_dest" />
