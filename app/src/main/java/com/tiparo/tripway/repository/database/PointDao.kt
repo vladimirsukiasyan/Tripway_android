@@ -15,4 +15,7 @@ abstract class PointDao {
 
     @Query("SELECT * FROM Point WHERE trip_id = :tripId")
     abstract suspend fun getPointsByTripId(tripId: Long): List<Point>
+
+    @Query("DELETE FROM Point WHERE id = :pointId")
+    abstract suspend fun deletePoint(pointId: Long)
 }
