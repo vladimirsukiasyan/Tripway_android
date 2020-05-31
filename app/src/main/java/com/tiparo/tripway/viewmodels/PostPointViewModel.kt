@@ -93,17 +93,15 @@ class PostPointViewModel @Inject constructor(
         pickedPhotosOnAdding = obtainResult
     }
 
-    val trips = postRepository.loadMyTripsMock()
-
     fun savePoint() {
         val description = description.value
         if (description.isNullOrBlank()) {
-            _snackbarText.value = Event(R.string.snackbar_empty_description_post_message)
+            showSnackbarMessage(R.string.snackbar_empty_description_post_message)
             return
         }
         val tripName = tripName.value
         if (tripName.isNullOrBlank() && isNewPoint) {
-            _snackbarText.value = Event(R.string.snackbar_empty_trip_name_post_message)
+            showSnackbarMessage(R.string.snackbar_empty_trip_name_post_message)
             return
         }
         pointOnAdding.description = description
