@@ -20,10 +20,22 @@
 
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/map"
-                    app:layout_collapseMode="parallax"
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:paddingBottom="10dp"
+                    app:layout_collapseMode="parallax" />
+
+                <com.tiparo.tripway.views.StepProgressBar
+                    android:id="@+id/stepProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_gravity="bottom"
+                    android:background="@android:color/background_light"
+                    app:color="@color/colorPrimary"
+                    app:colorEnd="@color/colorAccent"
+                    app:layout_collapseMode="pin" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
