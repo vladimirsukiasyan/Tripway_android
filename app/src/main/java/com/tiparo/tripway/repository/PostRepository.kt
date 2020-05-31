@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.room.withTransaction
 import com.google.android.gms.maps.model.LatLng
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BuildConfig
@@ -12,6 +13,7 @@ import com.tiparo.tripway.models.Resource
 import com.tiparo.tripway.models.Trip
 import com.tiparo.tripway.repository.database.PointDao
 import com.tiparo.tripway.repository.database.TripDao
+import com.tiparo.tripway.repository.database.TripwayDB
 import com.tiparo.tripway.repository.network.api.ApiResponse
 import com.tiparo.tripway.repository.network.api.ApiSuccessResponse
 import com.tiparo.tripway.repository.network.api.services.GoogleMapsServices
@@ -29,6 +31,7 @@ class PostRepository @Inject constructor(
     private val appExecutors: AppExecutors,
     private val tripDao: TripDao,
     private val pointDao: PointDao,
+    private val tripwayDB: TripwayDB,
     private val tripsService: TripsService,
     private val googleMapsService: GoogleMapsServices
 ) {
@@ -83,7 +86,7 @@ class PostRepository @Inject constructor(
             // We need to do two required actions :
             // FIRST, LOAD IMAGES
             // PUT A LINK TO IMAGE, SAVED in local storage TO POINT
-            coroutineScope {
+            tripwayDB.withTransaction {
                 val savedPhotosUriList = savePickedPhotos(pointOnAdding.photos).filterNotNull()
 
                 pointOnAdding.photos = savedPhotosUriList
@@ -96,7 +99,7 @@ class PostRepository @Inject constructor(
                     pointOnAdding.tripId = tripId
                 }
                 pointDao.insertPoint(pointOnAdding)
-                tripDao.updateTripByPoint(
+                tripDao.updateTripByNewPoint(
                     tripId = pointOnAdding.tripId!!,
                     name = pointOnAdding.name,
                     photoUri = pointOnAdding.photos.last()
