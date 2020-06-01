@@ -6,6 +6,7 @@
     <dimen name="vertical_margin">16dp</dimen>
     <dimen name="horizontal_margin">8dp</dimen>
 
+    <dimen name="h1">32sp</dimen>
     <dimen name="h5">18sp</dimen>
     <dimen name="bars_elevation">2dp</dimen>
     <dimen name="icon_size">24dp</dimen>
