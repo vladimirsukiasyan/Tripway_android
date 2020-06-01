@@ -23,6 +23,16 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="H1_regular" parent="TextRegular">
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="H2_regular" parent="TextRegular">
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
     <style name="H5_medium" parent="TextMedium">
         <item name="android:textColor">@color/colorText</item>
         <item name="android:textSize">18sp</item>

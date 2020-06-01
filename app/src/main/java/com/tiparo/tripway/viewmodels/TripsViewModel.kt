@@ -16,9 +16,7 @@ class TripsViewModel @Inject constructor(private val tripsRepository: TripsRepos
 
     val query = MutableLiveData<String>()
 
-    private val _items = MediatorLiveData<List<Trip>>().apply {
-        value = listOf()
-    }
+    private val _items = MediatorLiveData<List<Trip>>()
     //Lock on changes
     private val items: LiveData<List<Trip>> = _items
 

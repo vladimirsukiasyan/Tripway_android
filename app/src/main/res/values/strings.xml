@@ -29,6 +29,9 @@
     <string name="title_add_new_trip">Добавление</string>
     <string name="title_profile">Профиль</string>
 
+    <string name="home_empty_trip_message1">Тут пока пусто...</string>
+    <string name="home_empty_trip_message2">Создайте ваш первый трип</string>
+
     <!-- POST NEW POINT -->
     <string name="label_add_new_trip">Создать новый трип</string>
     <string name="post_point_add_description_hint">Опишите это место</string>

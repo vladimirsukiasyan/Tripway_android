@@ -79,7 +79,15 @@ class HomeFragment : Fragment() {
         binding.tripsList.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.tripsList.adapter = adapter
         viewModel.filteredItems.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+            if(it.isNotEmpty()){
+                binding.tripsList.visibility = View.VISIBLE
+                binding.emptyViewContent.visibility = View.GONE
+                adapter.submitList(it)
+            }
+            else{
+                binding.tripsList.visibility = View.GONE
+                binding.emptyViewContent.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -99,7 +107,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupSnackbar() {
-        view?.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_LONG)
+        view?.setupSnackbar(viewLifecycleOwner, viewModel.snackbarText, Snackbar.LENGTH_LONG)
         arguments?.let {
             if (args.userMessage != 0) {
                 viewModel.showSnackbarMessage(args.userMessage)
