@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "214102370061",
+    "project_id": "tripway-67a62",
+    "storage_bucket": "tripway-67a62.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:214102370061:android:bef03a2e6606142b6b3244",
+        "android_client_info": {
+          "package_name": "com.burtelov.authentication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "214102370061-o10tughb9d2nu7uh2v2ac4n5egn97cno.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBklOrHdQFwXWIbZjEzYhsFSYwhFvJeBQY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "214102370061-o10tughb9d2nu7uh2v2ac4n5egn97cno.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:214102370061:android:40c5a3424945c65b6b3244",
+        "android_client_info": {
+          "package_name": "com.tiparo.tripway"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "214102370061-o10tughb9d2nu7uh2v2ac4n5egn97cno.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBklOrHdQFwXWIbZjEzYhsFSYwhFvJeBQY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "214102370061-o10tughb9d2nu7uh2v2ac4n5egn97cno.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
