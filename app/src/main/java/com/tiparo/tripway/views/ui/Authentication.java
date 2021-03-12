@@ -76,7 +76,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onStart() {
         //TODO для проверки авторизации
-        signOut();
+        //signOut();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
