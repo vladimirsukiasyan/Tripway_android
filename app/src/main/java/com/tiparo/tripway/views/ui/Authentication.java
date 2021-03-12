@@ -1,12 +1,12 @@
 package com.tiparo.tripway.views.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -15,7 +15,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -23,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.tiparo.tripway.R;
+
+import timber.log.Timber;
 
 public class Authentication extends AppCompatActivity implements View.OnClickListener{
     private FirebaseAuth mAuth;
@@ -48,19 +49,16 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        FirebaseAuth.AuthStateListener mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    System.out.println(user.getEmail());
-                } else {
-                    // User is signed out
-                    System.out.println("null");
-                }
-
+        FirebaseAuth.AuthStateListener mAuthListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                // User is signed in
+                Timber.e(user.getEmail());
+            } else {
+                // User is signed out
+                Timber.e("User is signed out");
             }
+
         };
 
         buttonSignIn = findViewById(R.id.button_sign_in);
@@ -77,23 +75,25 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     }
     @Override
     public void onStart() {
+        //TODO для проверки авторизации
+        signOut();
+
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
             Intent intent = new Intent(this, MainActivity.class);
-            //intent.putExtra(FirebaseAuth.class.getSimpleName(), (Parcelable) mAuth);
-            //System.out.println(currentUser.getEmail());
             startActivity(intent);
-            System.out.println("Firebase Ok");
+            Timber.e(SignInState.UNAUTHENTICATED_ON_START.toString());
         }
         else {
             //пользователь не авторизован
-            System.out.println("Firebase Error");
+            Timber.e(SignInState.FAILED_AUTHENTICATION_ON_START.toString());
         }
 
         super.onStart();
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -130,9 +130,10 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
+                assert account != null;
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
-                System.out.println("failed");
+                Timber.e(SignInState.FAILED_AUTHENTICATION.toString());
             }
         }
     }
@@ -140,69 +141,48 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         Task<AuthResult> authResultTask = mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = task.getResult().getUser();
-                            startNewActivity();
-                            //updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            //Log.w("signInWithCredential:failure", task.getException());
-                            //Snackbar.make(mBinding.mainLayout, "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                            //updateUI(null);
-                            System.out.println("Authentication Failed.");
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        startNewActivity();
                     }
                 });
     }
-
+    //Launch MainActivity
     private void startNewActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-
+    //login with mail and password
     private void signIn(String email, String password) {
-        Task<AuthResult> authResultTask = mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                System.out.println(task.isSuccessful());
-                if (task.isSuccessful()) {
-                    System.out.println("Ok");
-                    startNewActivity();
-                } else System.out.println("Error");
-            }
-        });
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Timber.e(SignInState.AUTHENTICATED.toString());
+                        startNewActivity();
+                    } else Timber.e(SignInState.FAILED_AUTHENTICATION.toString());
+                });
     }
-
+    //registration with mail and password
     private void signUp(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                System.out.println(task.isSuccessful());
-                if (task.isSuccessful()) {
-                    System.out.println("Ok");
-                }
-                else System.out.println("Error");
-            }
-        });
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Timber.e(SignInState.USER_REGISTERED.toString());
+                    }
+                    else Timber.e(SignInState.FAILED_REGISTERED.toString());;
+                });
     }
+    //exit
     private void signOut() {
         // Firebase sign out
         mAuth.signOut();
         // Google sign out
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            System.out.println("Ok");
-                        }
-                        else System.out.println("Error");
+                task -> {
+                    if (task.isSuccessful()) {
+                        Timber.e(SignInState.EXIT.toString());
                     }
+                    else Timber.e(SignInState.FAILED_EXIT.toString());
                 });
     }
 }
