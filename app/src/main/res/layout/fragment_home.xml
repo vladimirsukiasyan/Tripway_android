@@ -23,8 +23,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/empty_state" />
+                android:layout_gravity="center_vertical" />
 
             <TextView
                 style="@style/H1_regular"
