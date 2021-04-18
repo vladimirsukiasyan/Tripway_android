@@ -21,12 +21,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.tiparo.tripway.R;
+import com.tiparo.tripway.dao.UserDao;
 
 import timber.log.Timber;
 
 public class Authentication extends AppCompatActivity implements View.OnClickListener{
     private FirebaseAuth mAuth;
+    private UserDao dao;
+    private FirebaseFirestore db;
     private SignInButton buttonSignInGoogle;
     private Button buttonSignIn;
     private Button buttonSignOut;
@@ -39,9 +43,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_authentication);
-
         mAuth = FirebaseAuth.getInstance();
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -58,7 +60,6 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
                 // User is signed out
                 Timber.e("User is signed out");
             }
-
         };
 
         buttonSignIn = findViewById(R.id.button_sign_in);
@@ -76,7 +77,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onStart() {
         //TODO для проверки авторизации
-        //signOut();
+        signOut();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
@@ -149,6 +150,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     }
     //Launch MainActivity
     private void startNewActivity() {
+        //dao.readData(db);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

@@ -63,5 +63,12 @@
         android:layout_height="wrap_content"
         android:text="@string/exit"
         android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/create_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_account"
+        android:textSize="14sp" />
 </LinearLayout>
 

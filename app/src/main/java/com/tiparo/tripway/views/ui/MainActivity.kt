@@ -10,7 +10,9 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.FirebaseFirestore
 import com.tiparo.tripway.R
+import com.tiparo.tripway.dao.UserDao
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,6 +21,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val dao = UserDao()
+        val db = FirebaseFirestore.getInstance()
+
+        dao.addDataUser(db, "", "")
 
         val navController = findNavController(R.id.nav_host)
         appBarConfiguration =

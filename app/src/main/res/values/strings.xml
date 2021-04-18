@@ -57,4 +57,7 @@
     <string name="sign_up">sign up</string>
     <string name="exit">exit</string>
     <string name="email">Email</string>
+    <string name="username">username</string>
+    <string name="create_account">create account</string>
+    <string name="email_password">email and password</string>
 </resources>
