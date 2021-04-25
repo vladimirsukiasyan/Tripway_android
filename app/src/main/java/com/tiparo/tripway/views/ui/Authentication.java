@@ -3,6 +3,7 @@ package com.tiparo.tripway.views.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,6 +26,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.tiparo.tripway.R;
 import com.tiparo.tripway.dao.UserDao;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import timber.log.Timber;
 
 public class Authentication extends AppCompatActivity implements View.OnClickListener{
@@ -38,12 +42,17 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     private GoogleSignInClient mGoogleSignInClient;
     private TextView tvEmail;
     private TextView tvPassword;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_authentication);
+
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        dao = new UserDao();
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -97,9 +106,13 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
+        String email = tvEmail.getText().toString();
+        String password = tvPassword.getText().toString();
+
         switch (view.getId()) {
             case R.id.button_sign_in: {
-                signIn(tvEmail.getText().toString(), tvPassword.getText().toString());
+                if (!TextUtils.isEmpty(email) & !TextUtils.isEmpty(password))
+                    signIn(email, password);
                 break;
             }
             case R.id.sign_in_button_google: {
@@ -107,7 +120,8 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
                 break;
             }
             case R.id.button_sign_up: {
-                signUp(tvEmail.getText().toString(), tvPassword.getText().toString());
+                if (!TextUtils.isEmpty(email) & !TextUtils.isEmpty(password))
+                    signUp(tvEmail.getText().toString(), tvPassword.getText().toString());
                 break;
             }
             case R.id.exit: {
@@ -150,7 +164,14 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     }
     //Launch MainActivity
     private void startNewActivity() {
-        //dao.readData(db);
+        //TODO добавить name
+        HashMap<String, Object> dataUserMap = new HashMap<>();
+        dataUserMap.put("name", tvEmail.getText().toString());
+        dataUserMap.put("mail", tvEmail.getText().toString());
+
+        dao.setDaoMap(dataUserMap);
+        dao.addDataUser(db, dataUserMap);
+
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

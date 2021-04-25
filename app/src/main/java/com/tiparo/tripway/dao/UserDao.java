@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -21,7 +22,17 @@ import java.util.Map;
 import timber.log.Timber;
 
 public class UserDao implements daoFirestore{
-    public void addUser(FirebaseFirestore db) {
+    private HashMap<String, Object> daoMap = new HashMap<>();
+
+    public HashMap<String, Object> getDaoMap() {
+        return daoMap;
+    }
+
+    public void setDaoMap(HashMap<String, Object> daoMap) {
+        this.daoMap = daoMap;
+    }
+
+    /*public void addUser(FirebaseFirestore db, Map<String, Object> userMap) {
         Map<String, Object> user1 = new HashMap<>();
         user1.put("mail", "12345@gmail.com");
         user1.put("name", "Nikitos");
@@ -55,108 +66,72 @@ public class UserDao implements daoFirestore{
                         Timber.tag("DAO").d("Error adding document");
                     }
                 });
-    }
+    }*/
 
     public void deleteUser() {}
 
-    public void readData(FirebaseFirestore db) {
-        db.collection("Users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TAG", document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w("TAG", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void addDataUser(FirebaseFirestore firebaseFirestore, String mail, String name) {
-        Map<String, Object> user = new HashMap<>();
-        user.put("mail", "12345@gmail.com");
-        user.put("name", "Nikitos");
-
-        Map<String, Object> trip = new HashMap<>();
-        trip.put("trip1", "Trip");
-        trip.put("trip2", "Trip");
-
-        user.put("Trips", trip);
-
-        DocumentReference documentReference = firebaseFirestore.collection("Users").document()
+    public void addDataUser(FirebaseFirestore firebaseFirestore, HashMap<String, Object> userMap) {
+        DocumentReference documentReference = firebaseFirestore.collection("Users")
+                .document("test2")
                 .collection("UserTrips").document();
-        documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-        documentReference.collection("Comments").document().collection("Comment").document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });;
-        documentReference.collection("Points").document().set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-
-        /*.set(user)
+        documentReference.set(userMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Timber.d("OK TEST");
-                        Timber.tag("DAO").d("DocumentSnapshot");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Timber.d("ERROR TEST");
-                    }
-                });*/
+            @Override
+            public void onSuccess(Void aVoid) {
 
-        /*firebaseFirestore.collection("NewCollection")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Timber.tag("DAO").d("DocumentSnapshot added with ID: %s", documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Timber.tag("DAO").d("Error adding document");
-                    }
-                });*/
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+        documentReference.collection("Comments")
+                .document()
+                .collection("Comment")
+                .document()
+                .set(userMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+        documentReference.collection("Points").document().set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
     @Override
-    public void readDataUSer(FirebaseFirestore firebaseFirestore, String collections) {
-
+    public void readDataUSer(FirebaseFirestore firebaseFirestore, String collections, String docPath) {
+        DocumentReference docRef = firebaseFirestore.collection("Users").document(docPath);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Timber.tag("DAO").d( "DocumentSnapshot data: %s", document.getData());
+                    } else {
+                        Timber.tag("DAO").d("No such document");
+                    }
+                } else {
+                    Timber.tag("DAO").d(task.getException());
+                }
+            }
+        });
     }
 }

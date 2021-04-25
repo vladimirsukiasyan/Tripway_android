@@ -22,11 +22,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val dao = UserDao()
-        val db = FirebaseFirestore.getInstance()
-
-        dao.addDataUser(db, "", "")
-
         val navController = findNavController(R.id.nav_host)
         appBarConfiguration =
             AppBarConfiguration.Builder(R.id.home_fragment_dest)
