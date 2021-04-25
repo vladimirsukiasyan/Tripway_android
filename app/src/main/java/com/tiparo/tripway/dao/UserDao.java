@@ -1,7 +1,10 @@
 package com.tiparo.tripway.dao;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -10,6 +13,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Map;
+
+import timber.log.Timber;
 
 public class UserDao implements daoFirestore{
     private String documentUserId;
@@ -22,12 +28,41 @@ public class UserDao implements daoFirestore{
 
     private HashMap<String, Object> daoMap = new HashMap<>();
 
+    private Map<String, Object> userDataMap = new HashMap<>();
+
+    private Map<String, Object> userTripsPointMap = new HashMap<>();
+
+    private Map<String, Object> userTripsCommentMap = new HashMap<>();
+
+    private Map<String, Object> userData = new HashMap<>();
+
     public HashMap<String, Object> getDaoMap() {
         return daoMap;
     }
 
     public void setDaoMap(HashMap<String, Object> daoMap) {
         this.daoMap = daoMap;
+    }
+
+    public Map<String, Object> getUserDataMap(FirebaseFirestore firebaseFirestore) {
+        if (userDataMap.size() == 0)
+            getDataUser(firebaseFirestore);
+
+        return userDataMap;
+    }
+
+    public Map<String, Object> getUserTripsPointMap(FirebaseFirestore firebaseFirestore) {
+        if (userTripsPointMap.size() == 0)
+            getDataUser(firebaseFirestore);
+
+        return userDataMap;
+    }
+
+    public Map<String, Object> getUserTripsCommentMap(FirebaseFirestore firebaseFirestore) {
+        if (userTripsCommentMap.size() == 0)
+            getDataUser(firebaseFirestore);
+
+        return userDataMap;
     }
 
     public String getCollectionCommentsId() {
@@ -92,30 +127,71 @@ public class UserDao implements daoFirestore{
                 });
     }
 
-    public Task<DocumentSnapshot> getDataUser(FirebaseFirestore firebaseFirestore) {
-        return firebaseFirestore.collection("Users")
-                .document(documentUserId)
-                .get();
+    private void getDataUser(FirebaseFirestore firebaseFirestore) {
+        firebaseFirestore.collection("Users").document(documentUserId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            // Document found in the offline cache
+                            Timber.d("Cached document data: %s", task.getResult().getData());
+                            userDataMap = task.getResult().getData();
+                        } else {
+                            Timber.d(task.getException(), "Cached get failed: ");
+                        }
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                System.out.println("rr");
+            }
+        });
     }
 
-    public Task<DocumentSnapshot> getDataUserTripsPoint(FirebaseFirestore firebaseFirestore) {
-        return firebaseFirestore.collection("Users")
+
+    private void getDataUserTripsPoint(FirebaseFirestore firebaseFirestore) {
+        firebaseFirestore.collection("Users")
                 .document(documentUserId)
                 .collection("UserTrip")
                 .document(documentUserTripId)
                 .collection("Points")
                 .document()
-                .get();
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            // Document found in the offline cache
+                            userTripsPointMap = task.getResult().getData();
+                            Timber.d("Cached document data: %s", task.getResult().getData());
+                        } else {
+                            Timber.d(task.getException(), "Cached get failed: ");
+                        }
+                    }
+                });
     }
 
-    public Task<DocumentSnapshot> getDataUserTripsComments(FirebaseFirestore firebaseFirestore) {
-        return firebaseFirestore.collection("Users")
+    private void getDataUserTripsComments(FirebaseFirestore firebaseFirestore) {
+        firebaseFirestore.collection("Users")
                 .document(documentUserId)
                 .collection("UserTrip")
                 .document(documentUserTripId)
                 .collection("Comments")
                 .document()
-                .get();
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            // Document found in the offline cache
+                            userTripsCommentMap = task.getResult().getData();
+                            Timber.d("Cached document data: %s", task.getResult().getData());
+                        } else {
+                            Timber.d(task.getException(), "Cached get failed: ");
+                        }
+                    }
+                });;
     }
 
     public void addDataUser(FirebaseFirestore firebaseFirestore, HashMap<String, Object> userMap) {
