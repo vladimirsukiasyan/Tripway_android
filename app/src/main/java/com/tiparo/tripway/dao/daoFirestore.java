@@ -8,5 +8,5 @@ import java.util.Map;
 interface daoFirestore {
     public void addDataUser(FirebaseFirestore firebaseFirestore, HashMap<String, Object> userMap);
     
-    public void readDataUSer(FirebaseFirestore firebaseFirestore, String collections, String docPath);
+    //public void readDataUSer(FirebaseFirestore firebaseFirestore, String collections, String docPath);
 }
