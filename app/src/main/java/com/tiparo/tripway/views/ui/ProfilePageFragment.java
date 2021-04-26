@@ -54,9 +54,6 @@ public class ProfilePageFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private void setUserName() {
-        TextView textView = findViewById(R.id.textView);
-    }
     private void initData(){
         List<PageDataDao> mDataList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
