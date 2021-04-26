@@ -96,4 +96,12 @@
             android:name="tripId"
             app:argType="long" />
     </fragment>
+
+    <fragment
+        android:id="@+id/profile_fragment_dest"
+        android:name="com.tiparo.tripway.views.ui.ProfilePageFragment"
+        tools:layout="@layout/fragment_profile_page">
+
+    </fragment>
+
 </navigation>

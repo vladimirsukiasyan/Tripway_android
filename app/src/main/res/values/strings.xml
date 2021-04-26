@@ -60,4 +60,11 @@
     <string name="username">username</string>
     <string name="create_account">create account</string>
     <string name="email_password">email and password</string>
+    <!-- PROFILE HOME PAGE -->
+    <string name="Trips">Trips</string>
+    <string name="Followers">Followers</string>
+    <string name="Following">Following</string>
+    <string name="Default_Locale">Moscow</string>
+    <string name="Edit_Profile_btn">Edit Profile</string>
+    <string name="Profile_Nums">0</string>
 </resources>
