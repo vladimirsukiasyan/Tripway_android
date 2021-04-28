@@ -10,9 +10,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.firestore.FirebaseFirestore
 import com.tiparo.tripway.R
-import com.tiparo.tripway.dao.UserDao
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,24 +33,24 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            when(destination.id){
-                R.id.home_fragment_dest ->{
+            when (destination.id) {
+                R.id.home_fragment_dest -> {
                     toolbar.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.VISIBLE
                 }
-                R.id.login_fragment_dest ->{
+                R.id.login_fragment_dest -> {
                     toolbar.visibility = View.GONE
                     bottomNavigationView.visibility = View.GONE
                 }
-                R.id.post_point_list_fragment_dest ->{
+                R.id.post_point_list_fragment_dest -> {
                     toolbar.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.GONE
                 }
-                R.id.post_point_map_fragment_dest ->{
+                R.id.post_point_map_fragment_dest -> {
                     toolbar.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.GONE
                 }
-                R.id.post_point_photos_fragment_dest ->{
+                R.id.post_point_photos_fragment_dest -> {
                     toolbar.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.GONE
                 }
