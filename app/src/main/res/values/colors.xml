@@ -11,4 +11,6 @@
     <color name="colorTextHintLight">#80000000</color>
     <color name="colorTextOnButton">#F2F2F2</color>
     <color name="colorBackground">#F2F2F2</color>
+
+    <color name="colorGray">#777777</color>
 </resources>

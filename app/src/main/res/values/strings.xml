@@ -52,4 +52,19 @@
     <string name="deletePoint">Удалить поинт</string>
     <string name="delete_trip_failed">Не удалось удалить трип</string>
     <string name="delete_point_failed">Не удалось удалить этот поинт</string>
+    <string name="password">Password</string>
+    <string name="sign_in">sign in</string>
+    <string name="sign_up">sign up</string>
+    <string name="exit">exit</string>
+    <string name="email">Email</string>
+    <string name="username">username</string>
+    <string name="create_account">create account</string>
+    <string name="email_password">email and password</string>
+    <!-- PROFILE HOME PAGE -->
+    <string name="Trips">Trips</string>
+    <string name="Followers">Followers</string>
+    <string name="Following">Following</string>
+    <string name="Default_Locale">Moscow</string>
+    <string name="Edit_Profile_btn">Edit Profile</string>
+    <string name="Profile_Nums">0</string>
 </resources>

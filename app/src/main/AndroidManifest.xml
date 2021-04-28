@@ -27,7 +27,7 @@
             android:resource="@xml/searchable" />
 
         <activity
-            android:name=".views.ui.MainActivity"
+            android:name=".views.ui.Authentication"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
@@ -36,6 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".views.ui.MainActivity" />
     </application>
 
 </manifest>
