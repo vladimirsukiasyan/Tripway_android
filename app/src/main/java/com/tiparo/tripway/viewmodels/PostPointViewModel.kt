@@ -10,7 +10,6 @@ import com.google.android.libraries.places.api.model.AddressComponents
 import com.google.android.libraries.places.api.model.Place
 import com.tiparo.tripway.R
 import com.tiparo.tripway.models.Point
-import com.tiparo.tripway.models.Resource
 import com.tiparo.tripway.models.Trip
 import com.tiparo.tripway.repository.PostRepository
 import com.tiparo.tripway.repository.TripsRepository
@@ -45,23 +44,23 @@ class PostPointViewModel @Inject constructor(
     val pickedLocation = MutableLiveData<LatLng>()
     val pickedPlace = MutableLiveData<Place>()
 
-    val locationName = MediatorLiveData<Resource<String>>().apply {
-        addSource(pickedLocation) { position ->
-            //TODO вынести в отдельный обзервер для удобочитаемости
-            val resource = postRepository.reverseGeocode(position)
-            addSource(resource) {
-                saveGeocodingResults(position, it.data)
-
-                value = Resource.success(it.data?.formatted_address)
-                //TODO обработать случай, когда data = null (когда Google возвращает Empty Body)
-            }
-        }
-        addSource(pickedPlace) { place ->
-            savePlace(place)
-
-            value = Resource.success(place.name)
-        }
-    }
+//    val locationName = MediatorLiveData<Resource<String>>().apply {
+//        addSource(pickedLocation) { position ->
+//            //TODO вынести в отдельный обзервер для удобочитаемости
+//            val resource = postRepository.reverseGeocode(position)
+//            addSource(resource) {
+//                saveGeocodingResults(position, it.data)
+//
+//                value = Resource.success(it.data?.formatted_address)
+//                //TODO обработать случай, когда data = null (когда Google возвращает Empty Body)
+//            }
+//        }
+//        addSource(pickedPlace) { place ->
+//            savePlace(place)
+//
+//            value = Resource.success(place.name)
+//        }
+//    }
 
     private fun savePlace(place: Place) {
         with(pointOnAdding.location) {
@@ -122,20 +121,20 @@ class PostPointViewModel @Inject constructor(
         //TODO добавить позже прогресс бар ожидания в виде
         // _dataLoading.value = true в начале и _dataLoading.value = false в конце
 
-        val tripsResult = tripsRepository.loadTrips()
-        _items.addSource(tripsResult){
-            when (it.status) {
-                Resource.Status.SUCCESS -> {
-                    _items.value = it.data
-                }
-                Resource.Status.ERROR -> {
-                    _items.value = emptyList()
-                    showSnackbarMessage(R.string.loading_trips_error)
-                }
-                Resource.Status.LOADING -> {
-                }
-            }
-        }
+//        val tripsResult = tripsRepository.loadTrips()
+//        _items.addSource(tripsResult){
+//            when (it.status) {
+//                Resource.Status.SUCCESS -> {
+//                    _items.value = it.data
+//                }
+//                Resource.Status.ERROR -> {
+//                    _items.value = emptyList()
+//                    showSnackbarMessage(R.string.loading_trips_error)
+//                }
+//                Resource.Status.LOADING -> {
+//                }
+//            }
+//        }
     }
 
     private fun showSnackbarMessage(messageResource: Int) {

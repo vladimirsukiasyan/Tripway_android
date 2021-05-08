@@ -18,7 +18,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="fragment_home_label">Tripway</string>
+    <string name="fragment_discovery_label">Tripway</string>
     <string name="fragment_login_label">Авторизация</string>
     <string name="fragment_post_point_list_label">Добавление поинта</string>
     <string name="fragment_post_point_map_label">Введите адрес</string>
@@ -52,14 +52,14 @@
     <string name="deletePoint">Удалить поинт</string>
     <string name="delete_trip_failed">Не удалось удалить трип</string>
     <string name="delete_point_failed">Не удалось удалить этот поинт</string>
-    <string name="password">Password</string>
-    <string name="sign_in">sign in</string>
-    <string name="sign_up">sign up</string>
-    <string name="exit">exit</string>
+    <string name="password">Пароль</string>
+    <string name="sign_in">Войти</string>
+    <string name="sign_up">Создать аккаунт</string>
+    <string name="exit">Выход</string>
     <string name="email">Email</string>
-    <string name="username">username</string>
-    <string name="create_account">create account</string>
-    <string name="email_password">email and password</string>
+    <string name="nickname">Никнейм</string>
+    <string name="create_account">Создать аккаунт</string>
+    <string name="email_password">Email и пароль</string>
     <!-- PROFILE HOME PAGE -->
     <string name="Trips">Trips</string>
     <string name="Followers">Followers</string>

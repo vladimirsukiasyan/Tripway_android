@@ -21,14 +21,13 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.tiparo.tripway.AppExecutors
-import com.tiparo.tripway.models.Resource
+import com.tiparo.tripway.utils.Resource
 import com.tiparo.tripway.repository.network.api.ApiEmptyResponse
 import com.tiparo.tripway.repository.network.api.ApiErrorResponse
 import com.tiparo.tripway.repository.network.api.ApiResponse
 import com.tiparo.tripway.repository.network.api.ApiSuccessResponse
 
 /**
- * A generic class that can provide a resource backed by both the sqlite database and the network.
  *
  *
  * You can read more about it in the [Architecture
@@ -38,7 +37,6 @@ import com.tiparo.tripway.repository.network.api.ApiSuccessResponse
 </RequestType></ResultType> */
 @Suppress("UNCHECKED_CAST")
 abstract class NetworkBoundResource<ResultType, RequestType>
-//TODO понять как использовать appExecutors правильно
 @MainThread constructor(private val appExecutors: AppExecutors) {
 
     private val result = MediatorLiveData<Resource<ResultType>>()

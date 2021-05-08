@@ -16,10 +16,8 @@ import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentPostPointListBinding
-import com.tiparo.tripway.databinding.TripOwnItemBinding
 import com.tiparo.tripway.utils.setupSnackbar
 import com.tiparo.tripway.viewmodels.PostPointViewModel
-import com.tiparo.tripway.views.adapters.TripsListAdapter
 import com.tiparo.tripway.views.adapters.TripsOwnListAdapter
 import timber.log.Timber
 import javax.inject.Inject

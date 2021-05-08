@@ -64,7 +64,7 @@ class AppModule {
     @Singleton
     @Provides
     fun provideTripwayHttpClient(application: Application): HttpClient {
-        return BaseHttpClient(BuildConfig.BASE_URL, application)
+        return BaseHttpClient(BuildConfig.BASE_URL + "api/v1/", application)
     }
 
     @GoogleMapsHTTPClient

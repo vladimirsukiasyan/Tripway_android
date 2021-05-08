@@ -2,6 +2,7 @@ package com.tiparo.tripway.di
 
 import android.app.Application
 import com.tiparo.tripway.BaseApplication
+import com.tiparo.tripway.discovery.ui.DiscoveryFragment
 import com.tiparo.tripway.views.ui.*
 import dagger.BindsInstance
 import dagger.Component
@@ -26,7 +27,7 @@ interface AppComponent {
     fun inject(baseApplication: BaseApplication)
 
     fun inject(fragment: LoginFragment)
-    fun inject(fragment: HomeFragment)
+    fun inject(fragment: DiscoveryFragment)
     fun inject(fragment: TripDetailFragment)
     fun inject(fragment: PointFragment)
     fun inject(fragment: PostPointListFragment)

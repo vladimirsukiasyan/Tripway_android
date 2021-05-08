@@ -9,13 +9,11 @@
 
         <import type="android.view.View" />
 
-        <import type="com.tiparo.tripway.models.Resource" />
+<!--        <import type="com.tiparo.tripway.utils.Resource" />-->
 
-        <import type="com.tiparo.tripway.models.Resource.Status" />
-
-        <variable
-            name="locationName"
-            type="Resource&lt;String>" />
+<!--        <variable-->
+<!--            name="locationName"-->
+<!--            type="com.tiparo.tripway.utils.Resource" />-->
     </data>
 
     <FrameLayout
@@ -29,8 +27,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:visibility="@{locationName.status == Status.LOADING? View.VISIBLE: View.GONE}" />
+            android:layout_margin="8dp"/>
+<!--            android:visibility="@{locationName.status == Status.LOADING? View.VISIBLE: View.GONE}" />-->
+
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/map_search"
@@ -62,7 +61,6 @@
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="16dp"
-                android:text='@{locationName.data, default = "No location was picked"}'
                 android:textColor="@color/colorText"
                 android:textSize="18sp"
                 android:textStyle="normal"

@@ -9,7 +9,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BuildConfig
 import com.tiparo.tripway.models.Point
-import com.tiparo.tripway.models.Resource
+import com.tiparo.tripway.utils.Resource
 import com.tiparo.tripway.models.Trip
 import com.tiparo.tripway.repository.database.PointDao
 import com.tiparo.tripway.repository.database.TripDao
@@ -47,14 +47,14 @@ class PostRepository @Inject constructor(
         )
     }
 
-    fun loadMyTrips(): LiveData<Resource<List<TripsService.Trip>>> {
-        return object :
-            NetworkBoundResource<List<TripsService.Trip>, List<TripsService.Trip>>(appExecutors) {
-            override fun createCall(): LiveData<ApiResponse<List<TripsService.Trip>>> {
-                return tripsService.getOwnTrips()
-            }
-        }.asLiveData()
-    }
+//    fun loadMyTrips(): LiveData<Resource<List<TripsService.Trip>>> {
+//        return object :
+//            NetworkBoundResource<List<TripsService.Trip>, List<TripsService.Trip>>(appExecutors) {
+//            override fun createCall(): LiveData<ApiResponse<List<TripsService.Trip>>> {
+//                return tripsService.getOwnTrips()
+//            }
+//        }.asLiveData()
+//    }
 
     fun reverseGeocode(location: LatLng): LiveData<Resource<GeocodingResult>> {
         return object :

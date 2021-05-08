@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tiparo.tripway.views.adapters
+package com.tiparo.tripway.discovery.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -27,7 +27,7 @@ import com.tiparo.tripway.databinding.TripItemBinding
 import com.tiparo.tripway.models.Trip
 import com.tiparo.tripway.views.common.DataBoundListAdapter
 
-class TripsListAdapter(
+class DiscoveryAdapter(
     appExecutors: AppExecutors,
     private val tripClickCallback: ((Trip) -> Unit)?
 ) : DataBoundListAdapter<Trip, TripItemBinding>(

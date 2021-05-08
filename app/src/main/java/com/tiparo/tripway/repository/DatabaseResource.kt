@@ -20,7 +20,7 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.tiparo.tripway.AppExecutors
-import com.tiparo.tripway.models.Resource
+import com.tiparo.tripway.utils.Resource
 import com.tiparo.tripway.repository.network.api.ErrorDescription
 
 abstract class DatabaseResource<ResultType>

@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import com.google.android.gms.maps.model.LatLng
 import com.tiparo.tripway.R
 import com.tiparo.tripway.models.Point
-import com.tiparo.tripway.models.Resource
+import com.tiparo.tripway.utils.Resource
 import com.tiparo.tripway.models.Trip
 import com.tiparo.tripway.models.TripWithPoints
 import com.tiparo.tripway.repository.TripsRepository
@@ -34,24 +34,24 @@ class TripDetailViewModel @Inject constructor(private val tripsRepository: Trips
 
     fun loadTripWithPoints(tripId: Long) {
         viewModelScope.launch {
-            val tripWithPointsResource = tripsRepository.loadTripWithPoints(tripId)
-            when (tripWithPointsResource.status) {
-                Resource.Status.SUCCESS -> {
-                    tripWithPointsResource.data?.let {
-                        tripWithPoint = it
-
-                        _pointsList.value = it.points
-                        setTripRoute(it.trip)
-                        setLocations(it.points)
-                        //TODO set description method
-                    }
-                }
-                Resource.Status.ERROR -> {
-                    showSnackbarMessage(R.string.loading_trip_error)
-                }
-                else -> {
-                }
-            }
+//            val tripWithPointsResource = tripsRepository.loadTripWithPoints(tripId)
+//            when (tripWithPointsResource.status) {
+//                Resource.Status.SUCCESS -> {
+//                    tripWithPointsResource.data?.let {
+//                        tripWithPoint = it
+//
+//                        _pointsList.value = it.points
+//                        setTripRoute(it.trip)
+//                        setLocations(it.points)
+//                        //TODO set description method
+//                    }
+//                }
+//                Resource.Status.ERROR -> {
+//                    showSnackbarMessage(R.string.loading_trip_error)
+//                }
+//                else -> {
+//                }
+//            }
         }
     }
 
@@ -77,32 +77,32 @@ class TripDetailViewModel @Inject constructor(private val tripsRepository: Trips
 
     fun deleteTrip() {
         viewModelScope.launch {
-            tripWithPoint?.let {
-                val result = tripsRepository.deleteTrip(it.trip.id)
-                when (result.status) {
-                    Resource.Status.SUCCESS -> {
-                        _deletedEvent.value = Event(Unit)
-                    }
-                    else -> {
-                        showSnackbarMessage(R.string.delete_trip_failed)
-                    }
-                }
-            }
+//            tripWithPoint?.let {
+//                val result = tripsRepository.deleteTrip(it.trip.id)
+//                when (result.status) {
+//                    Resource.Status.SUCCESS -> {
+//                        _deletedEvent.value = Event(Unit)
+//                    }
+//                    else -> {
+//                        showSnackbarMessage(R.string.delete_trip_failed)
+//                    }
+//                }
+//            }
         }
     }
 
     fun deletePoint(pointPosition: Int) {
         viewModelScope.launch {
             tripWithPoint?.let {
-                val result = tripsRepository.deletePoint(it, pointPosition)
-                when (result.status) {
-                    Resource.Status.SUCCESS -> {
-                        _deletedEvent.value = Event(Unit)
-                    }
-                    else -> {
-                        showSnackbarMessage(R.string.delete_point_failed)
-                    }
-                }
+//                val result = tripsRepository.deletePoint(it, pointPosition)
+//                when (result.status) {
+//                    Resource.Status.SUCCESS -> {
+//                        _deletedEvent.value = Event(Unit)
+//                    }
+//                    else -> {
+//                        showSnackbarMessage(R.string.delete_point_failed)
+//                    }
+//                }
             }
         }
     }
