@@ -78,15 +78,20 @@ class DiscoveryFragment : Fragment() {
     }
 
     private fun renderLoading() {
-        signInProgressBar.visibility = View.VISIBLE
+        loading = true
+//        signInProgressBar.visibility = View.VISIBLE
     }
 
     private fun renderData(data: DiscoveryInfo) {
+        loading = false
+
         signInProgressBar.visibility = View.GONE
-//        adapter.submitList(data.trips)
+        adapter.submitList(data.trips)
     }
 
     private fun renderError(error: ErrorBody) {
+        loading = false
+
         when (error.type) {
             ErrorBody.ErrorType.NO_CONTENT -> {
                 Toast.makeText(context, "К сожалению, ваша лента пока пуста, так как мы ничего не нашли", Toast.LENGTH_LONG).show()
@@ -109,9 +114,9 @@ class DiscoveryFragment : Fragment() {
                     val totalItemCount = lm.itemCount;
                     val pastVisibleItems = lm.findFirstVisibleItemPosition();
 
-                    if (loading) {
+                    if (!loading) {
                         if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                            loading = true;
+                            loading = true
                             vm.loadNextPageIntent()
                         }
                     }

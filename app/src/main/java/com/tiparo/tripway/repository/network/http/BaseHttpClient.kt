@@ -13,6 +13,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 
 class BaseHttpClient constructor(
     private val baseURL: String,
@@ -58,38 +59,21 @@ class BaseHttpClient constructor(
     class TokenInterceptor(val application: Application) : Interceptor {
 
         override fun intercept(chain: Interceptor.Chain): Response {
-            //REQUEST
-
             var request = chain.request()
             val requestBuilder = request.newBuilder()
 
-//            val preferences = application
-//                .getSharedPreferences((application as BaseApplication).APP_NAME, Context.MODE_PRIVATE)
-//            val sessionID = preferences.getString(SET_COOKIE_SESSION_ID, null)
-//            Log.d(TAG, "[TOKEN_INTERCEPTOR] $sessionID")
-//
-//            sessionID?.let {
-//                requestBuilder.addHeader(SET_COOKIE_SESSION_ID, it)
-//            }
-
-            FirebaseAuth.getInstance().currentUser?.getIdToken(false)?.result?.token?.let { token ->
-                requestBuilder.addHeader(SET_TOKEN, token)
-            } ?: //todo some exception
+            try {
+                FirebaseAuth.getInstance().currentUser?.getIdToken(false)?.result?.token?.let { token ->
+                    requestBuilder.addHeader(SET_TOKEN, token)
+                } ?: throw ApiInvocationException(1000)
+            } catch (e: Exception) {
+                Timber.e(e, "Cant receive token from FirebaseAuth")
+            }
 
             requestBuilder.addHeader(HEADER_ACCEPT_LANGUAGE, LocaleUtil.getLanguage())
 
             val response = chain.proceed(requestBuilder.build())
 
-            // RESPONSE
-
-//            val setCookie = response.header(HEADER_SET_COOKIE);
-//            setCookie?.let {
-//                val httpCookie = Cookie.parse(BuildConfig.BASE_URL.toHttpUrlOrNull()!!, it)
-//                if (httpCookie?.name == SET_COOKIE_SESSION_ID) {
-//                    Log.d(TAG, "[SET_COOKIE_SESSION_ID] cookie has been set")
-//                    preferences.edit().putString(SET_COOKIE_SESSION_ID, httpCookie.value).apply()
-//                }
-//            }
             return response
         }
     }
@@ -101,7 +85,7 @@ class BaseHttpClient constructor(
             val requestBuilder = request.newBuilder()
             val response = chain.proceed(requestBuilder.build())
 
-            if (!response.isSuccessful || response.code == 204){
+            if (!response.isSuccessful || response.code == 204) {
                 throw ApiInvocationException(response.code, response.body?.string())
             }
             return response

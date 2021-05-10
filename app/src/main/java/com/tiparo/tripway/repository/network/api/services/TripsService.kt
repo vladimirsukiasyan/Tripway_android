@@ -18,6 +18,7 @@ interface TripsService {
         val is_completed: Boolean,
         val first_point_name: String,
         val last_point_name: String,
+        val photo: String,
         val user_id: String?
     )
 }

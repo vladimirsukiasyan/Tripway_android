@@ -9,7 +9,7 @@ class DiscoveryUiState private constructor(
     loading: Boolean = false,
     errorBody: ErrorBody? = null,
     data: DiscoveryInfo? = null
-): LceUiState<DiscoveryInfo>(loading, errorBody, data) {
+) : LceUiState<DiscoveryInfo>(loading, errorBody, data) {
 
     companion object {
         fun idle() = DiscoveryUiState()
@@ -31,12 +31,15 @@ class DiscoveryUiState private constructor(
                 UnaryOperator { loading() }
 
             fun discoveryData(discoveryInfo: DiscoveryInfo?): UnaryOperator<DiscoveryUiState> =
-                UnaryOperator {prevState->
-                    data(discoveryInfo)
+                UnaryOperator { prevState ->
+                    val prevList = prevState.data.orNull()?.trips ?: listOf()
+                    val newList = discoveryInfo?.trips ?: listOf()
+
+                    data(discoveryInfo?.copy(trips = prevList + newList))
                 }
 
             fun discoveryError(error: Throwable?): UnaryOperator<DiscoveryUiState> =
-                UnaryOperator {prevState->
+                UnaryOperator { prevState ->
                     DiscoveryUiState.error(ErrorBody.fromException(error))
                 }
         }

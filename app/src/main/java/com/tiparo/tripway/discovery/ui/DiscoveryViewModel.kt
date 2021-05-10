@@ -64,7 +64,7 @@ class DiscoveryViewModel @Inject constructor(private val tripsRepository: TripsR
                             Mutators.discoveryError(result.left)
                         }
                     }
-//                    .compose(startWithInMain(Mutators.discoveryLoading()))
+                    .compose(startWithInMain(Mutators.discoveryLoading()))
             }
     }
 
@@ -85,7 +85,6 @@ class DiscoveryViewModel @Inject constructor(private val tripsRepository: TripsR
                 if (result.isRight) Mutators.discoveryData(result.right)
                 else Mutators.discoveryError(result.left)
             }
-            .compose(startWithInMain(Mutators.discoveryLoading()))
     }
 
     override fun onCleared() {

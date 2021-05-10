@@ -36,17 +36,6 @@ class PostRepository @Inject constructor(
     private val googleMapsService: GoogleMapsServices
 ) {
 
-    private val tripsMock = MutableList(10) { id ->
-        TripsService.Trip(
-            id = id.toString(),
-            trip_name = "Trip $id",
-            is_completed = id % 2 == 0,
-            first_point_name = "Tokyo",
-            last_point_name = "Baikal",
-            user_id = "id$id"
-        )
-    }
-
 //    fun loadMyTrips(): LiveData<Resource<List<TripsService.Trip>>> {
 //        return object :
 //            NetworkBoundResource<List<TripsService.Trip>, List<TripsService.Trip>>(appExecutors) {
@@ -77,9 +66,9 @@ class PostRepository @Inject constructor(
 
     fun convertLatLng(location: LatLng) = "${location.latitude},${location.longitude}"
 
-    fun loadMyTripsMock(): LiveData<Resource<List<TripsService.Trip>>> {
-        return MutableLiveData(Resource.success(tripsMock))
-    }
+//    fun loadMyTripsMock(): LiveData<Resource<List<TripsService.Trip>>> {
+//        return MutableLiveData(Resource.success())
+//    }
 
     suspend fun savePoint(pointOnAdding: Point, tripName: String) =
         withContext(Dispatchers.IO) {

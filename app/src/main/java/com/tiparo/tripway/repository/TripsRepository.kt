@@ -117,6 +117,8 @@ class TripsRepository @Inject constructor(
 
     fun discoveryNextPageResult(): Observable<Either<Throwable, DiscoveryInfo>> = paginator
         .nextPage()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
         .toObservable()
 
 

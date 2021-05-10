@@ -6,5 +6,5 @@ import com.tiparo.tripway.repository.network.api.services.TripsService
 data class DiscoveryInfo(
     @SerializedName("anchor") val anchor: String?,
     @SerializedName("has_more") val hasMore: Boolean?,
-    @SerializedName("trips") val trips: List<TripsService.Trip>?
+    @SerializedName("trips") val trips: List<TripsService.Trip>
 )
