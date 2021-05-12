@@ -3,14 +3,15 @@ package com.tiparo.tripway.views.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -20,6 +21,7 @@ import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentLoginBinding
 import com.tiparo.tripway.viewmodels.SignInViewModel
 import com.tiparo.tripway.viewmodels.SignInViewModel.SignInState
+import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
 import javax.inject.Inject
 
@@ -31,11 +33,12 @@ class LoginFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val signInViewModel: SignInViewModel by activityViewModels {
+    private val vm: SignInViewModel by activityViewModels {
         viewModelFactory
     }
 
     private var _binding: FragmentLoginBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -45,11 +48,16 @@ class LoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.server_client_id))
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+        if (vm.isSignedIn()) {
+            findNavController().navigate(R.id.discovery_fragment_dest)
+        }
 
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
     }
 
     override fun onCreateView(
@@ -58,28 +66,54 @@ class LoginFragment : Fragment() {
     ): View? {
 //        Log.d(TAG,"LoginFragment onCreateView()")
         _binding = FragmentLoginBinding.inflate(inflater)
-        val view = binding.root
+        return binding.root
+    }
 
-        view.sign_in_button.setOnClickListener {
-            signInViewModel.authenticationState.value = SignInState.LOADING
-            //Call GoogleAuthApi to receive tokenId
-            val signInIntent = mGoogleSignInClient.signInIntent
-            startActivityForResult(
-                signInIntent,
-                RC_GET_TOKEN
-            )
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        vm.authenticationState.value = SignInState.UNAUTHENTICATED
+
+//        view.sign_in_button_google.setOnClickListener {
+//            vm.authenticationState.value = SignInState.LOADING
+//
+//            //Call GoogleAuthApi to receive tokenId
+//            val signInIntent = mGoogleSignInClient.signInIntent
+//            startActivityForResult(
+//                signInIntent,
+//                RC_GET_TOKEN
+//            )
+//        }
+
+        view.button_sign_in.setOnClickListener {
+            vm.authenticationState.value = SignInState.LOADING
+
+            val email = et_email.text.toString()
+            val password = et_password.text.toString()
+
+            if (!TextUtils.isEmpty(email) and !TextUtils.isEmpty(password)) {
+                signIn(email, password)
+            }
         }
 
-        val navController = findNavController()
+        view.button_sign_up.setOnClickListener {
+            val email = et_email.text.toString()
+            val password = et_password.text.toString()
 
-        signInViewModel.authenticationState.value = SignInState.UNAUTHENTICATED
-        signInViewModel.authenticationState.observe(viewLifecycleOwner) {
+            if (et_nickname.visibility == View.VISIBLE) {
+                val nickname = et_nickname.text.toString()
+                vm.authenticationState.value = SignInState.LOADING
+                signUp(email, nickname, password)
+            } else et_nickname.visibility = View.VISIBLE
+        }
+
+        vm.authenticationState.observe(viewLifecycleOwner, Observer {
+            val navController = findNavController()
             when (it) {
                 SignInState.AUTHENTICATED -> {
                     hideProgress()
-                    navController.popBackStack()
+                    navController.navigate(R.id.discovery_fragment_dest)
                 }
-                SignInState.FAILED_AUTHENTICATION -> {
+                SignInState.FAILED_AUTHENTICATION, SignInState.FAILED_REGISTERED -> {
                     hideProgress()
                     Toast.makeText(
                         context,
@@ -93,9 +127,23 @@ class LoginFragment : Fragment() {
                 else -> {
                 }
             }
-        }
+        })
+    }
 
-        return view
+    private fun signIn(email: String, password: String) {
+        if (email == "test") {
+            findNavController().navigate(R.id.discovery_fragment_dest)
+        } else {
+            vm.signIn(email, password)
+        }
+    }
+
+    private fun signUp(email: String, nickname: String, password: String) {
+        if (email.isNotBlank() and password.isNotBlank() and nickname.isNotBlank()) {
+            vm.signUp(email, nickname, password)
+        } else {
+            Toast.makeText(context, "Заполните все строчки", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onDestroyView() {
@@ -109,14 +157,14 @@ class LoginFragment : Fragment() {
         (requireActivity().applicationContext as BaseApplication).appComponent.inject(this)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == RC_GET_TOKEN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            signInViewModel.handleSignInResult(task);
-        }
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        if (requestCode == RC_GET_TOKEN) {
+//            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+//            vm.handleSignInGoogleResult(task);
+//        }
+//    }
 
     private fun showProgress() {
         binding.root.signInProgressBar.visibility = View.VISIBLE

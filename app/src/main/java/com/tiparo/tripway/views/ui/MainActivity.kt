@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host)
         appBarConfiguration =
-            AppBarConfiguration.Builder(R.id.home_fragment_dest)
+            AppBarConfiguration.Builder(R.id.discovery_fragment_dest)
                 .build()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.home_fragment_dest -> {
+                R.id.discovery_fragment_dest -> {
                     toolbar.visibility = View.VISIBLE
                     bottomNavigationView.visibility = View.VISIBLE
                 }

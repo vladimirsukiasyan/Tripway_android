@@ -3,9 +3,12 @@ package com.tiparo.tripway.repository
 import androidx.lifecycle.LiveData
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.models.AuthResponse
-import com.tiparo.tripway.models.Resource
+import com.tiparo.tripway.utils.Resource
 import com.tiparo.tripway.repository.network.api.ApiResponse
 import com.tiparo.tripway.repository.network.api.services.AuthService
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,5 +23,11 @@ class AuthRepository @Inject constructor(
                 return authService.authBackend(tokenId)
             }
         }.asLiveData()
+    }
+
+    fun createUser(token: String, email: String, nickname: String, password: String): Completable {
+        return authService.createUser(token, email, nickname, password)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 }

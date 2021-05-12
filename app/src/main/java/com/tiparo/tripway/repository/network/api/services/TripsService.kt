@@ -1,13 +1,15 @@
 package com.tiparo.tripway.repository.network.api.services
 
-import androidx.lifecycle.LiveData
-import com.tiparo.tripway.repository.network.api.ApiResponse
+import com.tiparo.tripway.discovery.api.dto.DiscoveryInfo
+import io.reactivex.Single
+import retrofit2.http.Field
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface TripsService {
 
-    @GET("tripway/trips/own")
-    fun getOwnTrips(): LiveData<ApiResponse<List<Trip>>>
+    @GET("discovery")
+    fun getTripsDiscoveryPage(@Query("anchor") anchor: String?): Single<DiscoveryInfo>
 
     //TODO Решить вопрос с размещение модели в пакетах
     data class Trip(
@@ -16,6 +18,7 @@ interface TripsService {
         val is_completed: Boolean,
         val first_point_name: String,
         val last_point_name: String,
+        val photo: String,
         val user_id: String?
     )
 }

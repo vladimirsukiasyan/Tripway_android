@@ -100,9 +100,9 @@ class PostPointMapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tripsViewModel.locationName.observe(viewLifecycleOwner) {
-            binding.locationName = it
-        }
+//        tripsViewModel.locationName.observe(viewLifecycleOwner) {
+//            binding.locationName = it
+//        }
 
         initAutocompleteMapView()
         initMapView()

@@ -9,7 +9,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BuildConfig
 import com.tiparo.tripway.models.Point
-import com.tiparo.tripway.models.Resource
+import com.tiparo.tripway.utils.Resource
 import com.tiparo.tripway.models.Trip
 import com.tiparo.tripway.repository.database.PointDao
 import com.tiparo.tripway.repository.database.TripDao
@@ -36,25 +36,14 @@ class PostRepository @Inject constructor(
     private val googleMapsService: GoogleMapsServices
 ) {
 
-    private val tripsMock = MutableList(10) { id ->
-        TripsService.Trip(
-            id = id.toString(),
-            trip_name = "Trip $id",
-            is_completed = id % 2 == 0,
-            first_point_name = "Tokyo",
-            last_point_name = "Baikal",
-            user_id = "id$id"
-        )
-    }
-
-    fun loadMyTrips(): LiveData<Resource<List<TripsService.Trip>>> {
-        return object :
-            NetworkBoundResource<List<TripsService.Trip>, List<TripsService.Trip>>(appExecutors) {
-            override fun createCall(): LiveData<ApiResponse<List<TripsService.Trip>>> {
-                return tripsService.getOwnTrips()
-            }
-        }.asLiveData()
-    }
+//    fun loadMyTrips(): LiveData<Resource<List<TripsService.Trip>>> {
+//        return object :
+//            NetworkBoundResource<List<TripsService.Trip>, List<TripsService.Trip>>(appExecutors) {
+//            override fun createCall(): LiveData<ApiResponse<List<TripsService.Trip>>> {
+//                return tripsService.getOwnTrips()
+//            }
+//        }.asLiveData()
+//    }
 
     fun reverseGeocode(location: LatLng): LiveData<Resource<GeocodingResult>> {
         return object :
@@ -77,9 +66,9 @@ class PostRepository @Inject constructor(
 
     fun convertLatLng(location: LatLng) = "${location.latitude},${location.longitude}"
 
-    fun loadMyTripsMock(): LiveData<Resource<List<TripsService.Trip>>> {
-        return MutableLiveData(Resource.success(tripsMock))
-    }
+//    fun loadMyTripsMock(): LiveData<Resource<List<TripsService.Trip>>> {
+//        return MutableLiveData(Resource.success())
+//    }
 
     suspend fun savePoint(pointOnAdding: Point, tripName: String) =
         withContext(Dispatchers.IO) {

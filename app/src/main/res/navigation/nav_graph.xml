@@ -18,13 +18,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/home_fragment_dest">
+    app:startDestination="@id/login_fragment_dest">
 
     <fragment
-        android:id="@+id/home_fragment_dest"
-        android:name="com.tiparo.tripway.views.ui.HomeFragment"
-        android:label="@string/fragment_home_label"
-        tools:layout="@layout/fragment_home">
+        android:id="@+id/discovery_fragment_dest"
+        android:name="com.tiparo.tripway.discovery.ui.DiscoveryFragment"
+        android:label="@string/fragment_discovery_label"
+        tools:layout="@layout/fragment_discovery">
         <argument
             android:name="user_message"
             app:argType="integer"
@@ -83,8 +83,8 @@
             tools:layout="@layout/fragment_post_point_description">
             <action
                 android:id="@+id/action_post_point_description_fragment_dest_to_home_fragment_dest"
-                app:destination="@id/home_fragment_dest"
-                app:popUpTo="@id/home_fragment_dest"
+                app:destination="@id/discovery_fragment_dest"
+                app:popUpTo="@id/discovery_fragment_dest"
                 app:popUpToInclusive="true" />
         </fragment>
     </navigation>

@@ -17,7 +17,6 @@
 package com.tiparo.tripway.api
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.android.example.github.util.LiveDataCallAdapterFactory
 import com.tiparo.tripway.repository.network.api.ApiErrorResponse
 import com.tiparo.tripway.repository.network.api.HEADER_SESSION_EXPIRED
 import com.tiparo.tripway.repository.network.api.services.TripsService

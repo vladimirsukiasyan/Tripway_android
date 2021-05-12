@@ -21,7 +21,7 @@
 
         <variable
             name="trip"
-            type="com.tiparo.tripway.models.Trip" />
+            type="com.tiparo.tripway.repository.network.api.services.TripsService.Trip" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -59,14 +59,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text='@{trip.tripName, default="No trip name"}' />
+                    android:text='@{trip.trip_name, default="No trip name"}' />
 
                 <TextView
                     android:id="@+id/tripRoute"
                     style="@style/Tags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text='@{trip.firstPointName +">"+trip.lastPointName, default="No trip route"}' />
+                    android:text='@{trip.first_point_name +">"+trip.last_point_name, default="No trip route"}' />
 
             </LinearLayout>
         </LinearLayout>

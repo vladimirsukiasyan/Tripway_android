@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tiparo.tripway.models
+package com.tiparo.tripway.utils
 
 import com.tiparo.tripway.repository.network.api.ErrorDescription
 
