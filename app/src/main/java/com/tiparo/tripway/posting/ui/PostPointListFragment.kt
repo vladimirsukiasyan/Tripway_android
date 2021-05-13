@@ -1,14 +1,15 @@
-package com.tiparo.tripway.views.ui
+package com.tiparo.tripway.posting.ui
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.snackbar.Snackbar
@@ -16,9 +17,12 @@ import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentPostPointListBinding
+import com.tiparo.tripway.repository.network.api.services.TripsService
+import com.tiparo.tripway.utils.ErrorBody
 import com.tiparo.tripway.utils.setupSnackbar
 import com.tiparo.tripway.viewmodels.PostPointViewModel
 import com.tiparo.tripway.views.adapters.TripsOwnListAdapter
+import kotlinx.android.synthetic.main.fragment_discovery.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -67,6 +71,34 @@ class PostPointListFragment : Fragment() {
         initRecycleView()
 
         viewModel.loadTrips()
+
+        viewModel.trips.observe(viewLifecycleOwner, Observer { state ->
+            render(state)
+        })
+    }
+
+    private fun render(state: OwnTripsListUiState) {
+        state.fold({ renderLoading() }, { tripsState -> renderData(tripsState) }) { error -> renderError(error) }
+    }
+
+    private fun renderLoading() {
+    }
+
+    private fun renderData(data: List<TripsService.Trip>) {
+        adapter.submitList(data)
+    }
+
+    private fun renderError(error: ErrorBody) {
+        when (error.type) {
+            ErrorBody.ErrorType.NO_INTERNET -> {
+                Toast.makeText(context, "Куда-то делся Интернет", Toast.LENGTH_LONG).show()
+            }
+            else -> Toast.makeText(
+                context,
+                "Неизвестная ошибка, но мы скоро все исправим",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -95,9 +127,5 @@ class PostPointListFragment : Fragment() {
             })
 
         binding.postTripsList.adapter = adapter
-
-        viewModel.items.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
     }
 }

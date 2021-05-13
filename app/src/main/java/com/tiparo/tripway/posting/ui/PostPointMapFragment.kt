@@ -1,4 +1,4 @@
-package com.tiparo.tripway.views.ui
+package com.tiparo.tripway.posting.ui
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -39,6 +39,7 @@ import javax.inject.Inject
 class PostPointMapFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var appExecutors: AppExecutors
 
@@ -100,9 +101,10 @@ class PostPointMapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        tripsViewModel.locationName.observe(viewLifecycleOwner) {
-//            binding.locationName = it
-//        }
+        tripsViewModel.locationName.observe(viewLifecycleOwner) {
+            binding.locationNameResult = it
+            binding.locationName = it.data
+        }
 
         initAutocompleteMapView()
         initMapView()

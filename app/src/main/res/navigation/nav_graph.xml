@@ -27,11 +27,8 @@
         tools:layout="@layout/fragment_discovery">
         <argument
             android:name="user_message"
-            app:argType="integer"
-            android:defaultValue="0"/>
-        <action
-            android:id="@+id/action_home_fragment_to_loginFragment"
-            app:destination="@id/login_fragment_dest" />
+            android:defaultValue="0"
+            app:argType="integer" />
         <action
             android:id="@+id/action_home_fragment_dest_to_post_point_list_fragment_dest"
             app:destination="@id/postPointGraph" />
@@ -43,14 +40,20 @@
         android:id="@+id/login_fragment_dest"
         android:name="com.tiparo.tripway.views.ui.LoginFragment"
         android:label="@string/fragment_login_label"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_login_fragment_to_home_fragment"
+            app:popUpTo="@id/login_fragment_dest"
+            app:popUpToInclusive="true"
+            app:destination="@id/discovery_fragment_dest" />
+    </fragment>
 
     <navigation
         android:id="@+id/postPointGraph"
         app:startDestination="@id/post_point_list_fragment_dest">
         <fragment
             android:id="@+id/post_point_list_fragment_dest"
-            android:name="com.tiparo.tripway.views.ui.PostPointListFragment"
+            android:name="com.tiparo.tripway.posting.ui.PostPointListFragment"
             android:label="@string/fragment_post_point_list_label"
             app:startDestination="@id/action_post_point_list_fragment_dest_to_post_point_map_fragment_dest"
             tools:layout="@layout/fragment_post_point_list">
@@ -60,7 +63,7 @@
         </fragment>
         <fragment
             android:id="@+id/post_point_map_fragment_dest"
-            android:name="com.tiparo.tripway.views.ui.PostPointMapFragment"
+            android:name="com.tiparo.tripway.posting.ui.PostPointMapFragment"
             android:label="@string/fragment_post_point_map_label"
             tools:layout="@layout/fragment_post_point_map">
             <action
@@ -69,7 +72,7 @@
         </fragment>
         <fragment
             android:id="@+id/post_point_photos_fragment_dest"
-            android:name="com.tiparo.tripway.views.ui.PostPointPhotosFragment"
+            android:name="com.tiparo.tripway.posting.ui.PostPointPhotosFragment"
             android:label="@string/fragment_post_point_photos_label"
             tools:layout="@layout/fragment_post_point_photos">
             <action
@@ -78,7 +81,7 @@
         </fragment>
         <fragment
             android:id="@+id/post_point_description_fragment_dest"
-            android:name="com.tiparo.tripway.views.ui.PostPointDescriptionFragment"
+            android:name="com.tiparo.tripway.posting.ui.PostPointDescriptionFragment"
             android:label="@string/fragment_post_point_description_label"
             tools:layout="@layout/fragment_post_point_description">
             <action

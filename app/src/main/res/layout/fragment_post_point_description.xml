@@ -87,7 +87,6 @@
             android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:background="@drawable/post_point_button"
-            android:onClick="@{() -> viewmodel.savePoint()}"
             android:text="@string/publishPoint"
             android:textAllCaps="false"
             android:textColor="@color/colorTextOnButton"

@@ -3,6 +3,10 @@ package com.tiparo.tripway.di
 import android.app.Application
 import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.discovery.ui.DiscoveryFragment
+import com.tiparo.tripway.posting.ui.PostPointDescriptionFragment
+import com.tiparo.tripway.posting.ui.PostPointListFragment
+import com.tiparo.tripway.posting.ui.PostPointMapFragment
+import com.tiparo.tripway.posting.ui.PostPointPhotosFragment
 import com.tiparo.tripway.views.ui.*
 import dagger.BindsInstance
 import dagger.Component

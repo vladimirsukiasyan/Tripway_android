@@ -9,17 +9,21 @@
 
         <import type="android.view.View" />
 
-<!--        <import type="com.tiparo.tripway.utils.Resource" />-->
+        <import type="com.tiparo.tripway.utils.Resource" />
 
-<!--        <variable-->
-<!--            name="locationName"-->
-<!--            type="com.tiparo.tripway.utils.Resource" />-->
+        <variable
+            name="locationNameResult"
+            type="com.tiparo.tripway.utils.Resource" />
+
+        <variable
+            name="locationName"
+            type="String" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".views.ui.PostPointMapFragment">
+        tools:context=".posting.ui.PostPointMapFragment">
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -27,8 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="8dp"/>
-<!--            android:visibility="@{locationName.status == Status.LOADING? View.VISIBLE: View.GONE}" />-->
+            android:layout_margin="8dp"
+            android:visibility="@{locationNameResult.status == Resource.Status.LOADING? View.VISIBLE: View.GONE}" />
 
 
         <androidx.fragment.app.FragmentContainerView
@@ -64,6 +68,7 @@
                 android:textColor="@color/colorText"
                 android:textSize="18sp"
                 android:textStyle="normal"
+                android:text="@{locationName}"
                 />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -82,8 +87,6 @@
                 app:rippleColor="?colorPrimaryDark"
                 tools:background="?colorPrimary"
                 tools:ignore="elevation" />
-
-
         </LinearLayout>
     </FrameLayout>
 </layout>

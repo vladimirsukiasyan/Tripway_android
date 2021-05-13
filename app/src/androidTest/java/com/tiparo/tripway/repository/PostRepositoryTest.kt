@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tiparo.tripway.posting.domain.PostRepository
 import com.tiparo.tripway.repository.database.PointDao
 import com.tiparo.tripway.repository.database.TripDao
 import com.tiparo.tripway.repository.database.TripwayDB

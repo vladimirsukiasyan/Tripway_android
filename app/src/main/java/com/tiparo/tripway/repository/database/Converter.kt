@@ -19,7 +19,7 @@ class Converter {
     }
 
     @TypeConverter
-    fun addressComponentsToSting(addressComponents: List<AddressComponent>): String =
+    fun addressComponentsToString(addressComponents: List<AddressComponent>): String =
         Gson().toJson(addressComponents)
 
 

@@ -49,7 +49,7 @@ class LoginFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         if (vm.isSignedIn()) {
-            findNavController().navigate(R.id.discovery_fragment_dest)
+            findNavController().navigate(R.id.action_login_fragment_to_home_fragment)
         }
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -111,7 +111,7 @@ class LoginFragment : Fragment() {
             when (it) {
                 SignInState.AUTHENTICATED -> {
                     hideProgress()
-                    navController.navigate(R.id.discovery_fragment_dest)
+                    navController.navigate(R.id.action_login_fragment_to_home_fragment)
                 }
                 SignInState.FAILED_AUTHENTICATION, SignInState.FAILED_REGISTERED -> {
                     hideProgress()

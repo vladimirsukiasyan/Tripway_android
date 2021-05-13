@@ -3,15 +3,13 @@ package com.tiparo.tripway.repository
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.discovery.api.dto.DiscoveryInfo
 import com.tiparo.tripway.repository.network.api.services.TripsService
-import com.tiparo.tripway.utils.BiFunction
-import com.tiparo.tripway.utils.Either
-import com.tiparo.tripway.utils.PageToken
-import com.tiparo.tripway.utils.RxPaginator
+import com.tiparo.tripway.utils.*
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 
 class TripsRepository @Inject constructor(
@@ -120,6 +118,13 @@ class TripsRepository @Inject constructor(
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .toObservable()
+
+    fun getOwnTrips(): Observable<Either<Throwable, List<TripsService.Trip>>> = tripsService.getOwnTrips()
+            .toObservable()
+            .doOnError { er: Throwable -> Timber.e(er.toString()) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(Transformers.neverThrowO())
 
 
     private val paginator: RxPaginator<DiscoveryInfo, Unit> = RxPaginator(

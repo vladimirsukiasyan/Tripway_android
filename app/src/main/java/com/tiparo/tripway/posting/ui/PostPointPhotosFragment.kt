@@ -1,4 +1,4 @@
-package com.tiparo.tripway.views.ui
+package com.tiparo.tripway.posting.ui
 
 import android.app.Activity
 import android.content.Context

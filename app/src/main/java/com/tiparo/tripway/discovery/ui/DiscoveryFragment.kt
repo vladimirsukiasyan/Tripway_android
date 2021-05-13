@@ -74,7 +74,7 @@ class DiscoveryFragment : Fragment() {
     }
 
     private fun render(state: DiscoveryUiState) {
-        state.fold({ renderLoading() }, { friendsState -> renderData(friendsState) }) { error -> renderError(error) }
+        state.fold({ renderLoading() }, { discoveryState -> renderData(discoveryState) }) { error -> renderError(error) }
     }
 
     private fun renderLoading() {

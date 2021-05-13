@@ -15,7 +15,8 @@ data class Point(
     @Embedded var location: Location = Location(),
     @ColumnInfo(name = "description") var description: String = "",
     @ColumnInfo(name = "photos") var photos: List<Uri> = arrayListOf(),
-    @ColumnInfo(name = "trip_id") var tripId: Long? = null
+    @ColumnInfo(name = "trip_id") var tripId: Long? = null,
+    var tripName: String?
 ) {
     data class Location(
         @ColumnInfo(name = "position") var position: LatLng = LatLng(1.0, 1.0),

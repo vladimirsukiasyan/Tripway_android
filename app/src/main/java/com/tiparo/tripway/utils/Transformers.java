@@ -4,6 +4,9 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableTransformer;
+import io.reactivex.MaybeTransformer;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.SingleTransformer;

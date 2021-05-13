@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1078993784452-jvr4avhango1ra63kh0eq6atsj2413to.apps.googleusercontent.com",
+          "client_id": "1078993784452-fkfikfnk42po9kpde7ar6e0ob4nia1cj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.tiparo.tripway",
-            "certificate_hash": "6fcbd60f6942b65ab4fd360ad42892501485beb7"
+            "certificate_hash": "5495283b8e3343ea5254ccd32121c819e445bd68"
           }
         },
         {
@@ -29,7 +29,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBJ49ihLlcO-EBfYj915eFuJXjzgbEtLBY"
+          "current_key": "AIzaSyD2PfXFMNBpW5cKN-lrjM8P-DLTexfk3pQ"
         }
       ],
       "services": {

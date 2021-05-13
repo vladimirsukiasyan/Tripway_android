@@ -1,6 +1,7 @@
 package com.tiparo.tripway.repository.network.http
 
 import android.app.Application
+import com.tiparo.tripway.utils.LiveDataCallAdapterFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.tiparo.tripway.repository.network.api.HEADER_ACCEPT_LANGUAGE
@@ -47,6 +48,7 @@ class BaseHttpClient constructor(
             .baseUrl(baseURL)
             .addConverterFactory(NullOnEmptyConverterFactory)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

@@ -19,13 +19,12 @@ package com.tiparo.tripway.views.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.TripOwnItemBinding
-import com.tiparo.tripway.models.Trip
+import com.tiparo.tripway.repository.network.api.services.TripsService.*
 import com.tiparo.tripway.views.common.DataBoundListAdapter
 
 class TripsOwnListAdapter(
@@ -68,7 +67,7 @@ class TripsOwnListAdapter(
     override fun bind(binding: TripOwnItemBinding, item: Trip) {
         binding.trip = item
         Glide.with(binding.root.context)
-            .load(item.photoUri)
+            .load(item.photo)
             .placeholder(R.drawable.trip_card_own_placeholder)
             .into(binding.tripImage)
     }

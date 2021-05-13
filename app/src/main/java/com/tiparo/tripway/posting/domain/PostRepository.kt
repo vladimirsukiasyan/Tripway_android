@@ -1,16 +1,17 @@
-package com.tiparo.tripway.repository
+package com.tiparo.tripway.posting.domain
 
 import android.app.Application
 import android.net.Uri
+import android.provider.MediaStore
+import androidx.core.net.toFile
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.room.withTransaction
 import com.google.android.gms.maps.model.LatLng
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BuildConfig
 import com.tiparo.tripway.models.Point
-import com.tiparo.tripway.utils.Resource
-import com.tiparo.tripway.models.Trip
+import com.tiparo.tripway.posting.api.dto.PointApi
+import com.tiparo.tripway.repository.NetworkBoundResource
+import com.tiparo.tripway.repository.database.Converter
 import com.tiparo.tripway.repository.database.PointDao
 import com.tiparo.tripway.repository.database.TripDao
 import com.tiparo.tripway.repository.database.TripwayDB
@@ -20,8 +21,24 @@ import com.tiparo.tripway.repository.network.api.services.GoogleMapsServices
 import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingResponse
 import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingResponse.GeocodingResult
 import com.tiparo.tripway.repository.network.api.services.TripsService
+import com.tiparo.tripway.utils.Either
 import com.tiparo.tripway.utils.FileUtils
-import kotlinx.coroutines.*
+import com.tiparo.tripway.utils.Resource
+import com.tiparo.tripway.utils.Transformers
+import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -70,38 +87,57 @@ class PostRepository @Inject constructor(
 //        return MutableLiveData(Resource.success())
 //    }
 
-    suspend fun savePoint(pointOnAdding: Point, tripName: String) =
-        withContext(Dispatchers.IO) {
-            // We need to do two required actions :
-            // FIRST, LOAD IMAGES
-            // PUT A LINK TO IMAGE, SAVED in local storage TO POINT
-            tripwayDB.withTransaction {
-                val savedPhotosUriList = savePickedPhotos(pointOnAdding.photos).filterNotNull()
-
-                pointOnAdding.photos = savedPhotosUriList
-                pointOnAdding.name = getPointName(pointOnAdding.location.addressComponents)
-
-                if (pointOnAdding.tripId == null) {
-                    val newTrip =
-                        Trip(tripName = tripName, firstPointName = pointOnAdding.name, photoUri = pointOnAdding.photos.last())
-                    val tripId = tripDao.insertTrip(newTrip)
-                    pointOnAdding.tripId = tripId
+    fun savePoint(pointOnAdding: Point): Observable<Either<Throwable, TripsService.PointPostResult>> {
+        return tripsService.postPoint(pointOnAdding.mapToApiDto())
+            .doOnError { er: Throwable -> Timber.e(er.toString()) }
+            .flatMap {
+                val pointId = it.id!!
+                val multipartListBody = pointOnAdding.photos.map {uri ->
+                    prepareFilePart(uri)
                 }
-                pointDao.insertPoint(pointOnAdding)
-                tripDao.updateTripByNewPoint(
-                    tripId = pointOnAdding.tripId!!,
-                    name = pointOnAdding.name,
-                    photoUri = pointOnAdding.photos.last()
-                )
-
+                tripsService
+                    .uploadPhotos(multipartListBody, pointId)
+                    .defaultIfEmpty(TripsService.PointPostResult(null))
             }
-        }
+            .toObservable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(Transformers.neverThrowO())
+    }
+
+    private fun prepareFilePart(fileUri: Uri): MultipartBody.Part {
+        val byteArray = application.applicationContext.contentResolver.openInputStream(fileUri)!!.readBytes()
+        val type = application.contentResolver.getType(fileUri)!!
+
+        val bodyRequest = byteArray.toRequestBody(type.toMediaTypeOrNull())
+
+        return MultipartBody.Part.createFormData("photos", fileUri.lastPathSegment, bodyRequest)
+    }
+
+    private fun createPartFromString(str: String): RequestBody {
+        return str.toRequestBody(MultipartBody.FORM)
+    }
+
+    private fun Point.mapToApiDto() = PointApi(
+        name,
+        PointApi.Location(
+            location.position.latitude,
+            location.position.longitude,
+            location.address,
+            Converter().addressComponentsToString(location.addressComponents)
+        ),
+        description,
+        tripId,
+        tripName
+    )
+
 
     /**
      * Here we need to obtain the most precious short_name of location starting with <locality> and ending to <country>
      */
 
-    suspend fun getPointName(addressComponents: List<GeocodingResult.AddressComponent>) = withContext(Dispatchers.Default) {
+    suspend fun getPointName(addressComponents: List<GeocodingResult.AddressComponent>) =
+        withContext(Dispatchers.Default) {
             val locationTypes = listOf(
                 "sublocality_level_2",
                 "locality",

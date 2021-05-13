@@ -1,5 +1,6 @@
 package com.tiparo.tripway.viewmodels
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -10,57 +11,112 @@ import com.google.android.libraries.places.api.model.AddressComponents
 import com.google.android.libraries.places.api.model.Place
 import com.tiparo.tripway.R
 import com.tiparo.tripway.models.Point
-import com.tiparo.tripway.models.Trip
-import com.tiparo.tripway.repository.PostRepository
+import com.tiparo.tripway.posting.domain.PostRepository
+import com.tiparo.tripway.posting.ui.OwnTripsListUiState
+import com.tiparo.tripway.posting.ui.PostPointUiState
 import com.tiparo.tripway.repository.TripsRepository
 import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingResponse.GeocodingResult
-import com.tiparo.tripway.utils.Event
+import com.tiparo.tripway.repository.network.api.services.TripsService.Trip
+import com.tiparo.tripway.utils.*
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@SuppressLint("CheckResult")
 class PostPointViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val tripsRepository: TripsRepository
 ) : ViewModel() {
 
-    private val _items = MediatorLiveData<List<Trip>>().apply { value = listOf() }
-    val items: MediatorLiveData<List<Trip>> = _items
-
-    private val pointOnAdding = Point()
+    private val pointOnAdding = Point(tripName = null)
     private var pickedPhotosOnAdding: List<Uri> = arrayListOf()
-
-    // Two-way databinding, exposing MutableLiveData
-    val description = MutableLiveData<String>()
-    val tripName = MutableLiveData<String>()
     var isNewPoint = false
 
-    private val _snackbarText = MutableLiveData<Event<Int>>()
-    val snackbarText: LiveData<Event<Int>> = _snackbarText
+    private val loadTripsIntent = PublishSubject.create<RxUnit>()
+    private val retryTripsIntent = PublishSubject.create<RxUnit>()
+    private val savePointIntent = PublishSubject.create<Point>()
+    val compositeDisposable = CompositeDisposable()
 
-    private val _pointSaved = MutableLiveData<Event<Int>>()
-    val pointSaved: LiveData<Event<Int>> = _pointSaved
-
+    val trips = MutableLiveData<OwnTripsListUiState>()
+    val description = MutableLiveData<String>()
+    val tripName = MutableLiveData<String>()
     val pickedLocation = MutableLiveData<LatLng>()
     val pickedPlace = MutableLiveData<Place>()
+    val snackbarText = MutableLiveData<Event<Int>>()
+    val pointSaved = MutableLiveData<PostPointUiState>()
 
-//    val locationName = MediatorLiveData<Resource<String>>().apply {
-//        addSource(pickedLocation) { position ->
-//            //TODO вынести в отдельный обзервер для удобочитаемости
-//            val resource = postRepository.reverseGeocode(position)
-//            addSource(resource) {
-//                saveGeocodingResults(position, it.data)
-//
-//                value = Resource.success(it.data?.formatted_address)
-//                //TODO обработать случай, когда data = null (когда Google возвращает Empty Body)
-//            }
-//        }
-//        addSource(pickedPlace) { place ->
-//            savePlace(place)
-//
-//            value = Resource.success(place.name)
-//        }
-//    }
+    init {
+        val disposable = getTrips(tripsRepository)
+            .scan(OwnTripsListUiState.idle(), { prevState, mutator ->
+                mutator.apply(prevState)
+            })
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { value: OwnTripsListUiState -> trips.postValue(value) }
+
+        savePoint(postRepository)
+            .scan(PostPointUiState.idle(), { prevState, mutator ->
+                mutator.apply(prevState)
+            })
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { value: PostPointUiState -> pointSaved.postValue(value) }
+
+        compositeDisposable.add(disposable)
+    }
+
+    private fun getTrips(repository: TripsRepository): Observable<UnaryOperator<OwnTripsListUiState>> {
+        return Observable.merge(loadTripsIntent, retryTripsIntent)
+            .flatMap {
+                repository.getOwnTrips()
+                    .map { result ->
+                        if (result.isRight) {
+                            OwnTripsListUiState.Mutators.discoveryData(result.right)
+                        } else {
+                            OwnTripsListUiState.Mutators.discoveryError(result.left)
+                        }
+                    }
+                    .compose(Transformers.startWithInMain(OwnTripsListUiState.Mutators.discoveryLoading()))
+            }
+    }
+
+    private fun savePoint(repository: PostRepository): Observable<UnaryOperator<PostPointUiState>> {
+        return savePointIntent
+            .flatMap { point->
+                point.name = locationName.value?.data?: "Неизестное"
+                repository.savePoint(point)
+                    .map { result->
+                        if (result.isRight) {
+                            PostPointUiState.Mutators.discoveryData(result.right)
+                        } else {
+                            PostPointUiState.Mutators.discoveryError(result.left)
+                        }
+                    }
+                    .compose(Transformers.startWithInMain(PostPointUiState.Mutators.discoveryLoading()))
+            }
+    }
+
+    val locationName = MediatorLiveData<Resource<String>>().apply {
+        addSource(pickedLocation) { position ->
+            //TODO вынести в отдельный обзервер для удобочитаемости
+            val resource = postRepository.reverseGeocode(position)
+            addSource(resource) {
+                saveGeocodingResults(position, it.data)
+
+                value = Resource.success(it.data?.formatted_address)
+
+                //TODO обработать случай, когда data = null (когда Google возвращает Empty Body)
+            }
+        }
+        addSource(pickedPlace) { place ->
+            savePlace(place)
+
+            //todo если не удалось получить name, то выдавать ошибку! или default value
+            value = Resource.success(place.name)
+        }
+    }
 
     private fun savePlace(place: Place) {
         with(pointOnAdding.location) {
@@ -92,56 +148,23 @@ class PostPointViewModel @Inject constructor(
         pickedPhotosOnAdding = obtainResult
     }
 
-    fun savePoint() {
-        val description = description.value
-        if (description.isNullOrBlank()) {
-            showSnackbarMessage(R.string.snackbar_empty_description_post_message)
-            return
-        }
-        val tripName = tripName.value
-        if (tripName.isNullOrBlank() && isNewPoint) {
-            showSnackbarMessage(R.string.snackbar_empty_trip_name_post_message)
-            return
-        }
+    fun savePoint(description: String, tripName: String?) {
         pointOnAdding.description = description
+        pointOnAdding.tripName = tripName
         pointOnAdding.photos = pickedPhotosOnAdding
 
-        createPoint(pointOnAdding, if(isNewPoint) tripName!! else "")
-        // TODO отправить message на showSnackbar в следующий фрагмент
-        _pointSaved.value = Event(R.string.snackbar_post_point_saving)
+        savePointIntent.onNext(pointOnAdding)
     }
-
-    private fun createPoint(pointOnAdding: Point, tripName: String) =
-        //this job will be executive until application is destroyed
-        GlobalScope.launch {
-            postRepository.savePoint(pointOnAdding, tripName)
-        }
 
     fun loadTrips() {
-        //TODO добавить позже прогресс бар ожидания в виде
-        // _dataLoading.value = true в начале и _dataLoading.value = false в конце
-
-//        val tripsResult = tripsRepository.loadTrips()
-//        _items.addSource(tripsResult){
-//            when (it.status) {
-//                Resource.Status.SUCCESS -> {
-//                    _items.value = it.data
-//                }
-//                Resource.Status.ERROR -> {
-//                    _items.value = emptyList()
-//                    showSnackbarMessage(R.string.loading_trips_error)
-//                }
-//                Resource.Status.LOADING -> {
-//                }
-//            }
-//        }
+        loadTripsIntent.onNext(RxUnit.INSTANCE)
     }
 
-    private fun showSnackbarMessage(messageResource: Int) {
-        _snackbarText.value = Event(messageResource)
+    override fun onCleared() {
+        compositeDisposable.clear()
+        super.onCleared()
     }
 }
-
 
 private fun AddressComponents.mapToLocalAddressComponent(): List<GeocodingResult.AddressComponent> =
     asList().map {
