@@ -21,7 +21,6 @@ import com.tiparo.tripway.repository.network.api.services.TripsService
 import com.tiparo.tripway.utils.ErrorBody
 import com.tiparo.tripway.utils.Event
 import com.tiparo.tripway.utils.setupSnackbar
-import com.tiparo.tripway.viewmodels.PostPointViewModel
 import kotlinx.android.synthetic.main.fragment_post_point_description.*
 import javax.inject.Inject
 
@@ -115,7 +114,7 @@ class PostPointDescriptionFragment : Fragment() {
     private fun renderError(error: ErrorBody) {
         when (error.type) {
             ErrorBody.ErrorType.NO_INTERNET -> {
-                Toast.makeText(context, "Куда-то делся Интернет", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Не можем установить соединение с сервером", Toast.LENGTH_LONG).show()
             }
             else -> Toast.makeText(
                 context,

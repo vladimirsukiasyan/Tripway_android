@@ -12,9 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
-package com.tiparo.tripway.di
+ */package com.tiparo.tripway.di
 
 import androidx.lifecycle.ViewModel
 import dagger.MapKey

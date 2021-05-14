@@ -102,7 +102,7 @@
 
     <fragment
         android:id="@+id/profile_fragment_dest"
-        android:name="com.tiparo.tripway.views.ui.ProfilePageFragment"
+        android:name="com.tiparo.tripway.profile.ui.ProfileFragment"
         tools:layout="@layout/fragment_profile_page">
 
     </fragment>

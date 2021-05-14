@@ -97,7 +97,7 @@ class DiscoveryFragment : Fragment() {
                 Toast.makeText(context, "К сожалению, ваша лента пока пуста, так как мы ничего не нашли", Toast.LENGTH_LONG).show()
             }
             ErrorBody.ErrorType.NO_INTERNET -> {
-                Toast.makeText(context, "Куда-то делся Интернет", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Не можем установить соединение с сервером", Toast.LENGTH_LONG).show()
             }
             else -> Toast.makeText(context, "Упсс..Что-то сломалось. Мы скоро все исправим", Toast.LENGTH_LONG).show()
         }

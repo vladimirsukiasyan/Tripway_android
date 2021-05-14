@@ -8,7 +8,7 @@
 
         <variable
             name="viewmodel"
-            type="com.tiparo.tripway.viewmodels.PostPointViewModel" />
+            type="com.tiparo.tripway.posting.ui.PostPointViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

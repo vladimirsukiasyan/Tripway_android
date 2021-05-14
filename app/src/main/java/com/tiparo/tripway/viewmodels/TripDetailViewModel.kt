@@ -13,8 +13,7 @@ import com.tiparo.tripway.utils.Event
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class TripDetailViewModel @Inject constructor(private val tripsRepository: TripsRepository) :
-    ViewModel() {
+class TripDetailViewModel @Inject constructor(private val tripsRepository: TripsRepository) : ViewModel() {
     private var tripWithPoint: TripWithPoints? = null
 
     val _locationsItems = MutableLiveData<List<LatLng>>()

@@ -1,6 +1,7 @@
 package com.tiparo.tripway
 
 import android.app.Application
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.tiparo.tripway.di.DaggerAppComponent
 import timber.log.Timber
 
@@ -18,5 +19,6 @@ open class BaseApplication : Application() {
         if(BuildConfig.DEBUG){
             Timber.plant(Timber.DebugTree())
         }
+        Fresco.initialize(this);
     }
 }

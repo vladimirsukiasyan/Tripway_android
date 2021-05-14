@@ -20,9 +20,7 @@ import com.tiparo.tripway.databinding.FragmentPostPointListBinding
 import com.tiparo.tripway.repository.network.api.services.TripsService
 import com.tiparo.tripway.utils.ErrorBody
 import com.tiparo.tripway.utils.setupSnackbar
-import com.tiparo.tripway.viewmodels.PostPointViewModel
 import com.tiparo.tripway.views.adapters.TripsOwnListAdapter
-import kotlinx.android.synthetic.main.fragment_discovery.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -91,7 +89,7 @@ class PostPointListFragment : Fragment() {
     private fun renderError(error: ErrorBody) {
         when (error.type) {
             ErrorBody.ErrorType.NO_INTERNET -> {
-                Toast.makeText(context, "Куда-то делся Интернет", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Не можем установить соединение с сервером", Toast.LENGTH_LONG).show()
             }
             else -> Toast.makeText(
                 context,

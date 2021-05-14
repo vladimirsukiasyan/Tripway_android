@@ -1,19 +1,15 @@
-package com.tiparo.tripway.viewmodels
+package com.tiparo.tripway.posting.ui
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AddressComponents
 import com.google.android.libraries.places.api.model.Place
-import com.tiparo.tripway.R
 import com.tiparo.tripway.models.Point
 import com.tiparo.tripway.posting.domain.PostRepository
-import com.tiparo.tripway.posting.ui.OwnTripsListUiState
-import com.tiparo.tripway.posting.ui.PostPointUiState
 import com.tiparo.tripway.repository.TripsRepository
 import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingResponse.GeocodingResult
 import com.tiparo.tripway.repository.network.api.services.TripsService.Trip
@@ -22,8 +18,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @SuppressLint("CheckResult")

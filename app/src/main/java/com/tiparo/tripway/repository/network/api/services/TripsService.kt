@@ -2,6 +2,7 @@ package com.tiparo.tripway.repository.network.api.services
 
 import com.tiparo.tripway.discovery.api.dto.DiscoveryInfo
 import com.tiparo.tripway.posting.api.dto.PointApi
+import com.tiparo.tripway.profile.api.dto.ProfileInfo
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MultipartBody
@@ -21,6 +22,9 @@ interface TripsService {
 
     @GET("ownTrips")
     fun getOwnTrips(): Single<List<Trip>>
+
+    @GET("profile")
+    fun getProfile(): Single<ProfileInfo>
 
     //TODO Решить вопрос с размещение модели в пакетах
     data class Trip(

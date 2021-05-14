@@ -62,10 +62,10 @@
     <string name="create_account">Создать аккаунт</string>
     <string name="email_password">Email и пароль</string>
     <!-- PROFILE HOME PAGE -->
-    <string name="Trips">Trips</string>
-    <string name="Followers">Followers</string>
-    <string name="Following">Following</string>
+    <string name="trips">Маршруты</string>
+    <string name="followers">Подписчики</string>
+    <string name="following">Подписки</string>
     <string name="Default_Locale">Moscow</string>
-    <string name="Edit_Profile_btn">Edit Profile</string>
+    <string name="edit_profile_btn">Редактировать профиль</string>
     <string name="Profile_Nums">0</string>
 </resources>

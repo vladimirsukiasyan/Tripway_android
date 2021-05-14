@@ -21,7 +21,7 @@ class DiscoveryViewModel @Inject constructor(private val tripsRepository: TripsR
 
     val query = MutableLiveData<String>()
     val uiStateLiveData = MutableLiveData<DiscoveryUiState>()
-    val compositeDisposable = CompositeDisposable()
+    private val compositeDisposable = CompositeDisposable()
 
     private val loadFirstPageIntent = PublishSubject.create<RxUnit>()
     private val retryFirstPageIntent = PublishSubject.create<RxUnit>()
