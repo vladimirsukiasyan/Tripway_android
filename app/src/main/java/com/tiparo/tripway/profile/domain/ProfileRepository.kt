@@ -13,8 +13,8 @@ import javax.inject.Inject
 class ProfileRepository @Inject constructor(
     private val tripsService: TripsService
 ) {
-    fun getProfile(): Observable<Either<Throwable, ProfileInfo>> =
-        tripsService.getProfile()
+    fun getProfile(userId: String?): Observable<Either<Throwable, ProfileInfo>> =
+        tripsService.getProfile(userId)
             .toObservable()
             .doOnError { er: Throwable -> Timber.e(er.toString()) }
             .subscribeOn(Schedulers.io())

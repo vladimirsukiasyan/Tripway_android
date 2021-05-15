@@ -24,7 +24,7 @@ interface TripsService {
     fun getOwnTrips(): Single<List<Trip>>
 
     @GET("profile")
-    fun getProfile(): Single<ProfileInfo>
+    fun getProfile(@Query("user_id") userId: String?): Single<ProfileInfo>
 
     //TODO Решить вопрос с размещение модели в пакетах
     data class Trip(

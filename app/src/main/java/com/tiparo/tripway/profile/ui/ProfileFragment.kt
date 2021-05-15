@@ -38,8 +38,12 @@ class ProfileFragment : Fragment() {
         viewModelFactory
     }
 
+    private var userId: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        userId = arguments?.getString(ARG_USER_ID)
+
         setHasOptionsMenu(true)
     }
 
@@ -58,7 +62,7 @@ class ProfileFragment : Fragment() {
 
         initRecycleView()
 
-        vm.loadProfile()
+        vm.loadProfile(userId)
 
         vm.uiStateLiveData.observe(viewLifecycleOwner, Observer {
             render(it)
@@ -117,5 +121,9 @@ class ProfileFragment : Fragment() {
         super.onAttach(context)
 
         (requireActivity().applicationContext as BaseApplication).appComponent.inject(this)
+    }
+
+    companion object{
+        const val ARG_USER_ID = "user_id"
     }
 }
