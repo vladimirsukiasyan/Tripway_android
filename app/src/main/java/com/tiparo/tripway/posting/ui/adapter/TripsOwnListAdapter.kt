@@ -1,4 +1,4 @@
-package com.tiparo.tripway.views.adapters
+package com.tiparo.tripway.posting.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater

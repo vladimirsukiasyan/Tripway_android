@@ -1,8 +1,9 @@
-package com.tiparo.tripway.repository
+package com.tiparo.tripway.login.domain
 
 import androidx.lifecycle.LiveData
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.models.AuthResponse
+import com.tiparo.tripway.repository.NetworkBoundResource
 import com.tiparo.tripway.utils.Resource
 import com.tiparo.tripway.repository.network.api.ApiResponse
 import com.tiparo.tripway.repository.network.api.services.AuthService
@@ -25,8 +26,8 @@ class AuthRepository @Inject constructor(
         }.asLiveData()
     }
 
-    fun createUser(token: String, email: String, nickname: String, password: String): Completable {
-        return authService.createUser(token, email, nickname, password)
+    fun createUser(email: String, nickname: String, password: String): Completable {
+        return authService.createUser(email, nickname, password)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }

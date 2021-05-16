@@ -1,7 +1,6 @@
-package com.tiparo.tripway.views.ui
+package com.tiparo.tripway.login.ui
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -19,8 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentLoginBinding
-import com.tiparo.tripway.viewmodels.SignInViewModel
-import com.tiparo.tripway.viewmodels.SignInViewModel.SignInState
+import com.tiparo.tripway.login.ui.SignInViewModel.SignInState
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_login.view.*
 import javax.inject.Inject
@@ -49,7 +47,7 @@ class LoginFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         if (vm.isSignedIn()) {
-            findNavController().navigate(R.id.action_login_fragment_to_home_fragment)
+            findNavController().navigate(R.id.action_login_fragment_to_discovery_fragment)
         }
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -111,7 +109,7 @@ class LoginFragment : Fragment() {
             when (it) {
                 SignInState.AUTHENTICATED -> {
                     hideProgress()
-                    navController.navigate(R.id.action_login_fragment_to_home_fragment)
+                    navController.navigate(R.id.action_login_fragment_to_discovery_fragment)
                 }
                 SignInState.FAILED_AUTHENTICATION, SignInState.FAILED_REGISTERED -> {
                     hideProgress()

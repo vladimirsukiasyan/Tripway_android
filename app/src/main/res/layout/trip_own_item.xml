@@ -61,7 +61,7 @@
                     android:layout_marginBottom="8dp"
                     style="@style/H5_medium"
                     android:layout_height="wrap_content"
-                    android:text='@{trip.trip_name, default="No trip name"}' />
+                    android:text='@{trip.tripname, default="No trip name"}' />
 
                 <TextView
                     android:id="@+id/trip_route"

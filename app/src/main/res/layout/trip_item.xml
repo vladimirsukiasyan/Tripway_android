@@ -58,11 +58,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text='@{trip.trip_name, default="No trip name"}' />
+                    android:text='@{trip.tripname, default="No trip name"}' />
 
                 <TextView
                     android:id="@+id/trip_route"
-                    style="@style/Tags"
+                    style="@style/ParagraphSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text='@{trip.first_point_name +">"+trip.last_point_name, default="No trip route"}' />

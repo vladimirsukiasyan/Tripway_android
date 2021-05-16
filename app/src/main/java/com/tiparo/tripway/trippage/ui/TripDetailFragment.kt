@@ -1,15 +1,15 @@
-package com.tiparo.tripway.views.ui
+package com.tiparo.tripway.trippage.ui
 
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -22,10 +22,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentDetailTripBinding
+import com.tiparo.tripway.trippage.ui.adapter.TripDetailPointPagerAdapter
+import com.tiparo.tripway.utils.ErrorBody
 import com.tiparo.tripway.utils.setupSnackbar
-import com.tiparo.tripway.viewmodels.TripDetailViewModel
-import com.tiparo.tripway.views.adapters.TripDetailPointPagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_profile_page.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -33,7 +34,7 @@ class TripDetailFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: TripDetailViewModel by viewModels {
+    private val vm: TripDetailViewModel by viewModels {
         viewModelFactory
     }
 
@@ -51,7 +52,7 @@ class TripDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        viewModel.loadTripWithPoints(args.tripId)
+        vm.loadTripPage(args.tripId)
     }
 
     override fun onCreateView(
@@ -72,12 +73,71 @@ class TripDetailFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        setupTitle()
-        setupViewPager()
         setupMapView()
         setupSnackbar()
-        setupNavigation()
-        setupStepProgressBar()
+//        setupNavigation()
+
+        vm.uiStateLiveData.observe(viewLifecycleOwner, Observer {
+            render(it)
+        })
+    }
+
+    private fun render(state: TripDetailUiState) {
+        state.fold({ renderLoading() }, { data -> renderData(data) }) { error -> renderError(error) }
+    }
+
+    private fun renderLoading() {
+        progress_bar.visibility = View.VISIBLE
+    }
+
+    private fun renderData(data: TripDetailUiState.Data) {
+        progress_bar.visibility = View.GONE
+
+        requireActivity().toolbar.title = data.tripRoute
+
+        moveCamera(data.locations.first(), WORLD_ZOOM)
+        data.locations.forEach {
+            addMarkerOnMap(it)
+        }
+        binding.stepProgressBar.setStepCount(data.points.size)
+        binding.stepProgressBar.setOnStepChangedListener { stepIndex ->
+            binding.pointPager.currentItem = stepIndex
+        }
+        binding.pointPager.adapter =
+            TripDetailPointPagerAdapter(
+                this,
+                data.points
+            )
+        binding.pointPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                //TODO сохранять текущую позицию viewpager для savedInstanceState
+                val point = data.points[position]
+                moveCamera(LatLng(point.lat, point.lng))
+                binding.stepProgressBar.updateStep(position)
+
+                Timber.d("ViewPager: position = $position")
+            }
+        })
+    }
+
+    private fun renderError(error: ErrorBody) {
+        progress_bar.visibility = View.GONE
+        when (error.type) {
+            ErrorBody.ErrorType.NO_INTERNET -> {
+                Toast.makeText(
+                    context,
+                    "Не можем установить соединение с сервером",
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+            }
+            else -> Toast.makeText(
+                context,
+                "Неизвестная ошибка, но мы скоро все исправим",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -88,12 +148,12 @@ class TripDetailFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.deleteTrip -> {
-                viewModel.deleteTrip()
+                vm.deleteTrip()
                 true
             }
             R.id.deletePoint -> {
                 val pointPosition = binding.pointPager.currentItem
-                viewModel.deletePoint(pointPosition)
+                vm.deletePoint(pointPosition)
                 true
             }
             else -> {
@@ -108,32 +168,10 @@ class TripDetailFragment : Fragment() {
         (requireActivity().applicationContext as BaseApplication).appComponent.inject(this)
     }
 
-    private fun setupStepProgressBar() {
-        viewModel.pointsList.observe(viewLifecycleOwner) {
-            binding.stepProgressBar.setStepCount(it.size)
-            binding.stepProgressBar.setOnStepChangedListener { stepIndex->
-                binding.pointPager.currentItem = stepIndex
-            }
-        }
-    }
-
-    private fun setupTitle() {
-        viewModel.tripRoute.observe(viewLifecycleOwner) {
-            requireActivity().toolbar.title = it
-        }
-    }
-
     private fun setupMapView() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync { map ->
             mMap = map
-
-            viewModel.locationsItems.observe(viewLifecycleOwner) { locations ->
-                moveCamera(locations.first(), WORLD_ZOOM)
-                locations.forEach {
-                    addMarkerOnMap(it)
-                }
-            }
         }
         val layoutParams = binding.mapViewToolbar.layoutParams as CoordinatorLayout.LayoutParams
         val behavior = AppBarLayout.Behavior()
@@ -145,33 +183,15 @@ class TripDetailFragment : Fragment() {
         layoutParams.behavior = behavior
     }
 
-    private fun setupViewPager() {
-        viewModel.pointsList.observe(viewLifecycleOwner) {
-            binding.pointPager.adapter = TripDetailPointPagerAdapter(this, it.size)
-            binding.pointPager.registerOnPageChangeCallback(object :
-                ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    //TODO сохранять текущую позицию viewpager для savedInstanceState
-                    val point = viewModel.pointsList.value!![position]
-                    moveCamera(point.location.position)
-                    binding.stepProgressBar.updateStep(position)
-
-                    Timber.d("ViewPager: position = $position")
-                }
-            })
-        }
-    }
-
     private fun setupSnackbar() {
-        view?.setupSnackbar(viewLifecycleOwner, viewModel.snackbarText, Snackbar.LENGTH_LONG)
+        view?.setupSnackbar(viewLifecycleOwner, vm.snackbarText, Snackbar.LENGTH_LONG)
     }
 
-    private fun setupNavigation() {
-        viewModel.deletedEvent.observe(viewLifecycleOwner) {
-            findNavController().popBackStack()
-        }
-    }
+//    private fun setupNavigation() {
+//        vm.deletedEvent.observe(viewLifecycleOwner) {
+//            findNavController().popBackStack()
+//        }
+//    }
 
     private fun moveCamera(newPosition: LatLng, zoom: Float = DEFAULT_ZOOM) {
         mMap?.animateCamera(

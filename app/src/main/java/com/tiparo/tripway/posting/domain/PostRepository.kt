@@ -120,15 +120,13 @@ class PostRepository @Inject constructor(
 
     private fun Point.mapToApiDto() = PointApi(
         name,
-        PointApi.Location(
-            location.position.latitude,
-            location.position.longitude,
-            location.address,
-            Converter().addressComponentsToString(location.addressComponents)
-        ),
         description,
         tripId,
-        tripName
+        tripName,
+        location.position.latitude,
+        location.position.longitude,
+        location.address,
+        Converter().addressComponentsToString(location.addressComponents)
     )
 
 

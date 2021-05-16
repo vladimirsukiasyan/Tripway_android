@@ -71,16 +71,11 @@ class PostPointDescriptionFragment : Fragment() {
         publishPointButton.setOnClickListener {
             //работает DataBinding
             val description = viewModel.description.value
-            if (description.isNullOrBlank()) {
-                showSnackbarMessage(R.string.snackbar_empty_description_post_message)
-                return@setOnClickListener
-            }
             val tripName = viewModel.tripName.value
             if (tripName.isNullOrBlank() && viewModel.isNewPoint) {
                 showSnackbarMessage(R.string.snackbar_empty_trip_name_post_message)
                 return@setOnClickListener
             }
-
             viewModel.savePoint(description, tripName)
         }
 
@@ -107,7 +102,7 @@ class PostPointDescriptionFragment : Fragment() {
         //todo !!!сделать loading пока что!!!
 
         val direction =
-            PostPointDescriptionFragmentDirections.actionPostPointDescriptionFragmentDestToHomeFragmentDest(R.string.snackbar_post_point_saving)
+            PostPointDescriptionFragmentDirections.actionPostPointDescriptionFragmentDestToDiscoveryFragmentDest(R.string.snackbar_post_point_saving)
         findNavController().navigate(direction)
     }
 

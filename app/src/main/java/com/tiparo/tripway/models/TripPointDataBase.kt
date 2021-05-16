@@ -2,7 +2,7 @@ package com.tiparo.tripway.models
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import com.tiparo.tripway.views.ui.TAG
+import com.tiparo.tripway.login.ui.TAG
 
 class TripPointDataBase {
     var database = FirebaseFirestore.getInstance()

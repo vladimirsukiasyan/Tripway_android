@@ -51,6 +51,7 @@ class DiscoveryAdapter(
 
     override fun bind(context: Context, binding: TripItemBinding, item: Trip) {
         binding.trip = item
+        //todo добавить переход на страницу юзера по клику
         Glide.with(binding.root.context)
             .load(item.photo)
             .placeholder(R.drawable.trip_card_own_placeholder)

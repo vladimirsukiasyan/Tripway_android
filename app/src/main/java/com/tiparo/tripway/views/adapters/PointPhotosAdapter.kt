@@ -1,21 +1,18 @@
 package com.tiparo.tripway.views.adapters
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.R
-import com.tiparo.tripway.views.ui.PointFragment
+import com.tiparo.tripway.trippage.ui.PointFragment
 import kotlinx.android.synthetic.main.point_photo_item.view.*
-import timber.log.Timber
 
 class PointPhotosAdapter(
-    private val photoClickCallback: ((Uri) -> Unit)?
+    private val photoClickCallback: ((String) -> Unit)?
 ) : RecyclerView.Adapter<PointPhotosAdapter.ViewHolder>() {
-    var photosUriList: List<Uri> = listOf()
+    var photosUriList: List<String> = listOf()
 
     override fun getItemCount() = photosUriList.size
 
@@ -28,7 +25,7 @@ class PointPhotosAdapter(
     }
 
     class ViewHolder(val view: View, val imageViewSize: Int) : RecyclerView.ViewHolder(view) {
-        fun bind(uri: Uri, photoClickCallback: ((Uri) -> Unit)?) {
+        fun bind(uri: String, photoClickCallback: ((String) -> Unit)?) {
             val layoutParams = view.pointImage.layoutParams
             layoutParams.height = imageViewSize
 
@@ -51,7 +48,8 @@ class PointPhotosAdapter(
                 val layoutInflater = LayoutInflater.from(parent.context)
 
                 if (imageViewSize == 0) {
-                    imageViewSize = (parent.rootView.width - parent.context.resources.getDimensionPixelSize(R.dimen.images_grid_spacing) * (PointFragment.SPAN_COUNT - 1)) / PointFragment.SPAN_COUNT
+                    imageViewSize =
+                        (parent.rootView.width - parent.context.resources.getDimensionPixelSize(R.dimen.images_grid_spacing) * (PointFragment.SPAN_COUNT - 1)) / PointFragment.SPAN_COUNT
                 }
 
                 return ViewHolder(

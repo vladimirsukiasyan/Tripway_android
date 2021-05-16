@@ -17,7 +17,6 @@ interface AuthService {
     @FormUrlEncoded
     @POST("createUser")
     fun createUser(
-        @Header("Token-ID") idToken: String,
         @Field("email") email: String,
         @Field("nickname") nickname: String,
         @Field("password") password: String

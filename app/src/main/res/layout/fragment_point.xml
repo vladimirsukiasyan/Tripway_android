@@ -3,15 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="androidx.lifecycle.LiveData"/>
 
         <variable
             name="pointName"
-            type="LiveData&lt;String>" />
+            type="String" />
 
         <variable
             name="pointDescription"
-            type="LiveData&lt;String>" />
+            type="String" />
+
+        <variable
+            name="address"
+            type="String" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -35,19 +38,26 @@
                     android:id="@+id/pointNameTextView"
                     style="@style/Paragraph"
                     android:layout_width="match_parent"
-                    android:layout_marginBottom="8dp"
                     android:layout_height="wrap_content"
                     android:text='@{pointName, default="Point name"}' />
+
+                <TextView
+                    android:id="@+id/pointAddressTextView"
+                    style="@style/ParagraphSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:singleLine="false"
+                    android:text='@{address, default="Address"}' />
 
                 <TextView
                     android:id="@+id/pointDescriptionTextView"
                     style="@style/ParagraphSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:singleLine="false"
-                    android:autoSizeTextType="uniform"
                     android:text='@{pointDescription, default="Point description"}' />
-
 
             </LinearLayout>
 
@@ -56,6 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="4"
                 tools:listitem="@layout/point_photo_item" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

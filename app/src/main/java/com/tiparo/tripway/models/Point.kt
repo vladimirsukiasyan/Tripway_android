@@ -13,7 +13,7 @@ data class Point(
     @PrimaryKey(autoGenerate = true) var id: Long = 0,
     @ColumnInfo(name = "name") var name: String = "",
     @Embedded var location: Location = Location(),
-    @ColumnInfo(name = "description") var description: String = "",
+    @ColumnInfo(name = "description") var description: String? = null,
     @ColumnInfo(name = "photos") var photos: List<Uri> = arrayListOf(),
     @ColumnInfo(name = "trip_id") var tripId: Long? = null,
     var tripName: String?
