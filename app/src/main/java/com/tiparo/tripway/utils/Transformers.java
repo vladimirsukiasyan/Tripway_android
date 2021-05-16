@@ -30,6 +30,13 @@ public class Transformers {
     }
 
     @NonNull
+    public static <T> MaybeTransformer<T, Either<Throwable, T>> neverThrowM() {
+        return upstream -> upstream
+                .map(Either.Companion::<Throwable, T>right)
+                .onErrorReturn(Either.Companion::left);
+    }
+
+    @NonNull
     public static <T> SingleTransformer<T, Either<Throwable, T>> neverThrowS() {
         return upstream -> upstream
                 .map(Either.Companion::<Throwable, T>right)

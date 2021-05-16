@@ -142,7 +142,7 @@ class PostPointViewModel @Inject constructor(
         pickedPhotosOnAdding = obtainResult
     }
 
-    fun savePoint(description: String, tripName: String?) {
+    fun savePoint(description: String?, tripName: String?) {
         pointOnAdding.description = description
         pointOnAdding.tripName = tripName
         pointOnAdding.photos = pickedPhotosOnAdding

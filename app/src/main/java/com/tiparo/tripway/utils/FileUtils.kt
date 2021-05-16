@@ -9,19 +9,21 @@ import android.net.Uri
 import androidx.exifinterface.media.ExifInterface
 import android.os.Environment
 import timber.log.Timber
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
 
 object FileUtils {
-    fun copyPhotoFromOuterStorageToApp(photoUri: Uri, application: Application): Uri? {
+    fun compressImage(photoUri: Uri, application: Application, reqWidth: Int = 480, reqHeight: Int = 640): ByteArray? {
         //TODO обработать возможные ошибки и кейсы с файлами
         //TODO понять какой размер для сжатия выбрать
         try {
             val bitmapPhoto = decodeSampledBitmapFromUriMedia(
                 application,
                 photoUri,
-                480,
-                640
+                reqWidth,
+                reqHeight
             )
 
             //TODO гененрировать уникальные имена
@@ -30,7 +32,7 @@ object FileUtils {
                 photoUri.lastPathSegment ?: ""
             )
             //TODO определить оптимальный формат файла
-            val outF = FileOutputStream(file)
+            val outF = ByteArrayOutputStream()
 
             val compressSuccess =
                 bitmapPhoto.compress(Bitmap.CompressFormat.JPEG, 100, outF)
@@ -38,7 +40,7 @@ object FileUtils {
             if (!compressSuccess) {
                 throw Exception("Fail when trying to compress bitmap. Uri = $photoUri")
             }
-            return Uri.fromFile(file)
+            return outF.toByteArray()
 
         } catch (exception: Throwable) {
             Timber.e(exception)

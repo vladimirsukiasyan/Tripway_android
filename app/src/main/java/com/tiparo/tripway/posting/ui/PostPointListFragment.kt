@@ -20,7 +20,7 @@ import com.tiparo.tripway.databinding.FragmentPostPointListBinding
 import com.tiparo.tripway.repository.network.api.services.TripsService
 import com.tiparo.tripway.utils.ErrorBody
 import com.tiparo.tripway.utils.setupSnackbar
-import com.tiparo.tripway.views.adapters.TripsOwnListAdapter
+import com.tiparo.tripway.posting.ui.adapter.TripsOwnListAdapter
 import timber.log.Timber
 import javax.inject.Inject
 

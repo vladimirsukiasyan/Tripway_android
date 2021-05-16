@@ -1,4 +1,4 @@
-package com.tiparo.tripway.viewmodels
+package com.tiparo.tripway.login.ui
 
 import android.app.Application
 import androidx.lifecycle.MediatorLiveData
@@ -10,7 +10,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.tiparo.tripway.R
-import com.tiparo.tripway.repository.AuthRepository
+import com.tiparo.tripway.login.domain.AuthRepository
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -25,7 +25,8 @@ class SignInViewModel @Inject constructor(
     private val auth = FirebaseAuth.getInstance()
 
     init {
-        authenticationState.value = SignInState.UNAUTHENTICATED
+        authenticationState.value =
+            SignInState.UNAUTHENTICATED
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(applicationContext.getString(R.string.server_client_id))
@@ -89,31 +90,22 @@ class SignInViewModel @Inject constructor(
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task: Task<AuthResult?> ->
                 if (task.isSuccessful) {
-                    auth.currentUser?.getIdToken(false)?.addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            authRepository.createUser(it.result.token!!, email, nickname, password)
-                                .subscribe({
-                                    signIn(email, password)
-                                    Timber.d("User is created at backend")
-                                }, { error: Throwable ->
-                                    //TODO тут реализовать так, чтобы можно было кидать во фрагмент ошибку
-                                    authenticationState.value = SignInState.FAILED_REGISTERED
-                                    Timber.e(error, "Can not create user at backend")
-                                    //todo удалить аккаунт из firebase, если нам не удалось зарегистрироваться на сервере
-                                    signOut()
-                                })
-                        } else {
-                            Timber.e(
-                                it.exception,
-                                "Can not retrieve token for new user from Firebase Auth"
-                            )
-                            authenticationState.value = SignInState.FAILED_AUTHENTICATION
+                    authRepository.createUser(email, nickname, password)
+                        .subscribe({
+                            signIn(email, password)
+                            Timber.d("User is created at backend")
+                        }, { error: Throwable ->
+                            //TODO тут реализовать так, чтобы можно было кидать во фрагмент ошибку
+                            authenticationState.value =
+                                SignInState.FAILED_REGISTERED
+                            Timber.e(error, "Can not create user at backend")
+                            //todo удалить аккаунт из firebase, если нам не удалось зарегистрироваться на сервере
                             signOut()
-                        }
-                    } ?: Timber.e("Can not get current user")
+                        })
                 } else {
                     Timber.e(SignInState.FAILED_REGISTERED.toString())
-                    authenticationState.value = SignInState.FAILED_AUTHENTICATION
+                    authenticationState.value =
+                        SignInState.FAILED_AUTHENTICATION
                     signOut()
                 }
             }
@@ -123,10 +115,12 @@ class SignInViewModel @Inject constructor(
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    authenticationState.value = SignInState.AUTHENTICATED
+                    authenticationState.value =
+                        SignInState.AUTHENTICATED
                     Timber.e(SignInState.AUTHENTICATED.toString())
                 } else {
-                    authenticationState.value = SignInState.FAILED_AUTHENTICATION
+                    authenticationState.value =
+                        SignInState.FAILED_AUTHENTICATION
                     Timber.e(SignInState.FAILED_AUTHENTICATION.toString())
                 }
             }

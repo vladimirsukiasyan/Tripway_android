@@ -53,10 +53,10 @@ class ImageViewerDialogFragment : DialogFragment() {
         const val ARG_IMAGE_URI = "imageUri"
 
         const val TAG_FRAGMENT = "imageViewer"
-        fun newInstance(uri: Uri) = ImageViewerDialogFragment().apply {
+        fun newInstance(uri: String) = ImageViewerDialogFragment().apply {
             setStyle(STYLE_NO_TITLE, R.style.DialogFullScreen)
             arguments = Bundle().apply {
-                putString(ARG_IMAGE_URI, uri.toString())
+                putString(ARG_IMAGE_URI, uri)
             }
         }
 

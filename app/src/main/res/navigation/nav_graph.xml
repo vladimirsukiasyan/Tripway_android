@@ -30,22 +30,26 @@
             android:defaultValue="0"
             app:argType="integer" />
         <action
-            android:id="@+id/action_home_fragment_dest_to_post_point_list_fragment_dest"
+            android:id="@+id/action_discovery_fragment_dest_to_post_point_list_fragment_dest"
             app:destination="@id/postPointGraph" />
         <action
-            android:id="@+id/action_home_fragment_dest_to_trip_detail_fragment"
+            android:id="@+id/action_discovery_fragment_dest_to_trip_detail_fragment"
             app:destination="@id/trip_detail_fragment" />
+
+        <action
+            android:id="@+id/action_discovery_fragment_dest_to_profile_fragment"
+            app:destination="@id/profile_fragment_dest" />
     </fragment>
     <fragment
         android:id="@+id/login_fragment_dest"
-        android:name="com.tiparo.tripway.views.ui.LoginFragment"
+        android:name="com.tiparo.tripway.login.ui.LoginFragment"
         android:label="@string/fragment_login_label"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_login_fragment_to_home_fragment"
+            android:id="@+id/action_login_fragment_to_discovery_fragment"
+            app:destination="@id/discovery_fragment_dest"
             app:popUpTo="@id/login_fragment_dest"
-            app:popUpToInclusive="true"
-            app:destination="@id/discovery_fragment_dest" />
+            app:popUpToInclusive="true" />
     </fragment>
 
     <navigation
@@ -85,7 +89,7 @@
             android:label="@string/fragment_post_point_description_label"
             tools:layout="@layout/fragment_post_point_description">
             <action
-                android:id="@+id/action_post_point_description_fragment_dest_to_home_fragment_dest"
+                android:id="@+id/action_post_point_description_fragment_dest_to_discovery_fragment_dest"
                 app:destination="@id/discovery_fragment_dest"
                 app:popUpTo="@id/discovery_fragment_dest"
                 app:popUpToInclusive="true" />
@@ -93,7 +97,7 @@
     </navigation>
     <fragment
         android:id="@+id/trip_detail_fragment"
-        android:name="com.tiparo.tripway.views.ui.TripDetailFragment"
+        android:name="com.tiparo.tripway.trippage.ui.TripDetailFragment"
         tools:layout="@layout/fragment_detail_trip">
         <argument
             android:name="tripId"
@@ -105,6 +109,16 @@
         android:name="com.tiparo.tripway.profile.ui.ProfileFragment"
         tools:layout="@layout/fragment_profile_page">
 
+        <action
+            android:id="@+id/action_profile_fragment_dest_to_trip_detail_fragment"
+            app:destination="@id/trip_detail_fragment" />
+
+        <argument
+            android:name="user_id"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue='@null'
+            />
     </fragment>
 
 </navigation>

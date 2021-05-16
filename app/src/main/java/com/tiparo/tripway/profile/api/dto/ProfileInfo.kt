@@ -12,7 +12,13 @@ data class ProfileInfo(
     val subscribersCount: Int,
 
     @SerializedName("subscriptions_count")
-    val subscriptionsCount: Int
+    val subscriptionsCount: Int,
+
+    @SerializedName("is_own")
+    val isOwnProfile: Boolean,
+
+    @SerializedName("is_subscription")
+    val isSubscription: Boolean
 //        val avatar: String
 ){
     data class Trip(

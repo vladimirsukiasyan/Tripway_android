@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tiparo.tripway.discovery.ui.DiscoveryViewModel
 import com.tiparo.tripway.posting.ui.PostPointViewModel
 import com.tiparo.tripway.profile.ui.ProfileViewModel
-import com.tiparo.tripway.viewmodels.SignInViewModel
-import com.tiparo.tripway.viewmodels.TripDetailViewModel
+import com.tiparo.tripway.login.ui.SignInViewModel
+import com.tiparo.tripway.trippage.ui.TripDetailViewModel
 import com.tiparo.tripway.viewmodels.TripsViewModel
 import dagger.Binds
 import dagger.Module

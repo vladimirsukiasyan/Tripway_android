@@ -15,9 +15,11 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="trip"
             type="com.tiparo.tripway.repository.network.api.services.TripsService.Trip" />
@@ -34,6 +36,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp">
+
+                <TextView
+                    android:id="@+id/username"
+                    style="@style/ParagraphSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start"
+                    android:singleLine="true"
+                    android:text='@{trip.user_name}'
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="meicy_williams" />
+
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_gravity="end"-->
+<!--                    android:singleLine="true"-->
+<!--                    android:text='@{trip.first_point_name + ">" + trip.last_point_name, default = "No trip route"}'-->
+<!--                    android:textSize="12sp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    tools:text="Tokyo > Hiroshima" />-->
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView
                 android:id="@+id/trip_image"
@@ -58,11 +94,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text='@{trip.trip_name, default="No trip name"}' />
+                    android:text='@{trip.tripname, default="No trip name"}' />
 
                 <TextView
                     android:id="@+id/trip_route"
-                    style="@style/Tags"
+                    style="@style/ParagraphSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text='@{trip.first_point_name +">"+trip.last_point_name, default="No trip route"}' />

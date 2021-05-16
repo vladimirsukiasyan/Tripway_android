@@ -3,6 +3,7 @@ package com.tiparo.tripway.repository
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.discovery.api.dto.DiscoveryInfo
 import com.tiparo.tripway.repository.network.api.services.TripsService
+import com.tiparo.tripway.trippage.api.dto.TripPageInfo
 import com.tiparo.tripway.utils.*
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -16,42 +17,6 @@ class TripsRepository @Inject constructor(
     private val appExecutors: AppExecutors,
     private val tripsService: TripsService
 ) {
-
-//    fun loadTrips(): LiveData<Resource<List<Trip>>> {
-//        return object : NetworkBoundResource<List<Trip>, List<Trip>>(appExecutors) {
-//            override fun createCall(): LiveData<ApiResponse<List<Trip>>> {
-//
-//            }
-//
-//        }.asLiveData()
-//    }
-//
-//    suspend fun loadTripWithPoints(tripId: Long): Resource<TripWithPoints> =
-//        withContext(Dispatchers.IO) {
-//            try {
-//                val tripWithPoints = tripDao.getTripWithPoints(tripId)
-//                Timber.d(tripWithPoints.toString())
-//                Resource.success(tripWithPoints)
-//            } catch (exception: Exception) {
-//                //TODO сделать нормальное логирование и extract string
-//                Timber.e(exception, "Error when trying to load trip with id=$tripId from database")
-//                Resource.error(null, ErrorDescription(""))
-//            }
-//        }
-//
-//    suspend fun loadPointsByTripId(tripId: Long) =
-//        withContext(Dispatchers.IO) {
-//            try {
-//                val points = pointDao.getPointsByTripId(tripId)
-//                Resource.success(points)
-//            } catch (exception: Exception) {
-//                Timber.e(
-//                    exception,
-//                    "Error when trying to load points by tripId=$tripId from database"
-//                )
-//                Resource.error(null, ErrorDescription(""))
-//            }
-//        }
 //
 //    suspend fun deleteTrip(tripId: Long) = withContext(Dispatchers.IO) {
 //        try {
@@ -126,6 +91,12 @@ class TripsRepository @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .compose(Transformers.neverThrowO())
 
+    fun getTripPage(tripId: Long): Observable<Either<Throwable, TripPageInfo>> = tripsService.getTrip(tripId)
+        .toObservable()
+        .doOnError { er: Throwable -> Timber.e(er.toString()) }
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(Transformers.neverThrowO())
 
     private val paginator: RxPaginator<DiscoveryInfo, Unit> = RxPaginator(
         BiFunction { pageParams, anchor ->

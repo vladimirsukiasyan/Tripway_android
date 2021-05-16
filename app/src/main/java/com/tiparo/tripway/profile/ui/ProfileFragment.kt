@@ -1,16 +1,20 @@
 package com.tiparo.tripway.profile.ui
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tiparo.tripway.AppExecutors
@@ -21,7 +25,6 @@ import com.tiparo.tripway.profile.api.dto.ProfileInfo
 import com.tiparo.tripway.profile.ui.adapter.ProfileAdapter
 import com.tiparo.tripway.utils.ErrorBody
 import kotlinx.android.synthetic.main.fragment_profile_page.*
-import kotlinx.android.synthetic.main.layout_progress_bar.*
 import javax.inject.Inject
 
 class ProfileFragment : Fragment() {
@@ -38,13 +41,15 @@ class ProfileFragment : Fragment() {
         viewModelFactory
     }
 
+    private val args: ProfileFragmentArgs by navArgs()
+
     private var userId: String? = null
+
+    private lateinit var mProfile: ProfileInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        userId = arguments?.getString(ARG_USER_ID)
-
-        setHasOptionsMenu(true)
+        userId = args.userId
     }
 
     override fun onCreateView(
@@ -52,7 +57,8 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile_page, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_profile_page, container, false)
         binding.lifecycleOwner = this
         return binding.root
     }
@@ -67,33 +73,132 @@ class ProfileFragment : Fragment() {
         vm.uiStateLiveData.observe(viewLifecycleOwner, Observer {
             render(it)
         })
+
+        vm.subscribeStatusLivaData.observe(viewLifecycleOwner, Observer {isSuccess->
+            if(isSuccess){
+                (profile_btn.background as GradientDrawable).apply {
+                    mutate()
+                    setColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                }
+                profile_btn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorText
+                    )
+                )
+                profile_btn.text = resources.getString(R.string.unsubscribe_btn)
+                profile_btn.setOnClickListener {
+                    vm.unsubscribeToUser(mProfile.id)
+                }
+            }
+            else {
+                Toast.makeText(context, "Не удалось подписаться на пользователя, повторите позже", Toast.LENGTH_LONG).show()
+            }
+        })
+
+        vm.unsubscribeStatusLivaData.observe(viewLifecycleOwner, Observer {isSuccess->
+            if(isSuccess){
+                (profile_btn.background as GradientDrawable).apply {
+                    mutate()
+                    setColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+                }
+                profile_btn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorTextOnButton
+                    )
+                )
+                profile_btn.text = resources.getString(R.string.subscribe_btn)
+                profile_btn.setOnClickListener {
+                    vm.subscribeToUser(mProfile.id)
+                }
+            }
+            else {
+                Toast.makeText(context, "Не удалось подписаться на пользователя, повторите позже", Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
     //todo в теории это все можно обернуть и предоставить фрагментам интерфейс (аля обертка для MVI)
     private fun render(state: ProfileUiState) {
-        state.fold({ renderLoading() }, { data -> renderData(data) }) { error -> renderError(error) }
+        state.fold(
+            { renderLoading() },
+            { data -> renderData(data) }) { error -> renderError(error) }
     }
 
     private fun renderLoading() {
         progress_bar.visibility = View.VISIBLE
     }
 
-    private fun renderData(data: ProfileInfo) {
+    private fun renderData(profile: ProfileInfo) {
         progress_bar.visibility = View.GONE
 
-        nickname.text = data.nickname
-        trips_count.text = data.trips.size.toString()
-        subscribersCount.text = data.subscribersCount.toString()
-        subscriptionsCount.text = data.subscriptionsCount.toString()
+        nickname.text = profile.nickname
+        trips_count.text = profile.trips.size.toString()
+        subscribersCount.text = profile.subscribersCount.toString()
+        subscriptionsCount.text = profile.subscriptionsCount.toString()
+        //todo оформить в виде кастомного TextView
+        when {
+            profile.isOwnProfile -> {
+                (profile_btn.background as GradientDrawable).apply {
+                    mutate()
+                    setColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                }
+                profile_btn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorText
+                    )
+                )
+                profile_btn.text = resources.getString(R.string.edit_profile_btn)
+            }
+            profile.isSubscription -> {
+                (profile_btn.background as GradientDrawable).apply {
+                    mutate()
+                    setColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                }
+                profile_btn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorText
+                    )
+                )
+                profile_btn.text = resources.getString(R.string.unsubscribe_btn)
+                profile_btn.setOnClickListener {
+                    vm.unsubscribeToUser(profile.id)
+                }
+            }
+            else -> {
+                (profile_btn.background as GradientDrawable).apply {
+                    mutate()
+                    setColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+                }
+                profile_btn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorTextOnButton
+                    )
+                )
+                profile_btn.text = resources.getString(R.string.subscribe_btn)
+                profile_btn.setOnClickListener {
+                    vm.subscribeToUser(profile.id)
+                }
+            }
+        }
         //todo avatar.setImageURI(data.avatar)
-        adapter.submitList(data.trips)
+        adapter.submitList(profile.trips)
+        mProfile = profile
     }
 
     private fun renderError(error: ErrorBody) {
         progress_bar.visibility = View.GONE
         when (error.type) {
             ErrorBody.ErrorType.NO_INTERNET -> {
-                Toast.makeText(context, "Не можем установить соединение с сервером", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context,
+                    "Не можем установить соединение с сервером",
+                    Toast.LENGTH_LONG
+                ).show()
             }
             else -> Toast.makeText(
                 context,
@@ -109,9 +214,8 @@ class ProfileFragment : Fragment() {
         adapter = ProfileAdapter(
             appExecutors = appExecutors,
             tripClickCallback = { trip ->
-//                val direction =
-//                    HomeFragmentDirections.actionHomeFragmentDestToTripDetailFragment(trip.id)
-//                findNavController().navigate(direction)
+                val direction = ProfileFragmentDirections.actionProfileFragmentDestToTripDetailFragment(trip.id)
+                findNavController().navigate(direction)
             }
         )
         binding.trips.adapter = adapter
@@ -123,7 +227,7 @@ class ProfileFragment : Fragment() {
         (requireActivity().applicationContext as BaseApplication).appComponent.inject(this)
     }
 
-    companion object{
+    companion object {
         const val ARG_USER_ID = "user_id"
     }
 }

@@ -4,11 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +20,7 @@ import com.tiparo.tripway.R
 import com.tiparo.tripway.databinding.FragmentDiscoveryBinding
 import com.tiparo.tripway.discovery.api.dto.DiscoveryInfo
 import com.tiparo.tripway.discovery.ui.adapters.DiscoveryAdapter
+import com.tiparo.tripway.profile.ui.ProfileFragment
 import com.tiparo.tripway.utils.ErrorBody
 import kotlinx.android.synthetic.main.fragment_discovery.*
 import javax.inject.Inject
@@ -126,9 +129,12 @@ class DiscoveryFragment : Fragment() {
         adapter = DiscoveryAdapter(
             appExecutors = appExecutors,
             tripClickCallback = { trip ->
-//                val direction =
-//                    HomeFragmentDirections.actionHomeFragmentDestToTripDetailFragment(trip.id)
-//                findNavController().navigate(direction)
+                val direction = DiscoveryFragmentDirections.actionDiscoveryFragmentDestToTripDetailFragment(trip.id)
+                findNavController().navigate(direction)
+            },
+            userClickCallback = { userId ->
+                val action = DiscoveryFragmentDirections.actionDiscoveryFragmentDestToProfileFragment(userId)
+                findNavController().navigate(action)
             }
         )
         binding.tripsList.adapter = adapter
