@@ -14,7 +14,8 @@ import com.tiparo.tripway.views.common.DataBoundListAdapter
 
 class DiscoveryAdapter(
     appExecutors: AppExecutors,
-    private val tripClickCallback: ((Trip) -> Unit)?
+    private val tripClickCallback: ((Trip) -> Unit),
+    private val userClickCallback: ((String) -> Unit)
 ) : DataBoundListAdapter<Trip, TripItemBinding>(
     appExecutors = appExecutors,
     diffCallback = object : DiffUtil.ItemCallback<Trip>() {
@@ -42,9 +43,10 @@ class DiscoveryAdapter(
             false
         )
         binding.root.setOnClickListener {
-            binding.trip?.let {
-                tripClickCallback?.invoke(it)
-            }
+            tripClickCallback.invoke(binding.trip!!)
+        }
+        binding.username.setOnClickListener {
+            userClickCallback.invoke(binding.trip!!.user_id)
         }
         return binding
     }

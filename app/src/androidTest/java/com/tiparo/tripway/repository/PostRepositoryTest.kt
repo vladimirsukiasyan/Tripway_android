@@ -100,7 +100,7 @@ class PostRepositoryTest {
             Uri.parse("content://media/external/images/media/91790")
         )
 
-        val uriPhotosList = repository.savePickedPhotos(pickedPhotosOnAdding)
+        val uriPhotosList = repository.savePСеickedPhotos(pickedPhotosOnAdding)
         println(uriPhotosList.toString())
 
         assertTrue(uriPhotosList.filterNotNull().size == pickedPhotosOnAdding.size)

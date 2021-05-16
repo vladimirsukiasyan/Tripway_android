@@ -67,5 +67,7 @@
     <string name="following">Подписки</string>
     <string name="Default_Locale">Moscow</string>
     <string name="edit_profile_btn">Редактировать профиль</string>
+    <string name="subscribe_btn">Подписаться</string>
+    <string name="unsubscribe_btn">Отписаться</string>
     <string name="Profile_Nums">0</string>
 </resources>

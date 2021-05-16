@@ -2,8 +2,6 @@ package com.tiparo.tripway.posting.domain
 
 import android.app.Application
 import android.net.Uri
-import android.provider.MediaStore
-import androidx.core.net.toFile
 import androidx.lifecycle.LiveData
 import com.google.android.gms.maps.model.LatLng
 import com.tiparo.tripway.AppExecutors
@@ -21,22 +19,16 @@ import com.tiparo.tripway.repository.network.api.services.GoogleMapsServices
 import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingResponse
 import com.tiparo.tripway.repository.network.api.services.ReverseGeocodingResponse.GeocodingResult
 import com.tiparo.tripway.repository.network.api.services.TripsService
-import com.tiparo.tripway.utils.Either
-import com.tiparo.tripway.utils.FileUtils
-import com.tiparo.tripway.utils.Resource
-import com.tiparo.tripway.utils.Transformers
-import io.reactivex.Maybe
+import com.tiparo.tripway.utils.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import timber.log.Timber
 import javax.inject.Inject
@@ -106,10 +98,12 @@ class PostRepository @Inject constructor(
     }
 
     private fun prepareFilePart(fileUri: Uri): MultipartBody.Part {
-        val byteArray = application.applicationContext.contentResolver.openInputStream(fileUri)!!.readBytes()
+        val compressedByteArray = FileUtils.compressImage(fileUri, application, reqWidth = 480, reqHeight = 640)
+            ?: throw ClientException(ClientException.Code.ImageCompressionException)
+
         val type = application.contentResolver.getType(fileUri)!!
 
-        val bodyRequest = byteArray.toRequestBody(type.toMediaTypeOrNull())
+        val bodyRequest = compressedByteArray.toRequestBody(type.toMediaTypeOrNull())
 
         return MultipartBody.Part.createFormData("photos", fileUri.lastPathSegment, bodyRequest)
     }
@@ -157,14 +151,14 @@ class PostRepository @Inject constructor(
             result
         }
 
-    //TODO понять как можно избегать инкапсулирования private для тестов
-    suspend fun savePickedPhotos(pickedPhotosOnAdding: List<Uri>) =
-        withContext(Dispatchers.IO) {
-            val deferreds = pickedPhotosOnAdding.map { photoUri ->
-                async {
-                    FileUtils.copyPhotoFromOuterStorageToApp(photoUri, application)
-                }
-            }
-            deferreds.awaitAll()
-        }
+//    //TODO понять как можно избегать инкапсулирования private для тестов
+//    suspend fun savePickedPhotos(pickedPhotosOnAdding: List<Uri>) =
+//        withContext(Dispatchers.IO) {
+//            val deferreds = pickedPhotosOnAdding.map { photoUri ->
+//                async {
+//                    FileUtils.copyPhotoFromOuterStorageToApp(photoUri, application)
+//                }
+//            }
+//            deferreds.awaitAll()
+//        }
 }

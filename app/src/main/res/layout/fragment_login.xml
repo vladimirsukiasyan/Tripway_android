@@ -73,6 +73,7 @@
             android:id="@+id/sign_in_button_google"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:drawableLeft="@drawable/ic_google_icon"
             android:drawablePadding="9dp"
             android:text="Google"

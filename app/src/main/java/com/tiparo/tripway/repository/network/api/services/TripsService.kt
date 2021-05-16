@@ -8,6 +8,7 @@ import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MultipartBody
 import retrofit2.http.*
+import java.sql.Timestamp
 
 interface TripsService {
 
@@ -38,7 +39,9 @@ interface TripsService {
         val first_point_name: String,
         val last_point_name: String,
         val photo: String,
-        val user_id: String?
+        val updated: Timestamp,
+        val user_id: String,
+        val user_name: String
     )
 
     data class PointPostResult(
