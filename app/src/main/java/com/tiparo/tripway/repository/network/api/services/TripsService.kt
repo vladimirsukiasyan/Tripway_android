@@ -4,6 +4,8 @@ import com.tiparo.tripway.discovery.api.dto.DiscoveryInfo
 import com.tiparo.tripway.posting.api.dto.PointApi
 import com.tiparo.tripway.profile.api.dto.ProfileInfo
 import com.tiparo.tripway.trippage.api.dto.TripPageInfo
+import com.tiparo.tripway.utils.RxUnit
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import okhttp3.MultipartBody
@@ -30,6 +32,12 @@ interface TripsService {
 
     @GET("trip/{tripId}")
     fun getTrip(@Path("tripId") tripId: Long): Single<TripPageInfo>
+
+    @POST("subscribe")
+    fun subscribeToUser(@Query("user_id") userId: String): Maybe<Any>
+
+    @POST("unsubscribe")
+    fun unsubscribeFromUser(@Query("user_id") userId: String): Maybe<Any>
 
     //TODO Решить вопрос с размещение модели в пакетах
     data class Trip(

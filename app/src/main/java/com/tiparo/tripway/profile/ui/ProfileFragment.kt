@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,6 +45,8 @@ class ProfileFragment : Fragment() {
 
     private var userId: String? = null
 
+    private lateinit var mProfile: ProfileInfo
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userId = args.userId
@@ -70,6 +73,50 @@ class ProfileFragment : Fragment() {
         vm.uiStateLiveData.observe(viewLifecycleOwner, Observer {
             render(it)
         })
+
+        vm.subscribeStatusLivaData.observe(viewLifecycleOwner, Observer {isSuccess->
+            if(isSuccess){
+                (profile_btn.background as GradientDrawable).apply {
+                    mutate()
+                    setColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                }
+                profile_btn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorText
+                    )
+                )
+                profile_btn.text = resources.getString(R.string.unsubscribe_btn)
+                profile_btn.setOnClickListener {
+                    vm.unsubscribeToUser(mProfile.id)
+                }
+            }
+            else {
+                Toast.makeText(context, "Не удалось подписаться на пользователя, повторите позже", Toast.LENGTH_LONG).show()
+            }
+        })
+
+        vm.unsubscribeStatusLivaData.observe(viewLifecycleOwner, Observer {isSuccess->
+            if(isSuccess){
+                (profile_btn.background as GradientDrawable).apply {
+                    mutate()
+                    setColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+                }
+                profile_btn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorTextOnButton
+                    )
+                )
+                profile_btn.text = resources.getString(R.string.subscribe_btn)
+                profile_btn.setOnClickListener {
+                    vm.subscribeToUser(mProfile.id)
+                }
+            }
+            else {
+                Toast.makeText(context, "Не удалось подписаться на пользователя, повторите позже", Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
     //todo в теории это все можно обернуть и предоставить фрагментам интерфейс (аля обертка для MVI)
@@ -83,16 +130,16 @@ class ProfileFragment : Fragment() {
         progress_bar.visibility = View.VISIBLE
     }
 
-    private fun renderData(data: ProfileInfo) {
+    private fun renderData(profile: ProfileInfo) {
         progress_bar.visibility = View.GONE
 
-        nickname.text = data.nickname
-        trips_count.text = data.trips.size.toString()
-        subscribersCount.text = data.subscribersCount.toString()
-        subscriptionsCount.text = data.subscriptionsCount.toString()
+        nickname.text = profile.nickname
+        trips_count.text = profile.trips.size.toString()
+        subscribersCount.text = profile.subscribersCount.toString()
+        subscriptionsCount.text = profile.subscriptionsCount.toString()
         //todo оформить в виде кастомного TextView
         when {
-            data.isOwnProfile -> {
+            profile.isOwnProfile -> {
                 (profile_btn.background as GradientDrawable).apply {
                     mutate()
                     setColor(ContextCompat.getColor(requireContext(), android.R.color.white))
@@ -105,7 +152,7 @@ class ProfileFragment : Fragment() {
                 )
                 profile_btn.text = resources.getString(R.string.edit_profile_btn)
             }
-            data.isSubscription -> {
+            profile.isSubscription -> {
                 (profile_btn.background as GradientDrawable).apply {
                     mutate()
                     setColor(ContextCompat.getColor(requireContext(), android.R.color.white))
@@ -117,6 +164,9 @@ class ProfileFragment : Fragment() {
                     )
                 )
                 profile_btn.text = resources.getString(R.string.unsubscribe_btn)
+                profile_btn.setOnClickListener {
+                    vm.unsubscribeToUser(profile.id)
+                }
             }
             else -> {
                 (profile_btn.background as GradientDrawable).apply {
@@ -130,10 +180,14 @@ class ProfileFragment : Fragment() {
                     )
                 )
                 profile_btn.text = resources.getString(R.string.subscribe_btn)
+                profile_btn.setOnClickListener {
+                    vm.subscribeToUser(profile.id)
+                }
             }
         }
         //todo avatar.setImageURI(data.avatar)
-        adapter.submitList(data.trips)
+        adapter.submitList(profile.trips)
+        mProfile = profile
     }
 
     private fun renderError(error: ErrorBody) {
@@ -160,9 +214,8 @@ class ProfileFragment : Fragment() {
         adapter = ProfileAdapter(
             appExecutors = appExecutors,
             tripClickCallback = { trip ->
-//                val direction =
-//                    HomeFragmentDirections.actionHomeFragmentDestToTripDetailFragment(trip.id)
-//                findNavController().navigate(direction)
+                val direction = ProfileFragmentDirections.actionProfileFragmentDestToTripDetailFragment(trip.id)
+                findNavController().navigate(direction)
             }
         )
         binding.trips.adapter = adapter

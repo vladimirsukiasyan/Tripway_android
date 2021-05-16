@@ -108,6 +108,11 @@
         android:id="@+id/profile_fragment_dest"
         android:name="com.tiparo.tripway.profile.ui.ProfileFragment"
         tools:layout="@layout/fragment_profile_page">
+
+        <action
+            android:id="@+id/action_profile_fragment_dest_to_trip_detail_fragment"
+            app:destination="@id/trip_detail_fragment" />
+
         <argument
             android:name="user_id"
             app:argType="string"
