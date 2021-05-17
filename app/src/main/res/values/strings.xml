@@ -19,13 +19,16 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="fragment_discovery_label">Tripway</string>
+    <string name="fragment_home_feed_label">Лента подписок</string>
     <string name="fragment_login_label">Авторизация</string>
     <string name="fragment_post_point_list_label">Добавление поинта</string>
+    <string name="fragment_profile_label">Профиль</string>
     <string name="fragment_post_point_map_label">Введите адрес</string>
     <string name="fragment_post_point_photos_label">Выберите фотки</string>
     <string name="fragment_post_point_description_label">Описание</string>
 
-    <string name="title_home">Популярная лента</string>
+    <string name="title_discovery">Популярная лента</string>
+    <string name="title_home">Лента подписок</string>
     <string name="title_add_new_trip">Добавление</string>
     <string name="title_profile">Профиль</string>
 
@@ -69,5 +72,6 @@
     <string name="edit_profile_btn">Редактировать профиль</string>
     <string name="subscribe_btn">Подписаться</string>
     <string name="unsubscribe_btn">Отписаться</string>
+    <string name="signout">Выйти из аккаунта</string>
     <string name="Profile_Nums">0</string>
 </resources>

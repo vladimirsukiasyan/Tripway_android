@@ -6,13 +6,12 @@ import androidx.lifecycle.LiveData
 import com.google.android.gms.maps.model.LatLng
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.BuildConfig
+import com.tiparo.tripway.discovery.api.dto.DiscoveryInfo
+import com.tiparo.tripway.home.api.dto.HomeFeedInfo
 import com.tiparo.tripway.models.Point
 import com.tiparo.tripway.posting.api.dto.PointApi
 import com.tiparo.tripway.repository.NetworkBoundResource
 import com.tiparo.tripway.repository.database.Converter
-import com.tiparo.tripway.repository.database.PointDao
-import com.tiparo.tripway.repository.database.TripDao
-import com.tiparo.tripway.repository.database.TripwayDB
 import com.tiparo.tripway.repository.network.api.ApiResponse
 import com.tiparo.tripway.repository.network.api.ApiSuccessResponse
 import com.tiparo.tripway.repository.network.api.services.GoogleMapsServices
@@ -22,9 +21,9 @@ import com.tiparo.tripway.repository.network.api.services.TripsService
 import com.tiparo.tripway.utils.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -38,21 +37,9 @@ import javax.inject.Singleton
 class PostRepository @Inject constructor(
     private val application: Application,
     private val appExecutors: AppExecutors,
-    private val tripDao: TripDao,
-    private val pointDao: PointDao,
-    private val tripwayDB: TripwayDB,
     private val tripsService: TripsService,
     private val googleMapsService: GoogleMapsServices
 ) {
-
-//    fun loadMyTrips(): LiveData<Resource<List<TripsService.Trip>>> {
-//        return object :
-//            NetworkBoundResource<List<TripsService.Trip>, List<TripsService.Trip>>(appExecutors) {
-//            override fun createCall(): LiveData<ApiResponse<List<TripsService.Trip>>> {
-//                return tripsService.getOwnTrips()
-//            }
-//        }.asLiveData()
-//    }
 
     fun reverseGeocode(location: LatLng): LiveData<Resource<GeocodingResult>> {
         return object :
@@ -75,16 +62,12 @@ class PostRepository @Inject constructor(
 
     fun convertLatLng(location: LatLng) = "${location.latitude},${location.longitude}"
 
-//    fun loadMyTripsMock(): LiveData<Resource<List<TripsService.Trip>>> {
-//        return MutableLiveData(Resource.success())
-//    }
-
     fun savePoint(pointOnAdding: Point): Observable<Either<Throwable, TripsService.PointPostResult>> {
         return tripsService.postPoint(pointOnAdding.mapToApiDto())
             .doOnError { er: Throwable -> Timber.e(er.toString()) }
             .flatMap {
                 val pointId = it.id!!
-                val multipartListBody = pointOnAdding.photos.map {uri ->
+                val multipartListBody = pointOnAdding.photos.map { uri ->
                     prepareFilePart(uri)
                 }
                 tripsService
@@ -98,8 +81,9 @@ class PostRepository @Inject constructor(
     }
 
     private fun prepareFilePart(fileUri: Uri): MultipartBody.Part {
-        val compressedByteArray = FileUtils.compressImage(fileUri, application, reqWidth = 480, reqHeight = 640)
-            ?: throw ClientException(ClientException.Code.ImageCompressionException)
+        val compressedByteArray =
+            FileUtils.compressImage(fileUri, application, reqWidth = 480, reqHeight = 640)
+                ?: throw ClientException(ClientException.Code.ImageCompressionException)
 
         val type = application.contentResolver.getType(fileUri)!!
 
@@ -123,6 +107,26 @@ class PostRepository @Inject constructor(
         Converter().addressComponentsToString(location.addressComponents)
     )
 
+    fun homeFeedFirstPageResult(): Observable<Either<Throwable, HomeFeedInfo>> = paginator
+        .getFirstPage(Unit)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .toObservable()
+
+    fun homeFeedNextPageResult(): Observable<Either<Throwable, HomeFeedInfo>> = paginator
+        .nextPage()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .toObservable()
+
+    private val paginator: RxPaginator<HomeFeedInfo, Unit> = RxPaginator(
+        BiFunction { pageParams, anchor ->
+            tripsService.getHomeFeedPage(anchor)
+        },
+        Function { homeFeed: HomeFeedInfo ->
+            PageToken(homeFeed.anchor, homeFeed.hasMore ?: false)
+        }
+    )
 
     /**
      * Here we need to obtain the most precious short_name of location starting with <locality> and ending to <country>

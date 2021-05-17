@@ -37,7 +37,7 @@ class PointPhotosAdapter(
 
             Glide.with(view.context.applicationContext)
                 .load(uri)
-                .placeholder(R.drawable.trip_card_own_placeholder)
+                .placeholder(R.drawable.card_own_placeholder)
                 .into(view.pointImage)
         }
 

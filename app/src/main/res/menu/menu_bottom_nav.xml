@@ -4,6 +4,11 @@
     <item
         android:id="@+id/discovery_fragment_dest"
         android:icon="@drawable/ic_hot"
+        android:title= "@string/title_discovery" />
+
+    <item
+        android:id="@+id/home_feed_fragment"
+        android:icon="@drawable/ic_home"
         android:title= "@string/title_home" />
 
     <item

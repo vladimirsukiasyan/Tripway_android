@@ -35,7 +35,6 @@
         <action
             android:id="@+id/action_discovery_fragment_dest_to_trip_detail_fragment"
             app:destination="@id/trip_detail_fragment" />
-
         <action
             android:id="@+id/action_discovery_fragment_dest_to_profile_fragment"
             app:destination="@id/profile_fragment_dest" />
@@ -107,6 +106,7 @@
     <fragment
         android:id="@+id/profile_fragment_dest"
         android:name="com.tiparo.tripway.profile.ui.ProfileFragment"
+        android:label="@string/fragment_profile_label"
         tools:layout="@layout/fragment_profile_page">
 
         <action
@@ -115,10 +115,26 @@
 
         <argument
             android:name="user_id"
-            app:argType="string"
-            app:nullable="true"
             android:defaultValue='@null'
-            />
-    </fragment>
+            app:argType="string"
+            app:nullable="true" />
 
+        <action
+            android:id="@+id/action_profile_fragment_dest_to_login_fragment_dest"
+            app:destination="@id/login_fragment_dest"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/home_feed_fragment"
+        android:name="com.tiparo.tripway.home.ui.HomeFeedFragment"
+        android:label="@string/fragment_home_feed_label"
+        tools:layout="@layout/fragment_home_feed">
+        <action
+            android:id="@+id/action_home_feed_fragment_dest_to_trip_detail_fragment"
+            app:destination="@id/trip_detail_fragment" />
+        <action
+            android:id="@+id/action_home_feed_fragment_dest_to_profile_fragment"
+            app:destination="@id/profile_fragment_dest" />
+    </fragment>
 </navigation>

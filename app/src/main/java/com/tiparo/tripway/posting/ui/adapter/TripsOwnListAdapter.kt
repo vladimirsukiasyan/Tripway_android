@@ -53,7 +53,7 @@ class TripsOwnListAdapter(
         binding.trip = item
         Glide.with(binding.root.context)
             .load(item.photo)
-            .placeholder(R.drawable.trip_card_own_placeholder)
+            .placeholder(R.drawable.card_own_placeholder)
             .into(binding.tripImage)
     }
 }

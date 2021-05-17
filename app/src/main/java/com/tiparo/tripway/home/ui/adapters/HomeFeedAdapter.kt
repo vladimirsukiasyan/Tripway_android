@@ -1,4 +1,4 @@
-package com.tiparo.tripway.discovery.ui.adapters
+package com.tiparo.tripway.home.ui.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,55 +8,54 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.tiparo.tripway.AppExecutors
 import com.tiparo.tripway.R
-import com.tiparo.tripway.databinding.TripItemBinding
-import com.tiparo.tripway.repository.network.api.services.TripsService.Trip
+import com.tiparo.tripway.databinding.PointItemBinding
+import com.tiparo.tripway.home.api.dto.Point
 import com.tiparo.tripway.views.common.DataBoundListAdapter
 
-class DiscoveryAdapter(
+class HomeFeedAdapter(
     appExecutors: AppExecutors,
-    private val tripClickCallback: ((Trip) -> Unit),
+    private val pointClickCallback: ((Point) -> Unit),
     private val userClickCallback: ((String) -> Unit)
-) : DataBoundListAdapter<Trip, TripItemBinding>(
+) : DataBoundListAdapter<Point, PointItemBinding>(
     appExecutors = appExecutors,
-    diffCallback = object : DiffUtil.ItemCallback<Trip>() {
+    diffCallback = object : DiffUtil.ItemCallback<Point>() {
         override fun areItemsTheSame(
-            oldItem: Trip,
-            newItem: Trip
+            oldItem: Point,
+            newItem: Point
         ): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: Trip,
-            newItem: Trip
+            oldItem: Point,
+            newItem: Point
         ): Boolean {
             return oldItem == newItem
         }
     }
 ) {
 
-    override fun createBinding(parent: ViewGroup): TripItemBinding {
-        val binding = DataBindingUtil.inflate<TripItemBinding>(
+    override fun createBinding(parent: ViewGroup): PointItemBinding {
+        val binding = DataBindingUtil.inflate<PointItemBinding>(
             LayoutInflater.from(parent.context),
-            R.layout.trip_item,
+            R.layout.point_item,
             parent,
             false
         )
         binding.root.setOnClickListener {
-            tripClickCallback.invoke(binding.trip!!)
+            pointClickCallback.invoke(binding.point!!)
         }
         binding.username.setOnClickListener {
-            userClickCallback.invoke(binding.trip!!.user_id)
+            userClickCallback.invoke(binding.point!!.userId)
         }
         return binding
     }
 
-    override fun bind(context: Context, binding: TripItemBinding, item: Trip) {
-        binding.trip = item
-        //todo добавить переход на страницу юзера по клику
+    override fun bind(context: Context, binding: PointItemBinding, item: Point) {
+        binding.point = item
         Glide.with(binding.root.context)
             .load(item.photo)
             .placeholder(R.drawable.card_own_placeholder)
-            .into(binding.tripImage)
+            .into(binding.pointImage)
     }
 }

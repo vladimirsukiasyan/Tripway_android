@@ -3,9 +3,7 @@ package com.tiparo.tripway.profile.ui
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -49,6 +47,7 @@ class ProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         userId = args.userId
     }
 
@@ -119,6 +118,23 @@ class ProfileFragment : Fragment() {
         })
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.profile_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.signOut -> {
+                vm.signOut()
+                val action = ProfileFragmentDirections.actionProfileFragmentDestToLoginFragmentDest()
+                findNavController().navigate(action)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     //todo в теории это все можно обернуть и предоставить фрагментам интерфейс (аля обертка для MVI)
     private fun render(state: ProfileUiState) {
         state.fold(
@@ -140,17 +156,18 @@ class ProfileFragment : Fragment() {
         //todo оформить в виде кастомного TextView
         when {
             profile.isOwnProfile -> {
-                (profile_btn.background as GradientDrawable).apply {
-                    mutate()
-                    setColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-                }
-                profile_btn.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.colorText
-                    )
-                )
-                profile_btn.text = resources.getString(R.string.edit_profile_btn)
+//                (profile_btn.background as GradientDrawable).apply {
+//                    mutate()
+//                    setColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+//                }
+//                profile_btn.setTextColor(
+//                    ContextCompat.getColor(
+//                        requireContext(),
+//                        R.color.colorText
+//                    )
+//                )
+//                profile_btn.text = resources.getString(R.string.edit_profile_btn)
+                profile_btn.visibility = View.GONE
             }
             profile.isSubscription -> {
                 (profile_btn.background as GradientDrawable).apply {

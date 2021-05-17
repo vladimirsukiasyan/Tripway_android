@@ -18,8 +18,8 @@
     android:id="@+id/pointImage"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/trip_card_image_background"
+    android:background="@drawable/card_image_background"
     android:contentDescription="@string/tripcardimage"
     android:outlineProvider="background"
     android:scaleType="centerCrop"
-    android:src="@drawable/trip_card_own_placeholder" />
+    android:src="@drawable/card_own_placeholder" />

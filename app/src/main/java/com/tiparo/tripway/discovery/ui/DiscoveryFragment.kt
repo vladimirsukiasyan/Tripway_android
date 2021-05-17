@@ -159,7 +159,7 @@ class DiscoveryFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.home_menu, menu)
 
-        val searchItem = menu.findItem(R.id.search)
+//        val searchItem = menu.findItem(R.id.search)
 //        setupSearchView(searchItem)
 
         super.onCreateOptionsMenu(menu, inflater)

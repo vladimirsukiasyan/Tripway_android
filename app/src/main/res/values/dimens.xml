@@ -16,6 +16,7 @@
     <dimen name="margin_icon_text">16dp</dimen>
     <dimen name="card_trip_padding_outer">12dp</dimen>
     <dimen name="card_trip_corner">10dp</dimen>
+    <dimen name="card_point_corner">10dp</dimen>
     <dimen name="card_trip_elevation">4dp</dimen>
 
     <dimen name="images_grid_spacing">2dp</dimen>

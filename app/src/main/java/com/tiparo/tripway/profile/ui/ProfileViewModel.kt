@@ -2,6 +2,7 @@ package com.tiparo.tripway.profile.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.tiparo.tripway.profile.domain.ProfileRepository
 import com.tiparo.tripway.utils.RxUnit
 import com.tiparo.tripway.utils.Transformers
@@ -82,5 +83,10 @@ class ProfileViewModel @Inject constructor(profileRepository: ProfileRepository)
 
     fun unsubscribeToUser(uid: String) {
         unsubscribeIntent.onNext(uid)
+    }
+
+    fun signOut() {
+        val auth = FirebaseAuth.getInstance()
+        auth.signOut()
     }
 }

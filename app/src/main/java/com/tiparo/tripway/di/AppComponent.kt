@@ -3,6 +3,7 @@ package com.tiparo.tripway.di
 import android.app.Application
 import com.tiparo.tripway.BaseApplication
 import com.tiparo.tripway.discovery.ui.DiscoveryFragment
+import com.tiparo.tripway.home.ui.HomeFeedFragment
 import com.tiparo.tripway.login.ui.LoginFragment
 import com.tiparo.tripway.posting.ui.PostPointDescriptionFragment
 import com.tiparo.tripway.posting.ui.PostPointListFragment
@@ -35,6 +36,7 @@ interface AppComponent {
 
     fun inject(fragment: LoginFragment)
     fun inject(fragment: DiscoveryFragment)
+    fun inject(fragment: HomeFeedFragment)
     fun inject(fragment: ProfileFragment)
     fun inject(fragment: TripDetailFragment)
     fun inject(fragment: PointFragment)

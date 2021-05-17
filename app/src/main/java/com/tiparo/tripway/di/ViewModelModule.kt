@@ -3,6 +3,7 @@ package com.tiparo.tripway.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tiparo.tripway.discovery.ui.DiscoveryViewModel
+import com.tiparo.tripway.home.ui.HomeFeedViewModel
 import com.tiparo.tripway.posting.ui.PostPointViewModel
 import com.tiparo.tripway.profile.ui.ProfileViewModel
 import com.tiparo.tripway.login.ui.SignInViewModel
@@ -34,6 +35,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(DiscoveryViewModel::class)
     abstract fun bindDiscoveryViewModel(discoveryViewModel: DiscoveryViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HomeFeedViewModel::class)
+    abstract fun bindHomeFeedViewModel(homeFeedViewModel: HomeFeedViewModel): ViewModel
 
     @Binds
     @IntoMap

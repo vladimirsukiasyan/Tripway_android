@@ -1,6 +1,7 @@
 package com.tiparo.tripway.repository.network.api.services
 
 import com.tiparo.tripway.discovery.api.dto.DiscoveryInfo
+import com.tiparo.tripway.home.api.dto.HomeFeedInfo
 import com.tiparo.tripway.posting.api.dto.PointApi
 import com.tiparo.tripway.profile.api.dto.ProfileInfo
 import com.tiparo.tripway.trippage.api.dto.TripPageInfo
@@ -16,6 +17,9 @@ interface TripsService {
 
     @GET("discovery")
     fun getTripsDiscoveryPage(@Query("anchor") anchor: String?): Single<DiscoveryInfo>
+
+    @GET("homeFeed")
+    fun getHomeFeedPage(@Query("anchor") anchor: String?): Single<HomeFeedInfo>
 
     @POST("point")
     fun postPoint(@Body pointApi: PointApi): Maybe<PointPostResult>
