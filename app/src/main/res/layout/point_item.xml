@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="point"
+            type="com.tiparo.tripway.home.api.dto.Point" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/card_point_corner"
+        app:cardElevation="@dimen/card_trip_elevation"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/username"
+                style="@style/ParagraphSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:singleLine="true"
+                android:text='@{point.username}'
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="meicy_williams" />
+
+            <ImageView
+                android:id="@+id/point_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_image_background"
+                android:outlineProvider="background"
+                android:scaleType="centerCrop"
+                android:src="@drawable/card_own_placeholder" />
+
+            <TextView
+                android:id="@+id/description"
+                style="@style/ParagraphSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text='@{point.description}'
+                tools:text="This photo was at the Hiroshima castle gate and was more impressive then the actual castle. The fish in the pond were fascinating to watch - take some " />
+
+            <TextView
+                android:id="@+id/updated"
+                style="@style/Tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="12dp"
+                tools:text="yesterday" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</layout>
